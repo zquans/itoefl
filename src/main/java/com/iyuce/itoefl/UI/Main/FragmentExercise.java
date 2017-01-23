@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.R;
-import com.iyuce.itoefl.UI.Listening.TopListeneringActivity;
+import com.iyuce.itoefl.UI.Listening.Activity.TopListeneringActivity;
 
 /**
  * Created by LeBang on 2017/1/22

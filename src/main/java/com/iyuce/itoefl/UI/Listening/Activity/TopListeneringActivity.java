@@ -1,4 +1,4 @@
-package com.iyuce.itoefl.UI.Listening;
+package com.iyuce.itoefl.UI.Listening.Activity;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -9,7 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.iyuce.itoefl.R;
-import com.iyuce.itoefl.UI.Main.FragmentLecture;
+import com.iyuce.itoefl.UI.Listening.Fragment.FragmentClassify;
+import com.iyuce.itoefl.UI.Listening.Fragment.FragmentOrder;
 
 import java.util.ArrayList;
 
@@ -60,7 +61,7 @@ public class TopListeneringActivity extends AppCompatActivity {
             }
         };
         mFragmentList.add(new FragmentOrder());
-        mFragmentList.add(new FragmentLecture());
+        mFragmentList.add(new FragmentClassify());
         mViewPager.setAdapter(mAdapter);
         mTab.setTabMode(TabLayout.MODE_FIXED);
         mTab.setupWithViewPager(mViewPager);

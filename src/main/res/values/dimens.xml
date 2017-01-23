@@ -5,5 +5,7 @@
     <dimen name="header_title_bar_height">64dp</dimen>
     <dimen name="layout_height">64dp</dimen>
     <dimen name="header_margin_left">8dp</dimen>
-    <dimen name="indicator_height">2dp</dimen>
+    <dimen name="header_margin_bottom">8dp</dimen>
+    <dimen name="indicator_height">4dp</dimen>
+    <dimen name="txt_size_eighteen">18sp</dimen>
 </resources>

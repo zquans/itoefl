@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.iyuce.itoefl.UI.Listening.TopListeneringActivity">
+    tools:context=".UI.Listening.Activity.TopListeneringActivity">
 
     <include layout="@layout/header_title_bar" />
 
@@ -16,8 +16,8 @@
         android:background="@color/colorPrimary"
         app:tabIndicatorColor="@color/DeepGreen"
         app:tabIndicatorHeight="@dimen/indicator_height"
-        app:tabSelectedTextColor="@color/White"
-        app:tabTextColor="@color/Gray" />
+        app:tabSelectedTextColor="@color/DeepGreen"
+        app:tabTextColor="@color/White" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager_activity_top_listenering"

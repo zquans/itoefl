@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".BaseActivity" />
-        <activity android:name=".UI.Listening.TopListeneringActivity" />
+        <activity android:name=".UI.Listening.Activity.TopListeneringActivity" />
+        <activity android:name=".UI.Listening.Activity.TopListeneringPageActivity" />
     </application>
 
 </manifest>

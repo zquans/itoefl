@@ -6,6 +6,7 @@
 
     <color name="Gray">#BBBBBB</color>
     <color name="White">#FFFFFF</color>
+    <color name="Black">#000000</color>
     <color name="DeepGreen">#3DACB7</color>
 
 </resources>

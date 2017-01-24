@@ -33,6 +33,7 @@ public class TopListeneringActivity extends AppCompatActivity {
 
     private void initView() {
         //back button in <include header>
+        findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

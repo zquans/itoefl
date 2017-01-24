@@ -18,7 +18,15 @@
         </activity>
         <activity android:name=".BaseActivity" />
         <activity android:name=".UI.Listening.Activity.TopListeneringActivity" />
-        <activity android:name=".UI.Listening.Activity.TopListeneringPageActivity" />
+        <activity
+            android:name=".UI.Listening.Activity.TopListeneringPageActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".UI.Listening.Activity.PageReadyActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".UI.Listening.Activity.DoQuestionReadyActivity"
+            android:launchMode="singleTop" />
     </application>
 
 </manifest>

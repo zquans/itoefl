@@ -1,5 +1,7 @@
 package com.iyuce.itoefl.UI.Listening.Activity;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +9,9 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.iyuce.itoefl.R;
+import com.iyuce.itoefl.Utils.LogUtil;
+
+import java.io.File;
 
 /**
  * Created by LeBang on 2017/1/24
@@ -44,6 +49,21 @@ public class DoQuestionReadyActivity extends AppCompatActivity implements View.O
                     mImageButton.setBackgroundResource(R.mipmap.icon_media_play);
                 }
                 isPlay = !isPlay;
+                //TODO 成功打开载入的数据库
+                //打开默认在database中的SQl数据库
+                //SQLiteDatabase  = openOrCreateDatabase("aipu.db", MODE_PRIVATE, null);
+                //打开指定下载的文件，.sqlite结尾的数据库格式
+                File file_ = new File("/storage/emulated/0/download/le/1402.sqlite");
+                SQLiteDatabase mDatabase = SQLiteDatabase.openOrCreateDatabase(file_, null);
+                Cursor mCursor = mDatabase.query("lyric", null, "id>?", new String[]{"0"}, null, null, "id desc");
+                if (mCursor != null) {
+                    while (mCursor.moveToNext()) {
+                        LogUtil.i(mCursor.getString(mCursor.getColumnIndex("id")));
+                        LogUtil.i(mCursor.getString(mCursor.getColumnIndex("content")));
+                    }
+                    mCursor.close();
+                }
+                mDatabase.close();
                 break;
         }
     }

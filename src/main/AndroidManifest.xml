@@ -27,6 +27,10 @@
         <activity
             android:name=".UI.Listening.Activity.DoQuestionReadyActivity"
             android:launchMode="singleTop" />
+        <activity
+            android:name=".UI.Listening.Activity.DoQuestionActivity"
+            android:launchMode="singleTop" />
+        <activity android:name=".UI.Listening.Activity.DoResultActivity"></activity>
     </application>
 
 </manifest>

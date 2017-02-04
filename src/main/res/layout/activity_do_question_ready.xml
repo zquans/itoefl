@@ -82,6 +82,7 @@
             android:text="播放速度x1.5" />
 
         <Button
+            android:id="@+id/btn_activity_do_question_ready_begin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"

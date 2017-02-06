@@ -16,8 +16,6 @@ import java.util.ArrayList;
 /**
  * Created by LeBang on 2017/1/23
  */
-
-//TODO BaseAdapter 引用泛型
 public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneringPageAdapter.PageViewHolder> {
 
     private Context mContext;

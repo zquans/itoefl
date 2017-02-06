@@ -12,39 +12,6 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <RadioGroup
-        android:id="@+id/radiogroup_activity_main"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_height"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableTop="@mipmap/ic_launcher"
-            android:gravity="center"
-            android:text="练习" />
-
-        <RadioButton
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableTop="@mipmap/ic_launcher"
-            android:gravity="center"
-            android:text="课程" />
-
-        <RadioButton
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableTop="@mipmap/ic_launcher"
-            android:gravity="center"
-            android:text="我的" />
-    </RadioGroup>
+    <include layout="@layout/bottom_tab_bar" />
 
 </LinearLayout>

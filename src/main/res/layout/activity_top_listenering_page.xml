@@ -6,17 +6,51 @@
 
     <include layout="@layout/header_title_bar" />
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:drawableLeft="@mipmap/ic_launcher"
-        android:gravity="center"
-        android:text="已经完成XXXX篇章" />
+        android:background="#ffffff">
+
+        <ImageView
+            android:id="@+id/img_activity_top_listenering_award"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="32dp"
+            android:background="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/txt_activity_top_listenering_finish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="32dp"
+            android:layout_toRightOf="@+id/img_activity_top_listenering_award"
+            android:gravity="center"
+            android:text="已练习：2篇" />
+
+        <TextView
+            android:id="@+id/txt_activity_top_listenering_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_activity_top_listenering_finish"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@+id/img_activity_top_listenering_award"
+            android:gravity="center"
+            android:text="总共: 12篇" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:background="#f8f8f8" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_activity_top_listenering_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/activity_horizontal_margin" />
+        android:background="#ffffff"
+        android:padding="@dimen/all_padding" />
 
 </LinearLayout>

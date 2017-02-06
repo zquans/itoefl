@@ -13,15 +13,33 @@
         android:paddingTop="@dimen/activity_vertical_padding"
         android:text="音频材料" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/activity_horizontal_padding"
-        android:paddingTop="@dimen/activity_vertical_padding"
-        android:text="Faint Young Sun Paradox \n\n太阳悖论"
-        android:textColor="@color/Black"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/txt_activity_do_question_ready_english"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_horizontal_padding"
+            android:paddingTop="@dimen/activity_vertical_padding"
+            android:text="Faint Young Sun Paradox"
+            android:textColor="@color/Black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txt_activity_do_question_ready_chinese"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_activity_do_question_ready_english"
+            android:paddingLeft="@dimen/activity_horizontal_padding"
+            android:paddingTop="@dimen/activity_vertical_padding"
+            android:text="太阳悖论"
+            android:textColor="@color/Black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -48,22 +66,27 @@
         android:paddingLeft="@dimen/activity_horizontal_padding">
 
         <TextView
+            android:id="@+id/txt_activity_do_question_ready_current"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:text="00:00" />
 
-        <ProgressBar
+        <SeekBar
+            android:id="@+id/seekbar_activity_do_question_ready"
             android:layout_width="0dp"
-            android:layout_height="4dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_weight="1" />
 
         <TextView
+            android:id="@+id/txt_activity_do_question_ready_total"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="right"
+            android:gravity="center_vertical"
             android:paddingRight="@dimen/activity_horizontal_padding"
             android:text="04:01" />
 
@@ -74,19 +97,26 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <Button
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_weight="1"
-            android:text="播放速度x1.5" />
+            android:text="播放速度x1.5"
+            android:textColor="#f8a540" />
 
-        <Button
+        <TextView
             android:id="@+id/btn_activity_do_question_ready_begin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_weight="1"
-            android:text="开始答题" />
+            android:gravity="right"
+            android:text="开始答题"
+            android:textColor="#f8a540" />
     </LinearLayout>
 </LinearLayout>

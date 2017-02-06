@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.TextView;
 
 import com.iyuce.itoefl.R;
 
@@ -35,6 +35,7 @@ public class RecyclerItemAdapter extends RecyclerView.Adapter<RecyclerItemAdapte
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
+        holder.mItemTxtTitle.setBackgroundColor(Color.parseColor("#ffffff"));
         holder.mItemTxtTitle.setTextColor(Color.parseColor("#000000"));
         holder.mItemTxtTitle.setText(mList.get(position));
     }
@@ -46,11 +47,11 @@ public class RecyclerItemAdapter extends RecyclerView.Adapter<RecyclerItemAdapte
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        Button mItemTxtTitle;
+        TextView mItemTxtTitle;
 
         public ItemViewHolder(View view) {
             super(view);
-            mItemTxtTitle = (Button) view.findViewById(R.id.txt_item_top_listenering_order_title);
+            mItemTxtTitle = (TextView) view.findViewById(R.id.txt_item_top_listenering_order_title);
         }
     }
 }

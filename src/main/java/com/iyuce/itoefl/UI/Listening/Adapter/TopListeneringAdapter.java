@@ -9,7 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.TextView;
 
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Activity.TopListeneringPageActivity;
@@ -46,9 +46,13 @@ public class TopListeneringAdapter extends RecyclerView.Adapter<TopListeneringAd
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.mItemTxtTitle.setText(mList.get(position));
-        holder.mItemTxtTitle.setBackgroundColor(Color.parseColor("#fafafa"));
+        ViewGroup.LayoutParams params = holder.mItemTxtTitle.getLayoutParams();
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        holder.mItemTxtTitle.setLayoutParams(params);
+        holder.mItemTxtTitle.setGravity(Gravity.BOTTOM);
         holder.mItemTxtTitle.setGravity(Gravity.LEFT);
+        holder.mItemTxtTitle.setText(mList.get(position));
+        holder.mItemTxtTitle.setBackgroundColor(Color.parseColor("#f8f8f8"));
         holder.mItemRecyclerView.setLayoutManager(new GridLayoutManager(mContext, mItemCount));
         holder.mItemRecyclerView.setAdapter(new RecyclerItemAdapter(mContext, mList));
         holder.mItemRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(mContext, holder.mItemRecyclerView,
@@ -66,12 +70,12 @@ public class TopListeneringAdapter extends RecyclerView.Adapter<TopListeneringAd
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        Button mItemTxtTitle;
+        TextView mItemTxtTitle;
         RecyclerView mItemRecyclerView;
 
         public MyViewHolder(View view) {
             super(view);
-            mItemTxtTitle = (Button) view.findViewById(R.id.txt_item_top_listenering_order_title);
+            mItemTxtTitle = (TextView) view.findViewById(R.id.txt_item_top_listenering_order_title);
             mItemRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_item_top_listenering_order);
         }
     }

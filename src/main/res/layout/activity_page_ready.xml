@@ -6,21 +6,51 @@
 
     <include layout="@layout/header_title_bar" />
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="88dp"
+        android:layout_height="wrap_content"
         android:paddingLeft="@dimen/activity_horizontal_padding"
-        android:paddingRight="@dimen/activity_horizontal_padding"
-        android:text="\nPage ready title \n\n 听力准备页面"
-        android:textColor="@color/Black"
-        android:textSize="18sp" />
+        android:paddingRight="@dimen/activity_horizontal_padding">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:paddingLeft="@dimen/activity_horizontal_padding"
-        android:paddingRight="@dimen/activity_horizontal_padding"
-        android:text="\nPage ready little title" />
+        <TextView
+            android:id="@+id/txt_activity_page_ready_title_english"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\nPage ready title"
+            android:textColor="@color/Black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/txt_activity_page_ready_title_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/txt_activity_page_ready_title_english"
+            android:layout_alignParentRight="true"
+            android:background="@color/Red"
+            android:padding="2dp"
+            android:text="难"
+            android:textColor="@color/White"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/txt_activity_page_ready_title_chinese"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_activity_page_ready_title_english"
+            android:layout_marginTop="8dp"
+            android:text="听力准备页面"
+            android:textColor="@color/Black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/txt_activity_page_ready_title_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_activity_page_ready_title_chinese"
+            android:layout_marginTop="12dp"
+            android:text="讲座.自然科学.人文" />
+
+    </RelativeLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -31,23 +61,42 @@
         android:paddingTop="@dimen/activity_vertical_padding"
         android:text="icon 精听次数: X0\n\nicon 精听次数: X0\n\nicon 精听次数: X0\n\nicon 精听次数: X0\n\nicon 精听次数: X0\n\nicon 精听次数: X0\n\n" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#f1f1f1" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:orientation="horizontal">
 
-        <Button
+        <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="精听听写" />
+            android:background="#ffffff"
+            android:gravity="center"
+            android:onClick="beginListen"
+            android:text="精听听写"
+            android:textColor="#f8a540" />
 
-        <Button
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:background="#f1f1f1" />
+
+        <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:onClick="doQuestionReady"
-            android:text="题目练习" />
+            android:background="#ffffff"
+            android:gravity="center"
+            android:onClick="beginPractice"
+            android:text="题目练习"
+            android:textColor="#f8a540" />
     </LinearLayout>
 
 </LinearLayout>

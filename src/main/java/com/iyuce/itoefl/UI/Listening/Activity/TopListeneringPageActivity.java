@@ -6,10 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.TopListeneringPageAdapter;
 import com.iyuce.itoefl.Utils.LogUtil;
+import com.iyuce.itoefl.Utils.PreferenceUtil;
 import com.iyuce.itoefl.Utils.ZipUtil;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
@@ -24,9 +26,10 @@ import okhttp3.Response;
 public class TopListeneringPageActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private TopListeneringPageAdapter mAdapter;
     private ArrayList<String> mDataList = new ArrayList<>();
 
+    private TextView mTxtFinish, mTxtTotal;
     private String mSavePath, mSQLitePath;
 
     @Override
@@ -51,20 +54,26 @@ public class TopListeneringPageActivity extends AppCompatActivity implements Vie
             if (!dir.exists()) {
                 dir.mkdir();
             }
+            /*将路径保存到SharePreferences中*/
+            PreferenceUtil.save(this, "SdPath", mSavePath);
         }
     }
 
     private void initView() {
-        //back button in <include header>
         findViewById(R.id.txt_header_title_menu).setOnClickListener(this);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(this);
+
+        mTxtFinish = (TextView) findViewById(R.id.txt_activity_top_listenering_finish);
+        mTxtTotal = (TextView) findViewById(R.id.txt_activity_top_listenering_total);
+        mTxtTotal.setText("总共 : 12篇");
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_activity_top_listenering_page);
         for (int i = 0; i < 7; i++) {
             mDataList.add("Lecture " + i);
         }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(new TopListeneringPageAdapter(this, mDataList));
+        mAdapter = new TopListeneringPageAdapter(this, mDataList);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override

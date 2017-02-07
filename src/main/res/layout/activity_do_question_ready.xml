@@ -97,14 +97,15 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <TextView
+        <Spinner
+            android:id="@+id/spinner_activity_do_question_ready_rate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_weight="1"
-            android:text="播放速度x1.5"
+            android:background="#ffffff"
             android:textColor="#f8a540" />
 
         <TextView

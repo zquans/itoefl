@@ -27,13 +27,29 @@
             android:background="@mipmap/icon_media_pause" />
 
         <TextView
-            android:id="@+id/txt_activity_do_result_timer"
+            android:id="@+id/txt_activity_do_result_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:paddingLeft="@dimen/activity_horizontal_padding"
             android:paddingRight="@dimen/activity_horizontal_padding"
+            android:text="14:56" />
+
+        <TextView
+            android:id="@+id/txt_activity_do_result_placehold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txt_activity_do_result_total"
+            android:layout_toLeftOf="@+id/txt_activity_do_result_total"
+            android:text="/" />
+
+        <TextView
+            android:id="@+id/txt_activity_do_result_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/txt_activity_do_result_placehold"
+            android:paddingLeft="@dimen/activity_horizontal_padding"
             android:text="14:56" />
 
         <SeekBar
@@ -43,7 +59,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:layout_toLeftOf="@+id/txt_activity_do_result_timer"
+            android:layout_toLeftOf="@+id/txt_activity_do_result_current"
             android:layout_toRightOf="@+id/imgbtn_activity_do_result_play" />
 
     </RelativeLayout>

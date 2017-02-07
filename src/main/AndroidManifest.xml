@@ -23,7 +23,7 @@
             android:launchMode="singleTop" />
         <activity
             android:name=".UI.Listening.Activity.PageReadyActivity"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTask" />
         <activity
             android:name=".UI.Listening.Activity.DoQuestionReadyActivity"
             android:launchMode="singleTop" />

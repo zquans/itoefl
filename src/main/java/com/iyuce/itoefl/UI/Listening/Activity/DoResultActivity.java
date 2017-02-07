@@ -1,28 +1,36 @@
 package com.iyuce.itoefl.UI.Listening.Activity;
 
-import android.media.AudioManager;
+import android.content.Intent;
 import android.media.MediaPlayer;
-import android.media.SoundPool;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.LogUtil;
+import com.iyuce.itoefl.Utils.PreferenceUtil;
+import com.iyuce.itoefl.Utils.TimeUtil;
 
-import java.io.File;
 import java.io.IOException;
 
-public class DoResultActivity extends AppCompatActivity implements View.OnClickListener {
+public class DoResultActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
     private ImageButton mImgBtnPlay;
+    private TextView mTxtCurrent, mTxtTotal;
 
     private MediaPlayer mMediaPlayer;
-    private SoundPool mSoundPool;
+    private SeekBar mSeekBar;
     private boolean isPlay = true;
+
+    private String mSavePath;
+
+    @Override
+    public void onBackPressed() {
+        doBackPageReady();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,42 +44,82 @@ public class DoResultActivity extends AppCompatActivity implements View.OnClickL
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(this);
 
+        mSeekBar = (SeekBar) findViewById(R.id.bar_activity_do_result_progress);
+        mTxtCurrent = (TextView) findViewById(R.id.txt_activity_do_result_current);
+        mTxtTotal = (TextView) findViewById(R.id.txt_activity_do_result_total);
         mImgBtnPlay = (ImageButton) findViewById(R.id.imgbtn_activity_do_result_play);
         mImgBtnPlay.setOnClickListener(this);
+        mSeekBar.setOnSeekBarChangeListener(this);
 
-        mSoundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+        //从sharePreferences获取路径
+        String SdPath = PreferenceUtil.getSharePre(this).getString("SdPath", "");
+        String musicPath = SdPath + "/16895.mp3";
+        LogUtil.i("musicPath = " + musicPath);
+
+        //MediaPlayer
         mMediaPlayer = new MediaPlayer();
+        try {
+            mMediaPlayer.setDataSource(musicPath);
+            mMediaPlayer.prepare();
+            mMediaPlayer.start();
+            getDrution();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getCurrent() {
+        mSeekBar.setProgress(mMediaPlayer.getCurrentPosition());
+        int time = mMediaPlayer.getCurrentPosition() / 1000;
+        String timer = TimeUtil.toTimeShow(time);
+        mTxtCurrent.setText(timer);
+    }
+
+    private void getDrution() {
+        mSeekBar.setMax(mMediaPlayer.getDuration());
+        int time = mMediaPlayer.getDuration() / 1000;
+        String timer = TimeUtil.toTimeShow(time);
+        mTxtTotal.setText(timer);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imgbtn_header_title:
-                finish();
+                doBackPageReady();
                 break;
             case R.id.imgbtn_activity_do_result_play:
-                if (!isPlay)
+                if (!isPlay) {
                     mImgBtnPlay.setBackgroundResource(R.mipmap.icon_media_pause);
-                else
-                    mImgBtnPlay.setBackgroundResource(R.mipmap.icon_media_play);
-                isPlay = !isPlay;
-
-                //MediaPlayer
-                try {
-                    mMediaPlayer.setDataSource("/storage/emulated/0/download/le/16895.mp3");
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(2.0f));
-                    }
-                    mMediaPlayer.prepare();
                     mMediaPlayer.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } else {
+                    mImgBtnPlay.setBackgroundResource(R.mipmap.icon_media_play);
+                    mMediaPlayer.pause();
                 }
-
-                //SoundPool
-//                mSoundPool.load("/storage/emulated/0/download/le/16895.mp3", 1);
-//                mSoundPool.play(1, 1, 1, 0, 0, 1.5f);
+                isPlay = !isPlay;
                 break;
         }
+    }
+
+    private void doBackPageReady() {
+        startActivity(new Intent(this, PageReadyActivity.class));
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if (fromUser) {
+            mMediaPlayer.seekTo(progress);
+            mTxtCurrent.setText(TimeUtil.toTimeShow(progress / 1000));
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
     }
 }

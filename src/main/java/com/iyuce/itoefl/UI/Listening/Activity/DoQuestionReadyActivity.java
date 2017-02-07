@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.PreferenceUtil;
+import com.iyuce.itoefl.Utils.TimeUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -162,31 +163,13 @@ public class DoQuestionReadyActivity extends AppCompatActivity implements View.O
     private void getCurrent() {
         mSeekBar.setProgress(mMediaPlayer.getCurrentPosition());
         int time = mMediaPlayer.getCurrentPosition() / 1000;
-        String timer = timeUtil(time);
-        mTxtCurrent.setText(timer);
+        mTxtCurrent.setText(TimeUtil.toTimeShow(time));
     }
 
     private void getDrution() {
         mSeekBar.setMax(mMediaPlayer.getDuration());
         int time = mMediaPlayer.getDuration() / 1000;
-        String timer = timeUtil(time);
-        mTxtTotal.setText(timer);
-    }
-
-    private String timeUtil(int time) {
-        int h, m, s;
-        h = time / 60 / 60;
-        m = (time - 60 * (h * 60)) / 60;
-        s = time % 60;
-        if (m < 10 && s < 10) {
-            return "0" + m + ":0" + s;
-        } else if (m < 10 && s >= 10) {
-            return "0" + m + ":" + s;
-        } else if (m >= 10 && s < 10) {
-            return m + ":0" + s;
-        } else {
-            return m + ":" + s;
-        }
+        mTxtTotal.setText(TimeUtil.toTimeShow(time));
     }
 
     @Override

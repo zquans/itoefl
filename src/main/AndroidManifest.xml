@@ -2,20 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.iyuce.itoefl">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon_logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UI.Main.MainActivity">
+        <activity android:name=".UI.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".UI.Main.MainActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".BaseActivity" />
         <activity android:name=".UI.Listening.Activity.TopListeneringActivity" />
         <activity
@@ -30,7 +36,7 @@
         <activity
             android:name=".UI.Listening.Activity.DoQuestionActivity"
             android:launchMode="singleTop" />
-        <activity android:name=".UI.Listening.Activity.DoResultActivity"></activity>
+        <activity android:name=".UI.Listening.Activity.DoResultActivity" />
     </application>
 
 </manifest>

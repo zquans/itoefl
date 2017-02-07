@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.R;
+import com.iyuce.itoefl.Utils.ToastUtil;
 
 import java.util.ArrayList;
 
@@ -22,6 +23,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<Fragment> mFragmentList = new ArrayList<>();
 
     private TextView mTxtPractice, mTxtLecture, mTxtMine;
+
+    private boolean isFirst = true;
+    private long lastTime;
+
+    @Override
+    public void onBackPressed() {
+        if (isFirst) {
+            ToastUtil.showMessage(this, "再按一次退出程序");
+            lastTime = System.currentTimeMillis();
+            isFirst = false;
+        } else {
+            if ((System.currentTimeMillis() - lastTime) < 1000) {
+                this.finish();
+            } else {
+                ToastUtil.showMessage(this, "再按一次退出程序");
+                lastTime = System.currentTimeMillis();
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

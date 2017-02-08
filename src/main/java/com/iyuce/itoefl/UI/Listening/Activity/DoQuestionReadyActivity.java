@@ -180,8 +180,6 @@ public class DoQuestionReadyActivity extends AppCompatActivity implements View.O
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        LogUtil.i("I am complete");
-        mp.reset();
         mTxtCurrent.setText(R.string.txt_audio_time_begin);
         mSeekBar.setProgress(0);
         isfinish = true;

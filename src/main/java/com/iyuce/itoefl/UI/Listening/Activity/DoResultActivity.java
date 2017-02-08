@@ -5,19 +5,29 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.Common.Constants;
+import com.iyuce.itoefl.Model.ListenResult;
 import com.iyuce.itoefl.R;
+import com.iyuce.itoefl.UI.Listening.Adapter.ResultTitleAdapter;
+import com.iyuce.itoefl.UI.Main.FragmentMine;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.PreferenceUtil;
 import com.iyuce.itoefl.Utils.TimeUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class DoResultActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
@@ -25,10 +35,19 @@ public class DoResultActivity extends AppCompatActivity implements View.OnClickL
     private ImageButton mImageButton;
     private TextView mTxtCurrent, mTxtTotal;
 
+    //音频播放相关
     private MediaPlayer mMediaPlayer;
     private SeekBar mSeekBar;
     private boolean isPlay = true;
     private boolean isfinish = false;
+
+    //答案相关
+    private RecyclerView mRecyclerView;
+    private ResultTitleAdapter mTitleAdapter;
+    private ArrayList<ListenResult> mResultTitleList = new ArrayList<>();
+    private ViewPager mViewPager;
+    private AnswerAdapter mContentAdapter;
+    private ArrayList<Fragment> mResultContentList = new ArrayList<>();
 
     private Handler mMediaProgressHandler = new Handler() {
         @Override
@@ -63,10 +82,19 @@ public class DoResultActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
+        mMediaPlayer.release();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
-        mMediaPlayer.release();
+        mMediaPlayer.pause();
+        mImageButton.setBackgroundResource(R.mipmap.icon_media_play);
+        isPlay = false;
     }
 
     @Override
@@ -87,6 +115,24 @@ public class DoResultActivity extends AppCompatActivity implements View.OnClickL
         mImageButton = (ImageButton) findViewById(R.id.imgbtn_activity_do_result_play);
         mImageButton.setOnClickListener(this);
         mSeekBar.setOnSeekBarChangeListener(this);
+
+        //模拟数据
+        for (int i = 1; i < 6; i++) {
+            ListenResult result = new ListenResult();
+            result.question_name = i + "";
+            result.question_state = i % 2 == 0;
+            mResultTitleList.add(result);
+            mResultContentList.add(new FragmentMine());
+        }
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_activity_do_result_question);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        mTitleAdapter = new ResultTitleAdapter(mResultTitleList, this);
+        mRecyclerView.setAdapter(mTitleAdapter);
+
+        mViewPager = (ViewPager) findViewById(R.id.viewpager_activity_do_result_question);
+        mContentAdapter = new AnswerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mContentAdapter);
+        mViewPager.setOffscreenPageLimit(5);
 
         //从sharePreferences获取路径
         String SdPath = PreferenceUtil.getSharePre(this).getString("SdPath", "");
@@ -151,7 +197,6 @@ public class DoResultActivity extends AppCompatActivity implements View.OnClickL
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (fromUser) {
             mMediaPlayer.seekTo(progress);
-            mTxtCurrent.setText(TimeUtil.toTimeShow(progress / 1000));
         }
     }
 
@@ -175,15 +220,32 @@ public class DoResultActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
+    public void onCompletion(MediaPlayer mp) {
+        mTxtCurrent.setText(R.string.txt_audio_time_begin);
+        mSeekBar.setProgress(0);
+        isfinish = true;
+    }
+
+    @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        mMediaPlayer.reset();
+        mp.reset();
         LogUtil.i("what ? = " + what);
         return false;
     }
 
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        mMediaPlayer.reset();
-        mTxtCurrent.setText(R.string.txt_audio_time_begin);
+    private class AnswerAdapter extends FragmentPagerAdapter {
+        public AnswerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mResultContentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mResultContentList.size();
+        }
     }
 }

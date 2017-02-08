@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/GrayThin"
     android:orientation="vertical">
 
     <include layout="@layout/header_title_bar" />
@@ -50,8 +51,8 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/txt_activity_do_result_placehold"
             android:paddingLeft="@dimen/activity_horizontal_padding"
-            android:textColor="@color/Blue"
-            android:text="14:56" />
+            android:text="14:56"
+            android:textColor="@color/Blue" />
 
         <SeekBar
             android:id="@+id/bar_activity_do_result_progress"
@@ -66,12 +67,17 @@
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_activity_do_result_question"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin" />
 
     <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager_activity_do_result_question"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/all_padding" />
+        android:layout_margin="@dimen/all_margin"
+        android:background="@color/White" />
 
 </LinearLayout>

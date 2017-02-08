@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp">
+
+    <ImageView
+        android:id="@+id/img_item_do_result"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@mipmap/icon_answer_talk_wrong_full" />
+
+    <TextView
+        android:id="@+id/txt_item_do_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:text="4"
+        android:textColor="@color/White"
+        android:textSize="16sp" />
+
+</FrameLayout>

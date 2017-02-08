@@ -50,6 +50,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/txt_activity_do_result_placehold"
             android:paddingLeft="@dimen/activity_horizontal_padding"
+            android:textColor="@color/Blue"
             android:text="14:56" />
 
         <SeekBar

@@ -48,7 +48,7 @@ public class TopListeneringPageActivity extends AppCompatActivity implements Vie
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             // sd卡根目录
             String sdPath = Environment.getExternalStorageDirectory() + "/";
-            mSavePath = sdPath + "Itoefl";
+            mSavePath = sdPath + "ITOEFL";
             //建立目标路径文件
             File dir = new File(mSavePath);
             if (!dir.exists()) {

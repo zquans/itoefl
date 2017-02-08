@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">爱托福</string>
+    <string name="txt_audio_time_begin">00:00</string>
 </resources>

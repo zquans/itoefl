@@ -37,6 +37,10 @@
             android:name=".UI.Listening.Activity.DoQuestionActivity"
             android:launchMode="singleTop" />
         <activity android:name=".UI.Listening.Activity.DoResultActivity" />
+
+        <!--<meta-data-->
+        <!--android:name="UMENG_CHANNEL"-->
+        <!--android:value="${umeng_channel}" />-->
     </application>
 
 </manifest>

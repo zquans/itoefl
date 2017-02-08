@@ -15,6 +15,7 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.PreferenceUtil;
@@ -35,8 +36,6 @@ public class DoQuestionReadyActivity extends AppCompatActivity implements View.O
     //媒体播放
     private MediaPlayer mMediaPlayer;
     private SeekBar mSeekBar;
-    private static final int FLAG_PLAY = 0;
-    private static final int FLAG_PAUSE = 1;
     private boolean isPlay = true;
     private boolean isfinish = false;
 
@@ -50,24 +49,22 @@ public class DoQuestionReadyActivity extends AppCompatActivity implements View.O
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case FLAG_PAUSE:
-//                    LogUtil.i("do pause");
-                    mMediaProgressHandler.removeMessages(FLAG_PLAY);
+                case Constants.FLAG_AUDIO_PAUSE:
+                    mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
                     break;
-                case FLAG_PLAY:
-                    if (mMediaPlayer.getCurrentPosition() >= mMediaPlayer.getDuration() - 1000) {
-                        mMediaProgressHandler.removeMessages(FLAG_PLAY);
+                case Constants.FLAG_AUDIO_PLAY:
+                    if (isfinish) {
+                        mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
                         mImageButton.setBackgroundResource(R.mipmap.icon_media_play);
-                        mTxtCurrent.setText("00:00");
+                        mTxtCurrent.setText(R.string.txt_audio_time_begin);
                         mSeekBar.setProgress(0);
-                        isfinish = true;
-                        isPlay = true;
+                        isfinish = false;
+                        isPlay = false;
                         break;
                     }
                     Message message = Message.obtain();
-                    message.what = FLAG_PLAY;
+                    message.what = Constants.FLAG_AUDIO_PLAY;
                     mMediaProgressHandler.sendMessageDelayed(message, 1000);
-//                    LogUtil.i("current = " + mMediaPlayer.getCurrentPosition() + ",,, duration = " + mMediaPlayer.getDuration());
                     getCurrent();
                     break;
             }
@@ -77,7 +74,7 @@ public class DoQuestionReadyActivity extends AppCompatActivity implements View.O
     @Override
     protected void onPause() {
         super.onPause();
-        mMediaProgressHandler.removeMessages(FLAG_PLAY);
+        mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
         mMediaPlayer.release();
     }
 
@@ -123,12 +120,12 @@ public class DoQuestionReadyActivity extends AppCompatActivity implements View.O
 
         //音频准备
         mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setOnPreparedListener(this);
+        mMediaPlayer.setOnErrorListener(this);
+        mMediaPlayer.setOnCompletionListener(this);
         try {
             mMediaPlayer.setDataSource(musicPath);
             mMediaPlayer.prepare();
-            getDrution();
-//            mMediaPlayer.start();
-//            isPlay = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -145,14 +142,14 @@ public class DoQuestionReadyActivity extends AppCompatActivity implements View.O
                 break;
             case R.id.imgbtn_activity_do_question_ready_media:
                 Message msg = Message.obtain();
-                if (isPlay) {
+                if (!isPlay) {
                     mImageButton.setBackgroundResource(R.mipmap.icon_media_pause);
                     mMediaPlayer.start();
-                    msg.what = FLAG_PLAY;
+                    msg.what = Constants.FLAG_AUDIO_PLAY;
                 } else {
                     mImageButton.setBackgroundResource(R.mipmap.icon_media_play);
                     mMediaPlayer.pause();
-                    msg.what = FLAG_PAUSE;
+                    msg.what = Constants.FLAG_AUDIO_PAUSE;
                 }
                 mMediaProgressHandler.sendMessage(msg);
                 isPlay = !isPlay;
@@ -174,14 +171,18 @@ public class DoQuestionReadyActivity extends AppCompatActivity implements View.O
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-//        getDrution();
+        mMediaPlayer.start();
+        Message msg = Message.obtain();
+        msg.what = Constants.FLAG_AUDIO_PLAY;
+        mMediaProgressHandler.sendMessage(msg);
+        getDrution();
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        LogUtil.e("complete", "I am complete");
+        LogUtil.i("I am complete");
         mp.reset();
-        mTxtCurrent.setText("00:00");
+        mTxtCurrent.setText(R.string.txt_audio_time_begin);
         mSeekBar.setProgress(0);
         isfinish = true;
     }
@@ -189,6 +190,7 @@ public class DoQuestionReadyActivity extends AppCompatActivity implements View.O
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         mp.reset();
+        LogUtil.i("what ? = " + what);
         return false;
     }
 

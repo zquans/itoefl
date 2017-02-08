@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.LogUtil;
+import com.iyuce.itoefl.Utils.PreferenceUtil;
 
 import java.io.File;
 
@@ -52,8 +53,16 @@ public class PageReadyActivity extends AppCompatActivity {
         //打开默认在database中的SQl数据库
         //SQLiteDatabase  = openOrCreateDatabase("aipu.db", MODE_PRIVATE, null);
         //打开指定下载的文件，.sqlite结尾的数据库格式
-        File file = new File("/storage/emulated/0/download/le/1402.sqlite");
 
+        /**
+         * 已解压过该操作
+         */
+        //从sharePreferences获取路径
+        String SdPath = PreferenceUtil.getSharePre(this).getString("SdPath", "");
+        String sqlitePath = SdPath + "/1402.sqlite";
+        LogUtil.i("sqlitePath = " + sqlitePath);
+
+        File file = new File(sqlitePath);
         SQLiteDatabase mDatabase = SQLiteDatabase.openOrCreateDatabase(file, null);
         Cursor mCursor = mDatabase.query("lyric", null, "id>?", new String[]{"0"}, null, null, "id desc");
         if (mCursor != null) {

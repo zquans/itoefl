@@ -17,6 +17,58 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+        Tecent {
+            manifestPlaceholders = [
+                    umeng_channel: "Tecent"
+            ]
+        }
+        baidu {
+            manifestPlaceholders = [
+                    umeng_channel: "baidu"
+            ]
+        }
+        xiaomi {
+            manifestPlaceholders = [
+                    umeng_channel: "xiaomi"
+            ]
+        }
+        qihoo {
+            manifestPlaceholders = [
+                    umeng_channel: "360"
+            ]
+        }
+        wandoujia {
+            manifestPlaceholders = [
+                    umeng_channel: "wandoujia"
+            ]
+        }
+        meizu {
+            manifestPlaceholders = [
+                    umeng_channel: "meizu"
+            ]
+        }
+        Huawei {
+            manifestPlaceholders = [
+                    umeng_channel: "Huawei"
+            ]
+        }
+        Vivo {
+            manifestPlaceholders = [
+                    umeng_channel: "Vivo"
+            ]
+        }
+        Oppo {
+            manifestPlaceholders = [
+                    umeng_channel: "Oppo"
+            ]
+        }
+        update {
+            manifestPlaceholders = [
+                    umeng_channel: "update"
+            ]
+        }
+    }
 }
 
 dependencies {

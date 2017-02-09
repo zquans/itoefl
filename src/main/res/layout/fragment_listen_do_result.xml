@@ -1,0 +1,105 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/txt_fragment_do_result_page_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:gravity="center"
+        android:text="Question" />
+
+    <TextView
+        android:id="@+id/txt_fragment_do_result_page_middle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/txt_fragment_do_result_page_left"
+        android:layout_toRightOf="@+id/txt_fragment_do_result_page_left"
+        android:gravity="center"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:text="1"
+        android:textColor="@color/Blue" />
+
+    <TextView
+        android:id="@+id/txt_fragment_do_result_page_middle_"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/txt_fragment_do_result_page_middle"
+        android:layout_toRightOf="@+id/txt_fragment_do_result_page_middle"
+        android:gravity="center"
+        android:text="of" />
+
+    <TextView
+        android:id="@+id/txt_fragment_do_result_page_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/txt_fragment_do_result_page_middle_"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_toRightOf="@+id/txt_fragment_do_result_page_middle_"
+        android:gravity="center"
+        android:paddingLeft="4dp"
+        android:text="x" />
+
+    <TextView
+        android:id="@+id/txt_fragment_do_result_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_fragment_do_result_page_left"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:gravity="center"
+        android:text="what is the class on "
+        android:textStyle="bold" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_fragment_do_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_fragment_do_result_title"
+        android:padding="@dimen/all_padding" />
+
+    <TextView
+        android:id="@+id/txt_fragment_do_result_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recycler_fragment_do_result"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:gravity="center"
+        android:text="本题用时 13 秒" />
+
+    <View
+        android:id="@+id/line_fragment_do_result_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/txt_fragment_do_result_bottom"
+        android:layout_margin="@dimen/all_margin"
+        android:background="#cccccc" />
+
+    <TextView
+        android:id="@+id/txt_fragment_do_result_explain_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/line_fragment_do_result_bottom"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:gravity="center"
+        android:text="题目解析"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txt_fragment_do_result_explain_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_fragment_do_result_explain_title"
+        android:layout_margin="@dimen/all_margin"
+        android:text="文章围绕内容答案回答了一切生命的本源然而并没有解释世界的起因"
+        android:textStyle="bold" />
+
+</RelativeLayout>

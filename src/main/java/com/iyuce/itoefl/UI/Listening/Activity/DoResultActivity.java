@@ -1,6 +1,7 @@
 package com.iyuce.itoefl.UI.Listening.Activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,16 +22,19 @@ import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.Model.ListenResult;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.ResultTitleAdapter;
-import com.iyuce.itoefl.UI.Main.FragmentMine;
+import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoResult;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.PreferenceUtil;
+import com.iyuce.itoefl.Utils.RecyclerItemClickListener;
 import com.iyuce.itoefl.Utils.TimeUtil;
+import com.iyuce.itoefl.Utils.ToastUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class DoResultActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener,
-        MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
+        MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
+        ViewPager.OnPageChangeListener, FragmentDoResult.OnFragmentInteractionListener {
 
     private ImageButton mImageButton;
     private TextView mTxtCurrent, mTxtTotal;
@@ -116,23 +120,29 @@ public class DoResultActivity extends AppCompatActivity implements View.OnClickL
         mImageButton.setOnClickListener(this);
         mSeekBar.setOnSeekBarChangeListener(this);
 
-        //模拟数据
+        //TODO 模拟数据换真实数据
         for (int i = 1; i < 6; i++) {
             ListenResult result = new ListenResult();
             result.question_name = i + "";
             result.question_state = i % 2 == 0;
+            result.question_is_select = i == 1;
+            //传递给Fragment数据,可以增加参数
+            FragmentDoResult mFrgDoResult = FragmentDoResult.newInstance(result.question_name);
             mResultTitleList.add(result);
-            mResultContentList.add(new FragmentMine());
+            mResultContentList.add(mFrgDoResult);
         }
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_activity_do_result_question);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         mTitleAdapter = new ResultTitleAdapter(mResultTitleList, this);
         mRecyclerView.setAdapter(mTitleAdapter);
+        //放在Activity中做点击事件
+        doRecyclerItemClick();
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager_activity_do_result_question);
         mContentAdapter = new AnswerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mContentAdapter);
         mViewPager.setOffscreenPageLimit(5);
+        mViewPager.setOnPageChangeListener(this);
 
         //从sharePreferences获取路径
         String SdPath = PreferenceUtil.getSharePre(this).getString("SdPath", "");
@@ -152,6 +162,67 @@ public class DoResultActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    /**
+     * 放在Activity中做点击事件
+     */
+    private void doRecyclerItemClick() {
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, mRecyclerView,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        mViewPager.setCurrentItem(position);
+                        //切换题目时候的效果
+                        changeQuestion(position);
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, int position) {
+
+                    }
+                }));
+    }
+
+    /**
+     * 切换题目时候的动画效果
+     */
+    private void changeQuestion(int position) {
+        //修改选中项的数据
+        for (int i = 0; i < mResultTitleList.size(); i++) {
+            mResultTitleList.get(i).question_is_select = false;
+        }
+        mResultTitleList.get(position).question_is_select = true;
+        /*必须要刷新列表中的数据，否则没有动画效果*/
+        mTitleAdapter.notifyDataSetChanged();
+
+        //执行动画
+        for (int i = 0; i < mResultTitleList.size(); i++) {
+            View itemChangeImg = mRecyclerView.getChildAt(position).findViewById(R.id.img_item_do_result);
+            TextView itemChangeTxt = (TextView) mRecyclerView.getChildAt(position).findViewById(R.id.txt_item_do_result);
+            if (!mResultTitleList.get(position).question_is_select) {
+                //未选中的
+                itemChangeTxt.setTextColor(Color.parseColor("#000000"));
+                if (mResultTitleList.get(position).question_state) {
+                    //正确的
+                    itemChangeImg.setBackgroundResource(R.mipmap.icon_answer_cycle_right_stroke);
+                } else {
+                    //错误的
+                    itemChangeImg.setBackgroundResource(R.mipmap.icon_answer_cycle_wrong_stroke);
+                }
+            } else {
+                //选中的
+                itemChangeTxt.setTextColor(Color.parseColor("#ffffff"));
+                if (mResultTitleList.get(position).question_state) {
+                    //正确的
+                    itemChangeImg.setBackgroundResource(R.mipmap.icon_answer_talk_right_full);
+                } else {
+                    //错误的
+                    itemChangeImg.setBackgroundResource(R.mipmap.icon_answer_talk_wrong_full);
+                }
+            }
+        }
+    }
+
+    //音频进度
     private void getCurrent() {
         mSeekBar.setProgress(mMediaPlayer.getCurrentPosition());
         int time = mMediaPlayer.getCurrentPosition() / 1000;
@@ -193,6 +264,7 @@ public class DoResultActivity extends AppCompatActivity implements View.OnClickL
         startActivity(new Intent(this, PageReadyActivity.class));
     }
 
+    //seekBar
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (fromUser) {
@@ -210,6 +282,7 @@ public class DoResultActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
+    //mediaPlayer
     @Override
     public void onPrepared(MediaPlayer mp) {
         mMediaPlayer.start();
@@ -233,6 +306,28 @@ public class DoResultActivity extends AppCompatActivity implements View.OnClickL
         return false;
     }
 
+    //TODO 预留Fragment中的反馈接口
+    @Override
+    public void onFragmentInteraction(String string) {
+        ToastUtil.showMessage(this, string);
+    }
+
+    //ViewPager
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        changeQuestion(position);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    //ViewPager的Adapter内部类
     private class AnswerAdapter extends FragmentPagerAdapter {
         public AnswerAdapter(FragmentManager fm) {
             super(fm);

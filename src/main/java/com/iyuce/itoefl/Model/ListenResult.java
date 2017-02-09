@@ -7,5 +7,5 @@ public class ListenResult {
 
     public String question_name;
     public boolean question_state;
-    public String question_is_select;
+    public boolean question_is_select;
 }

@@ -2,6 +2,7 @@ package com.iyuce.itoefl.UI.Listening.Activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -10,8 +11,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.R;
+import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestion;
 
-public class DoQuestionActivity extends AppCompatActivity implements View.OnClickListener {
+public class DoQuestionActivity extends AppCompatActivity implements View.OnClickListener, FragmentDoQuestion.OnFragmentInteractionListener {
 
     private TextView mTxtTimer, mTxtNext;
     private ImageButton mImgClose;
@@ -38,6 +40,9 @@ public class DoQuestionActivity extends AppCompatActivity implements View.OnClic
 
         mImgClose.setOnClickListener(this);
         mTxtNext.setOnClickListener(this);
+
+        FragmentDoQuestion frgment = FragmentDoQuestion.newInstance("A", "b");
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, frgment).commit();
     }
 
     @Override
@@ -60,5 +65,10 @@ public class DoQuestionActivity extends AppCompatActivity implements View.OnClic
                         startActivity(new Intent(DoQuestionActivity.this, PageReadyActivity.class));
                     }
                 }).setNegativeButton("取消", null).show();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }

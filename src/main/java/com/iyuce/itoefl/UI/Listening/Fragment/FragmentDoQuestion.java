@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.QuestionAdapter;
@@ -17,23 +18,20 @@ import java.util.ArrayList;
 
 public class FragmentDoQuestion extends Fragment {
 
+    private TextView mTxtCurrentQuestion;
+
     private RecyclerView mRecyclerView;
     private ArrayList<String> mDataList = new ArrayList<>();
     private QuestionAdapter mAdapter;
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
+    private String mParam;
 
     private OnFragmentInteractionListener mListener;
 
-    public static FragmentDoQuestion newInstance(String param1, String param2) {
+    public static FragmentDoQuestion newInstance(String param) {
         FragmentDoQuestion fragment = new FragmentDoQuestion();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString("current_question", param);
         fragment.setArguments(args);
         return fragment;
     }
@@ -42,8 +40,7 @@ public class FragmentDoQuestion extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mParam = getArguments().getString("current_question");
         }
     }
 
@@ -60,10 +57,13 @@ public class FragmentDoQuestion extends Fragment {
             mDataList.add("I have a dream,One day we will in a peaceful world" + i);
         }
 
+        mTxtCurrentQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new QuestionAdapter(mDataList, getActivity());
         mRecyclerView.setAdapter(mAdapter);
+
+        mTxtCurrentQuestion.setText(mParam);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

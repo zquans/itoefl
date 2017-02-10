@@ -18,6 +18,7 @@
         android:layout_height="@dimen/layout_width_48">
 
         <TextView
+            android:id="@+id/txt_activity_do_question_review"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -40,12 +41,29 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/txt_activity_do_question_placeholder"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:gravity="center"
-            android:text="02/05" />
+            android:text="/" />
+
+        <TextView
+            android:id="@+id/txt_activity_do_question_current"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/txt_activity_do_question_placeholder"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/Blue" />
+
+        <TextView
+            android:id="@+id/txt_activity_do_question_total"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/txt_activity_do_question_placeholder"
+            android:gravity="center"
+            android:text="x" />
 
     </RelativeLayout>
 

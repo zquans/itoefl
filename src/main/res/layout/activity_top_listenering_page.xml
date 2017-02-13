@@ -15,9 +15,8 @@
             android:id="@+id/img_activity_top_listenering_award"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="32dp"
-            android:background="@mipmap/ic_launcher" />
+            android:layout_marginLeft="16dp"
+            android:background="@mipmap/icon_reward_unfinish" />
 
         <TextView
             android:id="@+id/txt_activity_top_listenering_finish"
@@ -43,7 +42,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="32dp"
+        android:layout_height="@dimen/activity_vertical_margin"
         android:background="#f8f8f8" />
 
     <android.support.v7.widget.RecyclerView

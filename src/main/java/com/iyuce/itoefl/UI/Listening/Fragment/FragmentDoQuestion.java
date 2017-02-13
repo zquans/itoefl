@@ -1,6 +1,7 @@
 package com.iyuce.itoefl.UI.Listening.Fragment;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,10 +14,15 @@ import android.widget.TextView;
 
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.QuestionAdapter;
+import com.iyuce.itoefl.Utils.LogUtil;
+import com.iyuce.itoefl.Utils.PreferenceUtil;
+import com.iyuce.itoefl.Utils.ToastUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class FragmentDoQuestion extends Fragment {
+public class FragmentDoQuestion extends Fragment implements
+        MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
     private TextView mTxtCurrentQuestion;
 
@@ -24,6 +30,9 @@ public class FragmentDoQuestion extends Fragment {
     private ArrayList<String> mDataList = new ArrayList<>();
     private QuestionAdapter mAdapter;
 
+    private MediaPlayer mMediaPlayer;
+
+    //接收参数,应该有很多个
     private String mParam;
 
     private OnFragmentInteractionListener mListener;
@@ -34,6 +43,12 @@ public class FragmentDoQuestion extends Fragment {
         args.putString("current_question", param);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMediaPlayer.release();
     }
 
     @Override
@@ -63,7 +78,25 @@ public class FragmentDoQuestion extends Fragment {
         mAdapter = new QuestionAdapter(mDataList, getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
+        //布置参数到对应控件
         mTxtCurrentQuestion.setText(mParam);
+
+        //MediaPlayer
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setOnPreparedListener(this);
+        mMediaPlayer.setOnErrorListener(this);
+        mMediaPlayer.setOnCompletionListener(this);
+        try {
+            //路徑应该直接传递过来，从参数中直接获取
+            String SdPath = PreferenceUtil.getSharePre(getActivity()).getString("SdPath", "");
+            String musicPath = SdPath + "/16899.mp3";
+            LogUtil.i("musicPath = " + musicPath);
+
+            mMediaPlayer.setDataSource(musicPath);
+            mMediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -89,6 +122,24 @@ public class FragmentDoQuestion extends Fragment {
         mListener = null;
     }
 
+    //MediaPlayer's Interface
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        ToastUtil.showMessage(getActivity(), "播放题目录音完毕，显示题号");
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        mp.reset();
+        return false;
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        mMediaPlayer.start();
+    }
+
+    //提供给Activity反馈的监听方法，让Activity响应Fragment的动作
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }

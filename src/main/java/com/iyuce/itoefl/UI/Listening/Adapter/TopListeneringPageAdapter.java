@@ -1,15 +1,14 @@
 package com.iyuce.itoefl.UI.Listening.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.R;
-import com.iyuce.itoefl.UI.Listening.Activity.PageReadyActivity;
 
 import java.util.ArrayList;
 
@@ -20,6 +19,12 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
 
     private Context mContext;
     private ArrayList<String> mDataList;
+
+    private OnPageItemClickListener mListener;
+
+    public void setOnPageItemClickListener(OnPageItemClickListener listener) {
+        mListener = listener;
+    }
 
     public TopListeneringPageAdapter(Context context, ArrayList<String> list) {
         mContext = context;
@@ -33,12 +38,28 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
     }
 
     @Override
-    public void onBindViewHolder(PageViewHolder holder, int position) {
+    public void onBindViewHolder(PageViewHolder holder, final int position) {
         holder.mTxtContent.setText(mDataList.get(position));
+        if (position == mDataList.size() - 1) {
+            holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_last);
+        }
+        if (position % 3 == 0) {
+            holder.mTxtContentState.setText("精听次数 : 3");
+            holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_center);
+//            holder.mImgDownload.setBackgroundResource(R.mipmap.icon_download_finish);
+            holder.mImgDownload.setVisibility(View.INVISIBLE);
+            holder.mTxtPracticed.setVisibility(View.VISIBLE);
+            holder.mTxtPracticed.setText("5/6");
+        }
+        if (position == 0) {
+            holder.mImgDownload.setVisibility(View.VISIBLE);
+            holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_first);
+            holder.mTxtPracticed.setVisibility(View.INVISIBLE);
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mContext.startActivity(new Intent(mContext, PageReadyActivity.class));
+                mListener.OnPageItemClick(position);
             }
         });
     }
@@ -50,11 +71,21 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
 
     class PageViewHolder extends RecyclerView.ViewHolder {
 
-        TextView mTxtContent;
+        TextView mTxtContent, mTxtContentState, mTxtDownload, mTxtPracticed;
+        ImageView mImgProgress, mImgDownload;
 
         public PageViewHolder(View itemView) {
             super(itemView);
             mTxtContent = (TextView) itemView.findViewById(R.id.txt_recycler_item_top_listenering_page_content);
+            mTxtContentState = (TextView) itemView.findViewById(R.id.txt_recycler_item_top_listenering_page_state);
+            mTxtDownload = (TextView) itemView.findViewById(R.id.txt_recycler_item_top_listenering_page_download);
+            mTxtPracticed = (TextView) itemView.findViewById(R.id.txt_recycler_item_top_listenering_page_practiced);
+            mImgProgress = (ImageView) itemView.findViewById(R.id.img_recycler_item_top_listenering_page_progress);
+            mImgDownload = (ImageView) itemView.findViewById(R.id.img_recycler_item_top_listenering_page_download);
         }
+    }
+
+    public interface OnPageItemClickListener {
+        void OnPageItemClick(int pos);
     }
 }

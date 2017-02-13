@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.Model.ListenResult;
 import com.iyuce.itoefl.R;
@@ -32,7 +32,7 @@ import com.iyuce.itoefl.Utils.ToastUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class DoResultActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener,
+public class DoResultActivity extends BaseActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
         ViewPager.OnPageChangeListener, FragmentDoResult.OnFragmentInteractionListener {
 

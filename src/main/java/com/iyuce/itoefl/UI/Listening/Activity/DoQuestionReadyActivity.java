@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,6 +14,7 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.LogUtil;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 /**
  * Created by LeBang on 2017/1/24
  */
-public class DoQuestionReadyActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener,
+public class DoQuestionReadyActivity extends BaseActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener,
         MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, AdapterView.OnItemSelectedListener {
 
     private ImageButton mImageButton;

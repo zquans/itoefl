@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,15 +13,16 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.BottomDoQuestionAdapter;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestion;
 import com.iyuce.itoefl.Utils.LogUtil;
+import com.iyuce.itoefl.Utils.ToastUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class DoQuestionActivity extends AppCompatActivity implements View.OnClickListener,
+public class DoQuestionActivity extends BaseActivity implements View.OnClickListener,
         FragmentDoQuestion.OnFragmentInteractionListener, BottomDoQuestionAdapter.OnButtonItemClickListener {
 
     private TextView mTxtTimer, mTxtReview, mTxtNext, mTxtCurrent, mTxtTotal;
@@ -33,7 +33,14 @@ public class DoQuestionActivity extends AppCompatActivity implements View.OnClic
     private ArrayList<String> mDataBottomList = new ArrayList<>();
     private BottomDoQuestionAdapter mAdapter;
 
-    private ArrayList<HashMap> mSelectedAnswerList = new ArrayList<>();
+    //总题量
+    private static final int TOTAL_QUESTION_COUNT = 5;
+    //当前题
+    private int mCurrentQuestion = 1;
+
+    //保存所选答案的题号和内容
+    private ArrayList<Integer> mSelectedQuestionList = new ArrayList<>();
+    private ArrayList<String> mSelectedAnswerList = new ArrayList<>();
 
     @Override
     public void onBackPressed() {
@@ -66,7 +73,7 @@ public class DoQuestionActivity extends AppCompatActivity implements View.OnClic
         initBottomSheet();
 
         //TODO BottomSheet数据源
-        for (int i = 1; i < 6; i++) {
+        for (int i = 1; i <= TOTAL_QUESTION_COUNT; i++) {
             mDataBottomList.add(i + "");
         }
         FragmentDoQuestion frgment = FragmentDoQuestion.newInstance("1");
@@ -94,7 +101,24 @@ public class DoQuestionActivity extends AppCompatActivity implements View.OnClic
                 mBottomDialog.show();
                 break;
             case R.id.txt_activity_do_question_next:
-                startActivity(new Intent(this, DoResultActivity.class));
+                //保存或替换当前题号和所选答案
+                if (mSelectedQuestionList.contains(mCurrentQuestion)) {
+                    mSelectedAnswerList.set(mCurrentQuestion - 1, ((int) (Math.random() * 5)) + "");
+                } else {
+                    mSelectedQuestionList.add(mCurrentQuestion);
+                    mSelectedAnswerList.add(((int) (Math.random() * 5)) + "");
+                }
+                LogUtil.i("all = " + mSelectedQuestionList.toString() + "||" + mSelectedAnswerList.toString());
+                //答完,进入下一个页面
+                if (mSelectedQuestionList.size() == TOTAL_QUESTION_COUNT) {
+                    startActivity(new Intent(this, DoResultActivity.class));
+                    LogUtil.i("all done " + mSelectedQuestionList.toString() + "||" + mSelectedAnswerList.toString());
+                    break;
+                }
+                //或者未答完，换下一题
+                mCurrentQuestion++;
+                ToastUtil.showMessage(this, "当前第" + mCurrentQuestion + "题");
+                SkipToQuestion(mCurrentQuestion);
                 break;
         }
     }
@@ -117,21 +141,32 @@ public class DoQuestionActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onBottomClick(int position) {
         mBottomDialog.dismiss();
+        //TODO 保存所作题目和对应答案,暂不存入数据库，当所有题目答完，将ArrayList.toString存入数据库
+        if (mSelectedQuestionList.contains(position)) {
+            mSelectedAnswerList.set(position - 1, ((int) (Math.random() * 5)) + "");
+
+            SkipToQuestion(position);
+
+            //切换当前题到BottomSheet所选题
+            mCurrentQuestion = position;
+        } else {
+            //如果是未答过的题，不允许跳转
+            if (position > mCurrentQuestion)
+                ToastUtil.showMessage(this, "本题未答完，无法查看后面的题");
+            else
+                SkipToQuestion(position);
+        }
+        LogUtil.i("all = " + mSelectedQuestionList.toString() + "||" + mSelectedAnswerList.toString());
+    }
+
+    /**
+     * 跳到某题，传参数给相应控件
+     *
+     * @param position
+     */
+    private void SkipToQuestion(int position) {
         mTxtCurrent.setText(position + "");
         FragmentDoQuestion frgment = FragmentDoQuestion.newInstance(position + "");
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, frgment).commit();
-
-        //TODO 保存所作题目和对应答案,暂不存入数据库，当所有题目答完，将ArrayList.toString存入数据库
-        HashMap map = new HashMap();
-        map.put(position, (int) (Math.random() * 5));
-        mSelectedAnswerList.add(map);
-        LogUtil.i("all = " + mSelectedAnswerList.toString());
-
-        //TODO 取最后答题结果值的方法
-        for (int i = 0; i < mSelectedAnswerList.size(); i++) {
-            String key = mSelectedAnswerList.get(i).keySet().toString();
-            String value = mSelectedAnswerList.get(i).values().toString();
-//            LogUtil.i(key + " = " + value);
-        }
     }
 }

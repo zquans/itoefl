@@ -2,12 +2,12 @@ package com.iyuce.itoefl.UI.Listening.Activity;
 
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.TopListeneringPageAdapter;
 import com.iyuce.itoefl.Utils.LogUtil;
@@ -23,7 +23,7 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Response;
 
-public class TopListeneringPageActivity extends AppCompatActivity implements View.OnClickListener {
+public class TopListeneringPageActivity extends BaseActivity implements View.OnClickListener {
 
     private RecyclerView mRecyclerView;
     private TopListeneringPageAdapter mAdapter;

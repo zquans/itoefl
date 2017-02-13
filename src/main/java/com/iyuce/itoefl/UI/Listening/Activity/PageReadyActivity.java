@@ -5,10 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.PreferenceUtil;
@@ -18,7 +18,7 @@ import java.io.File;
 /**
  * Created by LeBang on 2017/1/24
  */
-public class PageReadyActivity extends AppCompatActivity {
+public class PageReadyActivity extends BaseActivity {
 
     private TextView mTxtEnglish, mTxtChinese, mTxtCategory, mTxtLevel;
 

@@ -6,16 +6,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentClassify;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentOrder;
 
 import java.util.ArrayList;
 
-public class TopListeneringActivity extends AppCompatActivity {
+public class TopListeneringActivity extends BaseActivity {
 
     //导航指示器
     private TabLayout mTab;

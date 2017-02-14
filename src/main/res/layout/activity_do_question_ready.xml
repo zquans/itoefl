@@ -92,32 +92,33 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
         <Spinner
             android:id="@+id/spinner_activity_do_question_ready_rate"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_weight="1"
-            android:background="#ffffff"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:background="#f8f8f8"
+            android:padding="@dimen/all_padding"
             android:textColor="#f8a540" />
 
         <TextView
             android:id="@+id/btn_activity_do_question_ready_begin"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:layout_marginBottom="8dp"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_weight="1"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
             android:gravity="right"
+            android:padding="@dimen/all_padding"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
             android:text="开始答题"
             android:textColor="#f8a540" />
-    </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>

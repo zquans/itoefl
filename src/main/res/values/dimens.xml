@@ -22,4 +22,5 @@
 
     <!--字体-->
     <dimen name="txt_size_eighteen">18sp</dimen>
+    <dimen name="activity_horizontal_double_padding">32dp</dimen>
 </resources>

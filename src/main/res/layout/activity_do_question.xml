@@ -15,14 +15,18 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_width_48">
+        android:layout_height="@dimen/layout_width_48"
+        android:layout_gravity="bottom">
 
         <TextView
             android:id="@+id/txt_activity_do_question_review"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
             android:gravity="center"
+            android:paddingLeft="@dimen/activity_horizontal_double_padding"
+            android:paddingRight="@dimen/activity_horizontal_double_padding"
             android:text="Review"
             android:textColor="#f8a540"
             android:textSize="@dimen/txt_size_eighteen"
@@ -33,8 +37,11 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
             android:gravity="center"
+            android:paddingLeft="@dimen/activity_horizontal_double_padding"
+            android:paddingRight="@dimen/activity_horizontal_double_padding"
             android:text="Next"
             android:textColor="#f8a540"
             android:textSize="@dimen/txt_size_eighteen"

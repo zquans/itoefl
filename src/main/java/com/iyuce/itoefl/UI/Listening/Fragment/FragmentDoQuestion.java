@@ -18,7 +18,14 @@ import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.PreferenceUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class FragmentDoQuestion extends Fragment implements
@@ -49,6 +56,12 @@ public class FragmentDoQuestion extends Fragment implements
     public void onDestroy() {
         super.onDestroy();
         mMediaPlayer.release();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMediaPlayer.stop();
     }
 
     @Override
@@ -126,6 +139,28 @@ public class FragmentDoQuestion extends Fragment implements
     @Override
     public void onCompletion(MediaPlayer mp) {
         ToastUtil.showMessage(getActivity(), "播放题目录音完毕，显示题号");
+
+        String myjson = "";
+        //TODO 读取本地json  ,IO流
+        File file = new File("/storage/emulated/0/ITOEFL_JSON/andoird.json");
+        try {
+            InputStreamReader isr = new InputStreamReader(new FileInputStream(file), "UTF-8");
+            BufferedReader br = new BufferedReader(isr);
+            String mimeTypeLine;
+            while ((mimeTypeLine = br.readLine()) != null) {
+                myjson = myjson + mimeTypeLine;
+            }
+//            myjson = myjson.substring(1);
+            JSONObject obj = new JSONObject(myjson);
+            if (obj.getString("code").equals("0")) {
+                JSONArray data = obj.getJSONArray("data");
+                obj = data.getJSONObject(0);
+                String mVersionURL = obj.getString("apkurl");
+                LogUtil.i("myjson = VersionURL = " + mVersionURL);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

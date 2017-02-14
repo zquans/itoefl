@@ -40,9 +40,6 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
     @Override
     public void onBindViewHolder(PageViewHolder holder, final int position) {
         holder.mTxtContent.setText(mDataList.get(position));
-        if (position == mDataList.size() - 1) {
-            holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_last);
-        }
         if (position % 3 == 0) {
             holder.mTxtContentState.setText("精听次数 : 3");
             holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_center);
@@ -55,6 +52,9 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
             holder.mImgDownload.setVisibility(View.VISIBLE);
             holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_first);
             holder.mTxtPracticed.setVisibility(View.INVISIBLE);
+        }
+        if (position == mDataList.size() - 1) {
+            holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_last);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

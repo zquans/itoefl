@@ -1,11 +1,13 @@
 package com.iyuce.itoefl.UI.Listening.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -72,6 +74,11 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     };
 
     @Override
+    public void onBackPressed() {
+        doBack();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
@@ -135,7 +142,7 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imgbtn_header_title:
-                finish();
+                doBack();
                 break;
             case R.id.btn_activity_do_question_ready_begin:
                 startActivity(new Intent(this, DoQuestionActivity.class));
@@ -243,5 +250,15 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    private void doBack() {
+        new AlertDialog.Builder(this).setTitle("退出练习").setMessage("确定退出练习")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(DoQuestionReadyActivity.this, PageReadyActivity.class));
+                    }
+                }).setNegativeButton("取消", null).show();
     }
 }

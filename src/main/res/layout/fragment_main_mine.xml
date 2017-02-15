@@ -48,6 +48,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="8dp">
@@ -81,6 +83,8 @@
                 android:id="@+id/txt_to_store"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     购物车"
@@ -97,6 +101,8 @@
                 android:id="@+id/txt_to_orderlist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     我的订单"
@@ -112,6 +118,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="8dp">
@@ -144,6 +152,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="8dp">
@@ -176,6 +186,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="8dp">
@@ -212,6 +224,8 @@
                 android:id="@+id/txt_to_service"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     在线客服"
@@ -228,6 +242,8 @@
                 android:id="@+id/txt_to_clearcache"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     清除缓存"
@@ -244,6 +260,8 @@
                 android:id="@+id/txt_to_update"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     版本更新"
@@ -260,6 +278,8 @@
                 android:id="@+id/txt_to_suggestion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     意见反馈"
@@ -273,9 +293,11 @@
                 android:background="#cccccc" />
 
             <TextView
-                android:id="@+id/txt_to_aboutus"
+                android:id="@+id/txt_to_about_us"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     关于我们"
@@ -292,6 +314,8 @@
                 android:id="@+id/txt_to_signout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     切换账号"

@@ -12,6 +12,7 @@ import android.webkit.WebViewClient;
 
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
+import com.iyuce.itoefl.Utils.Interface.JsInterface;
 
 /**
  * Created by LeBang on 2017/1/22
@@ -19,6 +20,7 @@ import com.iyuce.itoefl.R;
 public class FragmentLecture extends Fragment {
 
     private WebView mWebView;
+    private JsInterface mJsInterface;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_lecture, container, false);
@@ -33,13 +35,13 @@ public class FragmentLecture extends Fragment {
         // 允许JS交互
         mWebView.getSettings().setJavaScriptEnabled(true);
         // 实例化接口JsInterface
-//        jsInterface = new JsInterface(getActivity());
+        mJsInterface = new JsInterface(getActivity());
 //        // 设置JS的接口
-//        web.addJavascriptInterface(jsInterface, "woyuce");
+        mWebView.addJavascriptInterface(mJsInterface, "woyuce");
 
         //设置浏览器标识
 //        String localVersion = PreferenceUtil.getSharePre(getActivity()).getString("localVersion", "2.8");
-//        mWebView.getSettings().setUserAgentString(mWebView.getSettings().getUserAgentString() + "; woyuce/" + localVersion);
+        mWebView.getSettings().setUserAgentString(mWebView.getSettings().getUserAgentString() + "; woyuce/" + 2.8);
 
         mWebView.getSettings().setSupportZoom(true);
         mWebView.getSettings().setBuiltInZoomControls(true);
@@ -64,12 +66,6 @@ public class FragmentLecture extends Fragment {
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 super.onReceivedError(view, errorCode, description, failingUrl);
                 view.loadUrl("file:///android_asset/index.html");
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                mWebView.setVisibility(View.VISIBLE);
             }
         });
     }

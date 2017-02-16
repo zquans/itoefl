@@ -11,4 +11,9 @@ public class Constants {
     public static final int FLAG_AUDIO_PLAY = 0;
     public static final int FLAG_AUDIO_PAUSE = 1;
 
+    //TODO  约定好的表名及字段可以作为常量封装在此
+    public static final int DATABASE_VERSION = 1;
+    public static final String TABLE_USER = "usertable";
+    public static final String TABLE_USER_NAME = "name";
+    public static final String TABLE_USER_PASSWORD = "password";
 }

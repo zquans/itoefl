@@ -2,14 +2,11 @@ package com.iyuce.itoefl.UI.Listening.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.R;
@@ -47,16 +44,9 @@ public class TopListeneringAdapter extends RecyclerView.Adapter<TopListeneringAd
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.mProgressBar.setVisibility(View.GONE);
-        ViewGroup.LayoutParams params = holder.mItemTxtTitle.getLayoutParams();
-        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        holder.mItemTxtTitle.setLayoutParams(params);
-        holder.mItemTxtTitle.setGravity(Gravity.BOTTOM);
-        holder.mItemTxtTitle.setGravity(Gravity.LEFT);
         holder.mItemTxtTitle.setText(mList.get(position));
-        holder.mItemTxtTitle.setBackgroundColor(Color.parseColor("#f8f8f8"));
         holder.mItemRecyclerView.setLayoutManager(new GridLayoutManager(mContext, mItemCount));
-        holder.mItemRecyclerView.setAdapter(new RecyclerItemAdapter(mContext, mList));
+        holder.mItemRecyclerView.setAdapter(new TopListeneringModuleAdapter(mContext, mList));
         //如此出发可能会引发问题,重复打开界面
         holder.mItemRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(mContext, holder.mItemRecyclerView,
                 new RecyclerItemClickListener.OnItemClickListener() {
@@ -76,13 +66,11 @@ public class TopListeneringAdapter extends RecyclerView.Adapter<TopListeneringAd
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView mItemTxtTitle;
-        ProgressBar mProgressBar;
         RecyclerView mItemRecyclerView;
 
         public MyViewHolder(View view) {
             super(view);
             mItemTxtTitle = (TextView) view.findViewById(R.id.txt_item_top_listenering_order_title);
-            mProgressBar = (ProgressBar) view.findViewById(R.id.progressbar_item_top_listenering_order);
             mItemRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_item_top_listenering_order);
         }
     }

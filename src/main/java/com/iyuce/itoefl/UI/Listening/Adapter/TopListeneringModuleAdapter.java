@@ -1,7 +1,6 @@
 package com.iyuce.itoefl.UI.Listening.Adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +15,13 @@ import java.util.ArrayList;
 /**
  * Created by LeBang on 2017/1/23
  */
-public class RecyclerItemAdapter extends RecyclerView.Adapter<RecyclerItemAdapter.ItemViewHolder> {
+public class TopListeneringModuleAdapter extends RecyclerView.Adapter<TopListeneringModuleAdapter.ItemViewHolder> {
 
     //private Context mContext;
     private ArrayList<String> mList;
     private LayoutInflater mLayoutInflater;
 
-    public RecyclerItemAdapter(Context context, ArrayList<String> list) {
+    public TopListeneringModuleAdapter(Context context, ArrayList<String> list) {
         //mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
         mList = list;
@@ -31,7 +30,7 @@ public class RecyclerItemAdapter extends RecyclerView.Adapter<RecyclerItemAdapte
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ItemViewHolder(mLayoutInflater
-                .inflate(R.layout.recycler_item_top_listenering_order, parent, false));
+                .inflate(R.layout.recycler_item_top_listenering_module, parent, false));
     }
 
     @Override
@@ -39,8 +38,6 @@ public class RecyclerItemAdapter extends RecyclerView.Adapter<RecyclerItemAdapte
         if (position % 5 == 0) {
             holder.mProgressBar.setVisibility(View.VISIBLE);
         }
-        holder.mItemTxtTitle.setBackgroundColor(Color.parseColor("#ffffff"));
-        holder.mItemTxtTitle.setTextColor(Color.parseColor("#000000"));
         holder.mItemTxtTitle.setText(mList.get(position));
     }
 

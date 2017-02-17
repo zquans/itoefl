@@ -37,7 +37,7 @@ public class PageReadyActivity extends BaseActivity {
     private void initView() {
         local_path = getIntent().getStringExtra("local_path");
         LogUtil.i("local_path = " + local_path);
-        local_sqlite_path = unZipFile(new File(local_path + "/1402.zip"));
+        local_sqlite_path = unZipFile(new File(local_path + "/TPO18L1.zip"));
         LogUtil.i("local_sqlite_path = " + local_sqlite_path);
 
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);

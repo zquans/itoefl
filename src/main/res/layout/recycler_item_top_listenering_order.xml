@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -29,11 +29,11 @@
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="8dp"
+            android:layout_gravity="bottom"
             android:max="60"
             android:progress="40"
-            android:secondaryProgress="60"
-            android:visibility="gone" />
-    </LinearLayout>
+            android:secondaryProgress="60" />
+    </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_item_top_listenering_order"

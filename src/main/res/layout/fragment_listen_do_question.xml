@@ -20,6 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/txt_fragment_do_result_page_left"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_toRightOf="@+id/txt_fragment_do_result_page_left"
         android:gravity="center"
         android:paddingLeft="4dp"
@@ -49,13 +50,68 @@
         android:paddingLeft="4dp"
         android:text="x" />
 
+    <RelativeLayout
+        android:id="@+id/relative_fragment_do_result_page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_fragment_do_result_page_middle"
+        android:layout_marginBottom="-48dp"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/txt_fragment_do_question_listen_again"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:padding="8dp"
+            android:text="Listen again the part of conversation"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txt_fragment_do_question_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/txt_fragment_do_question_listen_again"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="64dp"
+            android:text="00:56"
+            android:textColor="@color/Blue" />
+
+        <TextView
+            android:id="@+id/txt_fragment_do_question_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/activity_horizontal_padding"
+            android:text="14:56" />
+
+        <ProgressBar
+            android:id="@+id/bar_fragment_do_question_progress"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_toLeftOf="@+id/txt_fragment_do_question_total"
+            android:layout_toRightOf="@+id/txt_fragment_do_question_current"
+            android:max="100"
+            android:progress="50"
+            android:secondaryProgress="100" />
+
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/txt_fragment_do_result_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_fragment_do_result_page_left"
+        android:layout_below="@+id/relative_fragment_do_result_page"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_padding"
         android:text="Why does the professor interrupt the student is the class on "
         android:textStyle="bold" />
 

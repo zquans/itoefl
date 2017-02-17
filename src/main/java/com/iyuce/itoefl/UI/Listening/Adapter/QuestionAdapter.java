@@ -19,6 +19,12 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.MyView
     private ArrayList<String> mDataList;
     private Context mContext;
 
+    private OnQuestionItemClickListener mListener;
+
+    public void setOnQuestionItemClickListener(OnQuestionItemClickListener listener) {
+        mListener = listener;
+    }
+
     public QuestionAdapter(ArrayList<String> mDataList, Context mContext) {
         this.mDataList = mDataList;
         this.mContext = mContext;
@@ -31,8 +37,14 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.MyView
     }
 
     @Override
-    public void onBindViewHolder(QuestionAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(QuestionAdapter.MyViewHolder holder, final int position) {
         holder.mTxtQuestion.setText(mDataList.get(position));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onQuestionClick(position);
+            }
+        });
     }
 
     @Override
@@ -48,5 +60,9 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.MyView
             super(itemView);
             mTxtQuestion = (TextView) itemView.findViewById(R.id.txt_item_fragment_do_question);
         }
+    }
+
+    public interface OnQuestionItemClickListener {
+        void onQuestionClick(int pos);
     }
 }

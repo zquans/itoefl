@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.QuestionAdapter;
 import com.iyuce.itoefl.Utils.LogUtil;
-import com.iyuce.itoefl.Utils.PreferenceUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 
 import org.json.JSONArray;
@@ -40,16 +39,26 @@ public class FragmentDoQuestion extends Fragment implements
     private MediaPlayer mMediaPlayer;
 
     //接收参数,应该有很多个
-    private String mParam;
+    private String current_question, local_path;
 
     private OnFragmentInteractionListener mListener;
 
-    public static FragmentDoQuestion newInstance(String param) {
+    public static FragmentDoQuestion newInstance(String current_question, String local_path) {
         FragmentDoQuestion fragment = new FragmentDoQuestion();
         Bundle args = new Bundle();
-        args.putString("current_question", param);
+        args.putString("current_question", current_question);
+        args.putString("local_path", local_path);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            current_question = getArguments().getString("current_question");
+            local_path = getArguments().getString("local_path");
+        }
     }
 
     @Override
@@ -62,14 +71,6 @@ public class FragmentDoQuestion extends Fragment implements
     public void onStop() {
         super.onStop();
         mMediaPlayer.stop();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam = getArguments().getString("current_question");
-        }
     }
 
     @Override
@@ -92,7 +93,7 @@ public class FragmentDoQuestion extends Fragment implements
         mRecyclerView.setAdapter(mAdapter);
 
         //布置参数到对应控件
-        mTxtCurrentQuestion.setText(mParam);
+        mTxtCurrentQuestion.setText(current_question);
 
         //MediaPlayer
         mMediaPlayer = new MediaPlayer();
@@ -101,8 +102,7 @@ public class FragmentDoQuestion extends Fragment implements
         mMediaPlayer.setOnCompletionListener(this);
         try {
             //路徑应该直接传递过来，从参数中直接获取
-            String SdPath = PreferenceUtil.getSharePre(getActivity()).getString("SdPath", "");
-            String musicPath = SdPath + "/16899.mp3";
+            String musicPath = local_path + "/16899.mp3";
             LogUtil.i("musicPath = " + musicPath);
 
             mMediaPlayer.setDataSource(musicPath);

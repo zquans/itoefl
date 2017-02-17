@@ -20,7 +20,6 @@ import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.LogUtil;
-import com.iyuce.itoefl.Utils.PreferenceUtil;
 import com.iyuce.itoefl.Utils.TimeUtil;
 
 import java.io.IOException;
@@ -45,6 +44,9 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     private Spinner mSpinner;
     private ArrayAdapter<String> mSpinnerAdapter;
     private ArrayList<String> mRateList = new ArrayList<>();
+
+    //路径
+    private String local_path;
 
     private Handler mMediaProgressHandler = new Handler() {
         @Override
@@ -94,6 +96,7 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     }
 
     private void initView() {
+        local_path = getIntent().getStringExtra("local_path");
         findViewById(R.id.imgbtn_header_title).setOnClickListener(this);
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
 
@@ -120,9 +123,7 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
         mSpinner.setAdapter(mSpinnerAdapter);
         mSpinner.setOnItemSelectedListener(this);
 
-        //从sharePreferences获取路径
-        String SdPath = PreferenceUtil.getSharePre(this).getString("SdPath", "");
-        String musicPath = SdPath + "/16895.mp3";
+        String musicPath = local_path + "/16895.mp3";
         LogUtil.i("musicPath = " + musicPath);
 
         //音频准备
@@ -145,7 +146,9 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
                 doBack();
                 break;
             case R.id.btn_activity_do_question_ready_begin:
-                startActivity(new Intent(this, DoQuestionActivity.class));
+                Intent intent = new Intent(this, DoQuestionActivity.class);
+                intent.putExtra("local_path", local_path);
+                startActivity(intent);
                 break;
             case R.id.imgbtn_activity_do_question_ready_media:
                 Message msg = Message.obtain();

@@ -24,7 +24,6 @@ import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.ResultTitleAdapter;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoResult;
 import com.iyuce.itoefl.Utils.LogUtil;
-import com.iyuce.itoefl.Utils.PreferenceUtil;
 import com.iyuce.itoefl.Utils.RecyclerItemClickListener;
 import com.iyuce.itoefl.Utils.TimeUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
@@ -52,6 +51,9 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     private ViewPager mViewPager;
     private AnswerAdapter mContentAdapter;
     private ArrayList<Fragment> mResultContentList = new ArrayList<>();
+
+    //路径
+    private String local_path;
 
     private Handler mMediaProgressHandler = new Handler() {
         @Override
@@ -110,6 +112,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void initView() {
+        local_path = getIntent().getStringExtra("local_path");
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(this);
 
@@ -144,12 +147,9 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         mViewPager.setOffscreenPageLimit(5);
         mViewPager.setOnPageChangeListener(this);
 
-        //从sharePreferences获取路径
-        String SdPath = PreferenceUtil.getSharePre(this).getString("SdPath", "");
-        String musicPath = SdPath + "/16895.mp3";
-        LogUtil.i("musicPath = " + musicPath);
-
         //MediaPlayer
+        String musicPath = local_path + "/16895.mp3";
+        LogUtil.i("musicPath = " + musicPath);
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnErrorListener(this);

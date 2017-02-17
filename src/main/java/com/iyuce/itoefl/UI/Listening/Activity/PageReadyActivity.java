@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,7 +13,10 @@ import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
-import com.iyuce.itoefl.Utils.PreferenceUtil;
+import com.iyuce.itoefl.Utils.ZipUtil;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * Created by LeBang on 2017/1/24
@@ -20,6 +24,7 @@ import com.iyuce.itoefl.Utils.PreferenceUtil;
 public class PageReadyActivity extends BaseActivity {
 
     private TextView mTxtEnglish, mTxtChinese, mTxtCategory, mTxtLevel;
+    private String local_path, local_sqlite_path;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,6 +35,11 @@ public class PageReadyActivity extends BaseActivity {
     }
 
     private void initView() {
+        local_path = getIntent().getStringExtra("local_path");
+        LogUtil.i("local_path = " + local_path);
+        local_sqlite_path = unZipFile(new File(local_path + "/1402.zip"));
+        LogUtil.i("local_sqlite_path = " + local_sqlite_path);
+
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,8 +54,33 @@ public class PageReadyActivity extends BaseActivity {
         mTxtLevel = (TextView) findViewById(R.id.txt_activity_page_ready_title_level);
     }
 
+    /**
+     * UnZip解压文件夹
+     */
+    private String unZipFile(File file) {
+        String mSQLitePath = null;
+        List<File> mList;
+        try {
+            mList = ZipUtil.GetFileList(file.getAbsolutePath(), true, true);
+            for (int i = 0; i < mList.size(); i++) {
+                if (mList.get(i).getName().contains("sqlite")) {
+                    //拿出数据库文件的路径
+                    mSQLitePath = local_path + "/" + mList.get(i).getName();
+                }
+//                LogUtil.i("mList = " + mList.get(i).getName());
+            }
+            //解压zip文件到对应路径
+            ZipUtil.UnZipFolder(file.getAbsolutePath(), local_path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return mSQLitePath;
+    }
+
     public void beginPractice(View view) {
-        startActivity(new Intent(this, DoQuestionReadyActivity.class));
+        Intent intent = new Intent(this, DoQuestionReadyActivity.class);
+        intent.putExtra("local_path", local_path);
+        startActivity(intent);
     }
 
     public void beginListen(View view) {
@@ -62,12 +97,10 @@ public class PageReadyActivity extends BaseActivity {
         /**
          * 已解压过该操作
          */
-        //从sharePreferences获取路径
-        String SdPath = PreferenceUtil.getSharePre(this).getString("SdPath", "");
-        String sqlitePath = SdPath + "/1402.sqlite";
-        LogUtil.i("sqlitePath = " + sqlitePath);
-        SQLiteDatabase mDatabase = DbUtil.getHelper(this, sqlitePath, Constants.DATABASE_VERSION).getWritableDatabase();
-        LogUtil.i(DbUtil.queryToArrayList(mDatabase, "lyric", null, 0).toString());
-        mDatabase.close();
+        if (!TextUtils.isEmpty(local_sqlite_path)) {
+            SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_sqlite_path, Constants.DATABASE_VERSION).getWritableDatabase();
+            LogUtil.i(DbUtil.queryToArrayList(mDatabase, "lyric", null, 0).toString());
+            mDatabase.close();
+        }
     }
 }

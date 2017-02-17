@@ -42,6 +42,9 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
     private ArrayList<Integer> mSelectedQuestionList = new ArrayList<>();
     private ArrayList<String> mSelectedAnswerList = new ArrayList<>();
 
+    //路径
+    private String local_path;
+
     @Override
     public void onBackPressed() {
         doBackPageReady();
@@ -56,6 +59,7 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initView() {
+        local_path = getIntent().getStringExtra("local_path");
         mImgClose = (ImageButton) findViewById(R.id.imgbtn_header_title);
         mTxtTimer = (TextView) findViewById(R.id.txt_header_title_menu);
         mTxtTimer.setText("用时0:48");
@@ -76,7 +80,7 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
         for (int i = 1; i <= TOTAL_QUESTION_COUNT; i++) {
             mDataBottomList.add(i + "");
         }
-        FragmentDoQuestion frgment = FragmentDoQuestion.newInstance("1");
+        FragmentDoQuestion frgment = FragmentDoQuestion.newInstance("1", local_path);
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, frgment).commit();
     }
 
@@ -111,7 +115,9 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
                 LogUtil.i("all = " + mSelectedQuestionList.toString() + "||" + mSelectedAnswerList.toString());
                 //答完,进入下一个页面
                 if (mSelectedQuestionList.size() == TOTAL_QUESTION_COUNT) {
-                    startActivity(new Intent(this, DoResultActivity.class));
+                    Intent intent = new Intent(this, DoResultActivity.class);
+                    intent.putExtra("local_path", local_path);
+                    startActivity(intent);
                     LogUtil.i("all done " + mSelectedQuestionList.toString() + "||" + mSelectedAnswerList.toString());
                     break;
                 }
@@ -166,7 +172,7 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
      */
     private void SkipToQuestion(int position) {
         mTxtCurrent.setText(position + "");
-        FragmentDoQuestion frgment = FragmentDoQuestion.newInstance(position + "");
+        FragmentDoQuestion frgment = FragmentDoQuestion.newInstance(position + "", local_path);
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, frgment).commit();
     }
 }

@@ -10,17 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseActivity;
+import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.TopListeneringPageAdapter;
-import com.iyuce.itoefl.Utils.LogUtil;
-import com.iyuce.itoefl.Utils.PreferenceUtil;
-import com.iyuce.itoefl.Utils.ZipUtil;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.FileCallback;
+import com.iyuce.itoefl.Utils.HttpUtil;
+import com.iyuce.itoefl.Utils.Interface.HttpInterface;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -42,25 +39,6 @@ public class TopListeneringPageActivity extends BaseActivity
         setContentView(R.layout.activity_top_listenering_page);
 
         initView();
-        initFileDir();
-    }
-
-    /**
-     * 初始化下载目标文件夹
-     */
-    private void initFileDir() {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            // sd卡根目录
-            String sdPath = Environment.getExternalStorageDirectory() + "/";
-            mSavePath = sdPath + "ITOEFL";
-            //建立目标路径文件
-            File dir = new File(mSavePath);
-            if (!dir.exists()) {
-                dir.mkdir();
-            }
-            /*将路径保存到SharePreferences中*/
-            PreferenceUtil.save(this, "SdPath", mSavePath);
-        }
     }
 
     private void initView() {
@@ -83,70 +61,70 @@ public class TopListeneringPageActivity extends BaseActivity
     }
 
     /**
-     * 给定几个参数，position,Url,mSavePath
+     * 给定几个参数，position,Url,path
      */
-    private void doDownLoad(final int pos) {
-        OkGo.get("http://img.enhance.cn/toefl/zip/listenaudiozip/1402.zip")
-                .execute(new FileCallback(mSavePath, "") {
-                    @Override
-                    public void downloadProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
-                        super.downloadProgress(currentSize, totalSize, progress, networkSpeed);
-                        //TODO 全部下载该如何处理,OKGO,并发队列下载,做一个循环，往里传参数轮流执行？
-                        LogUtil.i(currentSize + "||" + totalSize + "||" + progress);
-                        if (pos != -1) {
-                            ImageView imgview = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
-                            imgview.setBackgroundResource(R.mipmap.icon_download_finish);
-                            TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
-                            textView.setVisibility(View.VISIBLE);
-                            textView.setText(((int) (progress * 100) + "%"));
-                        }
-                    }
-
-                    @Override
-                    public void onSuccess(File file, Call call, Response response) {
-                        if (pos != -1) {
-                            //下载箭头、文字设为不可见
-                            ImageView imgview = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
-                            imgview.setVisibility(View.INVISIBLE);
-                            TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
-                            textView.setVisibility(View.INVISIBLE);
-                        }
-                        unZipFile(file);
-                    }
-                });
-    }
-
-    /**
-     * UnZip解压文件夹
-     */
-    private void unZipFile(File file) {
-        List<File> mList;
-        try {
-            //获取文件的文件名
-            //mList = ZipUtil.GetFileList("/storage/emulated/0/download/1402.zip", true, true);
-            mList = ZipUtil.GetFileList(file.getAbsolutePath(), true, true);
-            for (int i = 0; i < mList.size(); i++) {
-                if (mList.get(i).getName().contains("sqlite")) {
-                    //拿出数据库文件的路径
-                    mSQLitePath = mSavePath + "/" + mList.get(i).getName();
+    private void doDownLoad(final int pos, final String path) {
+        HttpUtil.downLoad(pos, path, new HttpInterface() {
+            @Override
+            public void inProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
+                if (pos != -1) {
+                    ImageView imgview = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
+                    imgview.setBackgroundResource(R.mipmap.icon_download_finish);
+                    TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
+                    textView.setVisibility(View.VISIBLE);
+                    textView.setText(((int) (progress * 100) + "%"));
                 }
-                LogUtil.i("mList = " + mList.get(i).getName());
             }
-            //解压zip文件到对应路径
-            //ZipUtil.UnZipFolder("/storage/emulated/0/download/1402.zip", "/storage/emulated/0/download/le");
-            ZipUtil.UnZipFolder(file.getAbsolutePath(), mSavePath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //输出对应的SQLite数据库路径
-        LogUtil.i("mSQLitePath = " + mSQLitePath);
+
+            @Override
+            public void doSuccess(File file, Call call, Response response) {
+                if (pos != -1) {
+                    //下载箭头、文字设为不可见
+                    ImageView imgview = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
+                    imgview.setVisibility(View.INVISIBLE);
+                    TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
+                    textView.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+//        OkGo.get("http://img.enhance.cn/toefl/zip/listenaudiozip/1402.zip")
+//                .execute(new FileCallback(path, "") {
+//                    @Override
+//                    public void downloadProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
+//                        super.downloadProgress(currentSize, totalSize, progress, networkSpeed);
+//                        LogUtil.i(currentSize + "||" + totalSize + "||" + progress);
+//                        if (pos != -1) {
+//                            ImageView imgview = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
+//                            imgview.setBackgroundResource(R.mipmap.icon_download_finish);
+//                            TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
+//                            textView.setVisibility(View.VISIBLE);
+//                            textView.setText(((int) (progress * 100) + "%"));
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(File file, Call call, Response response) {
+//                        if (pos != -1) {
+//                            //下载箭头、文字设为不可见
+//                            ImageView imgview = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
+//                            imgview.setVisibility(View.INVISIBLE);
+//                            TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
+//                            textView.setVisibility(View.INVISIBLE);
+//                        }
+//                    }
+//                });
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.txt_header_title_menu:
-                doDownLoad(-1);
+                for (int i = 0; i < mDataList.size(); i++) {
+                    mSavePath = Environment.getExternalStorageDirectory().getAbsolutePath() +
+                            Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + mDataList.get(i);
+                    doDownLoad(i, mSavePath);
+                }
                 break;
             case R.id.imgbtn_header_title:
                 finish();
@@ -154,15 +132,20 @@ public class TopListeneringPageActivity extends BaseActivity
         }
     }
 
-    //Adaptere中的自定义ItemClick
     @Override
     public void OnPageItemClick(int pos) {
-        if (pos == 0) {
-            mImgReward.setBackgroundResource(R.mipmap.icon_reward_finish);
-            doDownLoad(pos);
+        mImgReward.setBackgroundResource(R.mipmap.icon_reward_finish);
+
+        //关键是末位路径
+        mSavePath = Environment.getExternalStorageDirectory().getAbsolutePath() +
+                Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + mDataList.get(pos);
+        //从List的属性中，判断是否下载，是则进入，否则下载
+        if (pos > 4) {
+            doDownLoad(pos, mSavePath);
             return;
         }
-        startActivity(new Intent(this, PageReadyActivity.class));
-        LogUtil.i("pos = " + pos);
+        Intent intent = new Intent(this, PageReadyActivity.class);
+        intent.putExtra("local_path", mSavePath);
+        startActivity(intent);
     }
 }

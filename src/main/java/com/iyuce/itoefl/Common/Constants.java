@@ -18,7 +18,8 @@ public class Constants {
     //数据库相关
     //TODO  约定好的表名及字段可以作为常量封装在此
     public static final int DATABASE_VERSION = 1;
-    public static final String TABLE_ALREADY_DOWNLOAD = "downloadedtable";
+    public static final String TABLE_ALREADY_DOWNLOAD = "downloaded_table";
+    public static final String _ID = "_id";
 
     public static final String TABLE_USER = "usertable";
     public static final String TABLE_USER_NAME = "name";

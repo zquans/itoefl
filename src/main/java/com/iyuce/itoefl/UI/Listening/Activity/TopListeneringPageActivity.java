@@ -1,6 +1,8 @@
 package com.iyuce.itoefl.UI.Listening.Activity;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,8 +15,11 @@ import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.TopListeneringPageAdapter;
+import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.HttpUtil;
 import com.iyuce.itoefl.Utils.Interface.HttpInterface;
+import com.iyuce.itoefl.Utils.LogUtil;
+import com.iyuce.itoefl.Utils.PreferenceUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,6 +38,14 @@ public class TopListeneringPageActivity extends BaseActivity
     private ImageView mImgReward;
     private String mSavePath, mSQLitePath;
 
+    private String local_section;
+    private static final String SECTION = "section";
+    private static final String MODULE = "module";
+    private static final String ISDOWNLOAD = "isdownload";
+
+    //自创的SQL库，路径
+    private String downloaded_sql_path;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +55,8 @@ public class TopListeneringPageActivity extends BaseActivity
     }
 
     private void initView() {
+        local_section = getIntent().getStringExtra("local_section");
+        LogUtil.i("local_section = " + local_section);
         findViewById(R.id.txt_header_title_menu).setOnClickListener(this);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(this);
 
@@ -58,6 +73,26 @@ public class TopListeneringPageActivity extends BaseActivity
         mAdapter = new TopListeneringPageAdapter(this, mDataList);
         mAdapter.setOnPageItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
+
+        CreateOrOpenDbTable();
+    }
+
+    /**
+     * 打开或者新建一个数据库，无表则新建一张DownLoad清单表
+     */
+    private void CreateOrOpenDbTable() {
+        downloaded_sql_path = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + "downloaded.db";
+        SQLiteDatabase mDatabase = DbUtil
+                .getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
+        //无表则创建表
+        if (PreferenceUtil.getSharePre(this).getString(Constants.TABLE_ALREADY_DOWNLOAD, "false").equals("false")) {
+            String create = "create table " + Constants.TABLE_ALREADY_DOWNLOAD
+                    + "(_id integer primary key autoincrement," + SECTION + " text," + MODULE + " text," + ISDOWNLOAD + " text)";
+            mDatabase.execSQL(create);
+            PreferenceUtil.save(this, Constants.TABLE_ALREADY_DOWNLOAD, "true");
+        }
+        mDatabase.close();
     }
 
     /**
@@ -78,6 +113,15 @@ public class TopListeneringPageActivity extends BaseActivity
 
             @Override
             public void doSuccess(File file, Call call, Response response) {
+                SQLiteDatabase mDatabase = DbUtil
+                        .getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
+                ContentValues mValues = new ContentValues();
+                mValues.put(SECTION, local_section);
+                mValues.put(MODULE, mDataList.get(pos));
+                mValues.put(ISDOWNLOAD, "true");
+                DbUtil.insert(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, mValues);
+                LogUtil.i(DbUtil.queryToArrayList(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, null, MODULE).toString());
+                mDatabase.close();
                 if (pos != -1) {
                     //下载箭头、文字设为不可见
                     ImageView imgview = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
@@ -121,9 +165,9 @@ public class TopListeneringPageActivity extends BaseActivity
         switch (v.getId()) {
             case R.id.txt_header_title_menu:
                 for (int i = 0; i < mDataList.size(); i++) {
-                    mSavePath = Environment.getExternalStorageDirectory().getAbsolutePath() +
-                            Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + mDataList.get(i);
-                    doDownLoad(i, mSavePath);
+                    String path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE
+                            + File.separator + local_section + File.separator + mDataList.get(i);
+                    doDownLoad(i, path);
                 }
                 break;
             case R.id.imgbtn_header_title:
@@ -137,8 +181,8 @@ public class TopListeneringPageActivity extends BaseActivity
         mImgReward.setBackgroundResource(R.mipmap.icon_reward_finish);
 
         //关键是末位路径
-        mSavePath = Environment.getExternalStorageDirectory().getAbsolutePath() +
-                Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + mDataList.get(pos);
+        mSavePath = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE
+                + File.separator + local_section + File.separator + mDataList.get(pos);
         //从List的属性中，判断是否下载，是则进入，否则下载
         if (pos > 4) {
             doDownLoad(pos, mSavePath);

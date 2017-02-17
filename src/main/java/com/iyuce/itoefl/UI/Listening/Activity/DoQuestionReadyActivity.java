@@ -81,10 +81,16 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mMediaPlayer.release();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
-        mMediaPlayer.release();
+        mMediaPlayer.stop();
     }
 
     @Override

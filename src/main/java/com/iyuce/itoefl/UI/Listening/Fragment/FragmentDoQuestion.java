@@ -156,7 +156,7 @@ public class FragmentDoQuestion extends Fragment implements
                 JSONArray data = obj.getJSONArray("data");
                 obj = data.getJSONObject(0);
                 String mVersionURL = obj.getString("apkurl");
-                LogUtil.i("myjson = VersionURL = " + mVersionURL);
+                LogUtil.i("my local json = VersionURL = " + mVersionURL);
             }
         } catch (Exception e) {
             e.printStackTrace();

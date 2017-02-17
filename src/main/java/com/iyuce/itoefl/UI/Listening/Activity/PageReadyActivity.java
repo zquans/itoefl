@@ -94,9 +94,6 @@ public class PageReadyActivity extends BaseActivity {
 //        LogUtil.i("list = dream" + DbUtil.queryToArrayList(mDatabase1, Constants.TABLE_USER, null, "dream").toString());
 //        mDatabase1.close();
 
-        /**
-         * 已解压过该操作
-         */
         if (!TextUtils.isEmpty(local_sqlite_path)) {
             SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_sqlite_path, Constants.DATABASE_VERSION).getWritableDatabase();
             LogUtil.i(DbUtil.queryToArrayList(mDatabase, "lyric", null, 0).toString());

@@ -45,10 +45,8 @@ public class DbUtil {
     }
 
     //API方法,返回新增成功的 row ID,若发生错误返回-1
-    public static long insert(SQLiteDatabase database, String table, String column, String value) {
-        ContentValues mValues = new ContentValues();
-        mValues.put(column, value);
-        return database.insert(table, null, mValues);
+    public static long insert(SQLiteDatabase database, String table, ContentValues values) {
+        return database.insert(table, null, values);
     }
 
     //API方法,返回删除成功的数量,null是子句
@@ -63,6 +61,18 @@ public class DbUtil {
         return database.update(table, values, where, null);
     }
 
+    //重载方法
+    public static String queryToString(SQLiteDatabase database, String table, int row, String column) {
+        String target = "";
+        Cursor cursor = database.query(table, null, null, null, null, null, null);
+        //判断游标是否为空
+        if (cursor != null) {
+            cursor.move(row);
+            target = cursor.getString(cursor.getColumnIndex(column));
+        }
+        return target;
+    }
+
     public static String queryToString(SQLiteDatabase database, String table, int row, int column) {
         String target = "";
         Cursor cursor = database.query(table, null, null, null, null, null, null);
@@ -70,6 +80,20 @@ public class DbUtil {
         if (cursor != null) {
             cursor.move(row);
             target = cursor.getString(column);
+        }
+        return target;
+    }
+
+    //找出某个column值所对应的_id,没找到则返回-1
+    public static int queryToID(SQLiteDatabase database, String table, String column_key, String column_value) {
+        int target = -1;
+        Cursor cursor = database.query(table, null, null, null, null, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                if (cursor.getString(cursor.getColumnIndex(column_key)).equals(column_value)) {
+                    return cursor.getInt(0);
+                }
+            }
         }
         return target;
     }

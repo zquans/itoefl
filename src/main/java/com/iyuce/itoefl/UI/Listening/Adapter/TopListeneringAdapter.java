@@ -62,7 +62,9 @@ public class TopListeneringAdapter extends RecyclerView.Adapter<TopListeneringAd
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        mContext.startActivity(new Intent(mContext, TopListeneringPageActivity.class));
+                        Intent intent = new Intent(mContext, TopListeneringPageActivity.class);
+                        intent.putExtra("local_section", mList.get(position));
+                        mContext.startActivity(intent);
                     }
 
                     @Override

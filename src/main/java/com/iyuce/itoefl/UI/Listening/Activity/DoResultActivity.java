@@ -28,6 +28,7 @@ import com.iyuce.itoefl.Utils.RecyclerItemClickListener;
 import com.iyuce.itoefl.Utils.TimeUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -53,7 +54,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     private ArrayList<Fragment> mResultContentList = new ArrayList<>();
 
     //路径
-    private String local_path;
+    private String local_paper_code, local_path, local_music_question;
 
     private Handler mMediaProgressHandler = new Handler() {
         @Override
@@ -112,9 +113,13 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void initView() {
+        local_paper_code = getIntent().getStringExtra(Constants.PaperCode);
         local_path = getIntent().getStringExtra("local_path");
+        local_music_question = getIntent().getStringExtra(Constants.MusicQuestion);
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(this);
+        TextView mTxtHeadTitle = (TextView) findViewById(R.id.txt_header_title_item);
+        mTxtHeadTitle.setText("练习结果\r" + local_paper_code);
 
         mSeekBar = (SeekBar) findViewById(R.id.bar_activity_do_result_progress);
         mTxtCurrent = (TextView) findViewById(R.id.txt_activity_do_result_current);
@@ -148,7 +153,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         mViewPager.setOnPageChangeListener(this);
 
         //MediaPlayer
-        String musicPath = local_path + "/16895.mp3";
+        String musicPath = local_path + File.separator + local_music_question;
         LogUtil.i("musicPath = " + musicPath);
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(this);

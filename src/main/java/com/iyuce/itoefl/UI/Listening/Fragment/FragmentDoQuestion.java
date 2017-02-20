@@ -1,6 +1,7 @@
 package com.iyuce.itoefl.UI.Listening.Fragment;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -15,8 +16,10 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.QuestionAdapter;
+import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 
@@ -33,9 +36,8 @@ import java.util.ArrayList;
 public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQuestionItemClickListener,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
-    //题目序号
-    private TextView mTxtCurrentQuestion;
-
+    //题目序号、内容
+    private TextView mTxtCurrentQuestion, mTxtQuestionContent;
     //可选视图
     private RelativeLayout mRelativeLayout;
 
@@ -46,15 +48,20 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
 
     private MediaPlayer mMediaPlayer;
 
-    //接收参数,应该有很多个
-    private String current_question, local_path;
+    //接收参数
+    private String current_question, current_music, current_question_id, local_path;
+    //查表所得的属性
+    private String mQuestionType, mContent, mAnswer;
 
     private OnFragmentInteractionListener mListener;
 
-    public static FragmentDoQuestion newInstance(String current_question, String local_path) {
+    //获取到的参数  QuestionId(用于在Fragment中继续查表)    Sort题号     MusicQuestion音频
+    public static FragmentDoQuestion newInstance(String current_question, String current_music, String current_question_id, String local_path) {
         FragmentDoQuestion fragment = new FragmentDoQuestion();
         Bundle args = new Bundle();
         args.putString("current_question", current_question);
+        args.putString("current_music", current_music);
+        args.putString("current_question_id", current_question_id);
         args.putString("local_path", local_path);
         fragment.setArguments(args);
         return fragment;
@@ -65,6 +72,8 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             current_question = getArguments().getString("current_question");
+            current_music = getArguments().getString("current_music");
+            current_question_id = getArguments().getString("current_question_id");
             local_path = getArguments().getString("local_path");
         }
     }
@@ -90,13 +99,21 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
     }
 
     private void initView(View view) {
-        for (int i = 0; i < 5; i++) {
-            mDataList.add("I have a dream,One day we will in a peaceful world" + i);
-        }
+        //数据源
+        SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), local_path + "/TPO18_L1.sqlite", Constants.DATABASE_VERSION).getWritableDatabase();
+        //查表Question
+        mContent = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Content, Constants.ID, current_question_id);
+        mQuestionType = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.QuestionType, Constants.ID, current_question_id);
+        mAnswer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Answer, Constants.ID, current_question_id);
+        //查表Option
+        mDataList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId, current_question_id);
+        mDatabase.close();
 
         mTxtCurrentQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
+        mTxtQuestionContent = (TextView) view.findViewById(R.id.txt_fragment_do_result_title);
+        mTxtQuestionContent.setText(mContent);
         mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_fragment_do_result_page);
-        if (TextUtils.equals(current_question, "2")) {
+        if (TextUtils.equals(mQuestionType, "SINGLE")) {
             mRelativeLayout.setVisibility(View.GONE);
         }
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
@@ -115,8 +132,8 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         mMediaPlayer.setOnCompletionListener(this);
         try {
             //路徑应该直接传递过来，从参数中直接获取
-            String musicPath = local_path + "/16899.mp3";
-            LogUtil.i("musicPath = " + musicPath);
+            String musicPath = local_path + File.separator + current_music;
+            LogUtil.i(current_question_id + "fragment get musicPath = " + musicPath);
 
             mMediaPlayer.setDataSource(musicPath);
             mMediaPlayer.prepare();
@@ -191,18 +208,22 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
     @Override
     public void onQuestionClick(int pos) {
         resetItemSelectStyle(pos);
+        LogUtil.i("mAnswer = " + mAnswer + ",,and you choose" + pos);
     }
 
     /**
      * 重设选中的Item及全部的Item
      */
     private void resetItemSelectStyle(int pos) {
+        TextView textView;
         for (int i = 0; i < mDataList.size(); i++) {
             if (pos == i) {
-                mRecyclerView.getChildAt(pos).findViewById(R.id.txt_item_fragment_do_question).setBackgroundResource(R.drawable.view_bound_orange_stroke);
+                textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_item_fragment_do_question);
+                textView.setBackgroundResource(R.drawable.view_bound_orange_stroke);
                 continue;
             }
-            mRecyclerView.getChildAt(i).findViewById(R.id.txt_item_fragment_do_question).setBackgroundColor(Color.parseColor("#ffffff"));
+            textView = (TextView) mRecyclerView.getChildAt(i).findViewById(R.id.txt_item_fragment_do_question);
+            textView.setBackgroundColor(Color.parseColor("#ffffff"));
         }
     }
 

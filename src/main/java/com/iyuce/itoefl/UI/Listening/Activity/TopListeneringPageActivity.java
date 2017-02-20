@@ -74,6 +74,7 @@ public class TopListeneringPageActivity extends BaseActivity
         mAdapter.setOnPageItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
+        //初始化数据库(打开或创建)
         CreateOrOpenDbTable();
     }
 
@@ -183,11 +184,18 @@ public class TopListeneringPageActivity extends BaseActivity
         //关键是末位路径
         mSavePath = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE
                 + File.separator + local_section + File.separator + mDataList.get(pos);
-        //从List的属性中，判断是否下载，是则进入，否则下载
-        if (pos > 4) {
+
+        //从List的属性中，判断是否下载到本地了，是则进入，否则下载
+        SQLiteDatabase mDatabase = DbUtil
+                .getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
+        int isExist = DbUtil.queryToID(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, MODULE, mDataList.get(pos));
+        LogUtil.i("isExist = " + isExist);
+        if (isExist == -1) {
             doDownLoad(pos, mSavePath);
+            mDatabase.close();
             return;
         }
+        mDatabase.close();
         Intent intent = new Intent(this, PageReadyActivity.class);
         intent.putExtra("local_path", mSavePath);
         startActivity(intent);

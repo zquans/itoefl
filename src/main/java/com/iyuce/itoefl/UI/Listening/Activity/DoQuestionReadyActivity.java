@@ -22,6 +22,7 @@ import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.TimeUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -46,7 +47,7 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     private ArrayList<String> mRateList = new ArrayList<>();
 
     //路径
-    private String local_path;
+    private String local_paper_code, local_path, local_music_question;
 
     private Handler mMediaProgressHandler = new Handler() {
         @Override
@@ -102,7 +103,11 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     }
 
     private void initView() {
+        local_paper_code = getIntent().getStringExtra(Constants.PaperCode);
         local_path = getIntent().getStringExtra("local_path");
+        local_music_question = getIntent().getStringExtra(Constants.MusicQuestion);
+        TextView mTxtHeadTitle = (TextView) findViewById(R.id.txt_header_title_item);
+        mTxtHeadTitle.setText(local_paper_code);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(this);
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
 
@@ -129,8 +134,9 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
         mSpinner.setAdapter(mSpinnerAdapter);
         mSpinner.setOnItemSelectedListener(this);
 
-        String musicPath = local_path + "/16895.mp3";
-        LogUtil.i("musicPath = " + musicPath);
+        //TODO 拼接文件路径和数据库路径拿到主音频的路径
+        String musicPath = local_path + File.separator + local_music_question;
+        LogUtil.i("get musicPath = " + musicPath);
 
         //音频准备
         mMediaPlayer = new MediaPlayer();
@@ -153,7 +159,9 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
                 break;
             case R.id.btn_activity_do_question_ready_begin:
                 Intent intent = new Intent(this, DoQuestionActivity.class);
+                intent.putExtra(Constants.PaperCode, local_paper_code);
                 intent.putExtra("local_path", local_path);
+                intent.putExtra(Constants.MusicQuestion, local_music_question);
                 startActivity(intent);
                 break;
             case R.id.imgbtn_activity_do_question_ready_media:

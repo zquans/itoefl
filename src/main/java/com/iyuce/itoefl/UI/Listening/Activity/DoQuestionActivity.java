@@ -2,6 +2,7 @@ package com.iyuce.itoefl.UI.Listening.Activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
@@ -14,9 +15,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseActivity;
+import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.BottomDoQuestionAdapter;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestion;
+import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 
@@ -33,8 +36,12 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
     private ArrayList<String> mDataBottomList = new ArrayList<>();
     private BottomDoQuestionAdapter mAdapter;
 
-    //总题量
-    private static final int TOTAL_QUESTION_COUNT = 5;
+    //TODO 总题量应该等于mSortList的长度
+//    private static final int TOTAL_QUESTION_COUNT = 5;
+    private ArrayList<String> mSortList;
+    private ArrayList<String> mMusicQuestionList;
+    private ArrayList<String> mQuestionIdList;
+
     //当前题
     private int mCurrentQuestion = 1;
 
@@ -43,7 +50,7 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
     private ArrayList<String> mSelectedAnswerList = new ArrayList<>();
 
     //路径
-    private String local_path;
+    private String local_paper_code, local_path, local_music_question;
 
     @Override
     public void onBackPressed() {
@@ -59,10 +66,15 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initView() {
+        local_paper_code = getIntent().getStringExtra(Constants.PaperCode);
         local_path = getIntent().getStringExtra("local_path");
-        mImgClose = (ImageButton) findViewById(R.id.imgbtn_header_title);
+        local_music_question = getIntent().getStringExtra(Constants.MusicQuestion);
+
         mTxtTimer = (TextView) findViewById(R.id.txt_header_title_menu);
+        TextView mTxtHeadTitle = (TextView) findViewById(R.id.txt_header_title_item);
+        mTxtHeadTitle.setText(local_paper_code);
         mTxtTimer.setText("用时0:48");
+        mImgClose = (ImageButton) findViewById(R.id.imgbtn_header_title);
         mImgClose.setBackgroundResource(R.mipmap.icon_close);
         mImgClose.setOnClickListener(this);
 
@@ -76,11 +88,18 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
         //初始化底部选题
         initBottomSheet();
 
-        //TODO BottomSheet数据源
-        for (int i = 1; i <= TOTAL_QUESTION_COUNT; i++) {
-            mDataBottomList.add(i + "");
+        //数据源
+        SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/TPO18_L1.sqlite", Constants.DATABASE_VERSION).getWritableDatabase();
+        mSortList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_QUESTION, null, Constants.Sort);
+        mMusicQuestionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_QUESTION, null, Constants.MusicQuestion);
+        mQuestionIdList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_QUESTION, null, Constants.QuestionId);
+        mDatabase.close();
+
+        for (int i = 0; i < mSortList.size(); i++) {
+            mDataBottomList.add(mSortList.get(i));
         }
-        FragmentDoQuestion frgment = FragmentDoQuestion.newInstance("1", local_path);
+        //应该传递给Fragment的参数  QuestionId(用于在Fragment中继续查表)、Sort题号、MusicQuestion音频
+        FragmentDoQuestion frgment = FragmentDoQuestion.newInstance(mSortList.get(0), mMusicQuestionList.get(0), mQuestionIdList.get(0), local_path);
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, frgment).commit();
     }
 
@@ -114,9 +133,11 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
                 }
                 LogUtil.i("all = " + mSelectedQuestionList.toString() + "||" + mSelectedAnswerList.toString());
                 //答完,进入下一个页面
-                if (mSelectedQuestionList.size() == TOTAL_QUESTION_COUNT) {
+                if (mSelectedQuestionList.size() == mSortList.size()) {
                     Intent intent = new Intent(this, DoResultActivity.class);
+                    intent.putExtra(Constants.PaperCode, local_paper_code);
                     intent.putExtra("local_path", local_path);
+                    intent.putExtra(Constants.MusicQuestion, local_music_question);
                     startActivity(intent);
                     LogUtil.i("all done " + mSelectedQuestionList.toString() + "||" + mSelectedAnswerList.toString());
                     break;
@@ -171,8 +192,9 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
      * @param position
      */
     private void SkipToQuestion(int position) {
-        mTxtCurrent.setText(position + "");
-        FragmentDoQuestion frgment = FragmentDoQuestion.newInstance(position + "", local_path);
+        mTxtCurrent.setText(mSortList.get(position - 1));
+        FragmentDoQuestion frgment = FragmentDoQuestion
+                .newInstance(mSortList.get(position - 1), mMusicQuestionList.get(position - 1), mQuestionIdList.get(position - 1), local_path);
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, frgment).commit();
     }
 }

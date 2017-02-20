@@ -36,19 +36,19 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        LogUtil.i(mDatabaseName + " |database version " + Constants.DATABASE_VERSION + " onCreate");
+//        LogUtil.i(mDatabaseName + " |database version " + Constants.DATABASE_VERSION + " onCreate");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //用于升级数据库时调用，作备份时用
         //调用触发条件是,创建本类对象时传入一个比之前创建传入的version大的数即可。
-        LogUtil.i(mDatabaseName + " |database version " + Constants.DATABASE_VERSION + " onUpgrade");
+//        LogUtil.i(mDatabaseName + " |database version " + Constants.DATABASE_VERSION + " onUpgrade");
     }
 
     @Override
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
-        LogUtil.i(mDatabaseName + " |database version " + Constants.DATABASE_VERSION + " onOpen");
+//        LogUtil.i(mDatabaseName + " |database version " + Constants.DATABASE_VERSION + " onOpen");
     }
 }

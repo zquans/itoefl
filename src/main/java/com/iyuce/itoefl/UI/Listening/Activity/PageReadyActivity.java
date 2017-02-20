@@ -23,8 +23,8 @@ import java.util.List;
  */
 public class PageReadyActivity extends BaseActivity {
 
-    private TextView mTxtEnglish, mTxtChinese, mTxtCategory, mTxtLevel;
-    private String local_path, local_sqlite_path;
+    private TextView mTxtHeadTitle, mTxtEnglish, mTxtChinese, mTxtCategory, mTxtLevel;
+    private String local_paper_code, local_path, local_music_question, local_sqlite_path;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,10 +48,18 @@ public class PageReadyActivity extends BaseActivity {
             }
         });
 
+        mTxtHeadTitle = (TextView) findViewById(R.id.txt_header_title_item);
         mTxtEnglish = (TextView) findViewById(R.id.txt_activity_page_ready_title_english);
         mTxtChinese = (TextView) findViewById(R.id.txt_activity_page_ready_title_chinese);
         mTxtCategory = (TextView) findViewById(R.id.txt_activity_page_ready_title_category);
         mTxtLevel = (TextView) findViewById(R.id.txt_activity_page_ready_title_level);
+
+        //TODO, 这里查询表中的1是row值，应该从别处来
+        SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/TPO18_L1.sqlite", Constants.DATABASE_VERSION).getWritableDatabase();
+        local_paper_code = DbUtil.queryToString(mDatabase, Constants.TABLE_PAPER_RULE, 1, Constants.PaperCode);
+        local_music_question = DbUtil.queryToString(mDatabase, Constants.TABLE_PAPER_RULE, 1, Constants.MusicQuestion);
+        mTxtHeadTitle.setText(local_paper_code);
+        mDatabase.close();
     }
 
     /**
@@ -79,7 +87,9 @@ public class PageReadyActivity extends BaseActivity {
 
     public void beginPractice(View view) {
         Intent intent = new Intent(this, DoQuestionReadyActivity.class);
+        intent.putExtra(Constants.PaperCode, local_paper_code);
         intent.putExtra("local_path", local_path);
+        intent.putExtra(Constants.MusicQuestion, local_music_question);
         startActivity(intent);
     }
 

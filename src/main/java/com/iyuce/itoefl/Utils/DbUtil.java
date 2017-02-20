@@ -61,14 +61,26 @@ public class DbUtil {
         return database.update(table, values, where, null);
     }
 
-    //重载方法
+    //重载方法,会报错
     public static String queryToString(SQLiteDatabase database, String table, int row, String column) {
         String target = "";
         Cursor cursor = database.query(table, null, null, null, null, null, null);
         //判断游标是否为空
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() != 0) {
             cursor.move(row);
             target = cursor.getString(cursor.getColumnIndex(column));
+        }
+        LogUtil.i(row + "target = " + target);
+        return target;
+    }
+
+    public static String queryToString(SQLiteDatabase database, String table, String column, String condition, String condition_value) {
+        String target = "";
+        Cursor cursor = database.query(table, new String[]{column}, condition + "= " + condition_value, null, null, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                return cursor.getString(0);
+            }
         }
         return target;
     }
@@ -82,6 +94,19 @@ public class DbUtil {
             target = cursor.getString(column);
         }
         return target;
+    }
+
+    public static boolean queryToboolean(SQLiteDatabase database, String table, String column, String target) {
+        Cursor cursor = database.query(table, null, null, null, null, null, null);
+        //判断游标是否为空
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                if (target.equals(cursor.getString(cursor.getColumnIndex(column)))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     //找出某个column值所对应的_id,没找到则返回-1
@@ -125,6 +150,23 @@ public class DbUtil {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 String target = cursor.getString(column);
+                mList.add(target);
+            }
+        }
+        //批量操作成功,关闭事务
+        database.setTransactionSuccessful();
+        database.endTransaction();
+        return mList;
+    }
+
+    public static ArrayList<String> queryToArrayList(SQLiteDatabase database, String table, String column, String condition, String condition_value) {
+        ArrayList<String> mList = new ArrayList<>();
+        Cursor cursor = database.query(table, new String[]{column}, condition + "=?", new String[]{condition_value}, null, null, null);
+        //开启事务批量操作
+        database.beginTransaction();
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String target = cursor.getString(0);
                 mList.add(target);
             }
         }

@@ -17,21 +17,24 @@ import java.util.ArrayList;
 
 public class FragmentDoResult extends Fragment implements View.OnClickListener {
 
-    private TextView mTxtPageMiddle, mTxtPageRight;
+    private TextView mTxtPageMiddle, mTxtPageRight, mTxtQuestion;
 
     private RecyclerView mRecyclerView;
-    private ArrayList<String> mDataList = new ArrayList<>();
+    private ArrayList<String> mOptionList;
     private ResultContentAdapter mAdapter;
 
     private OnFragmentInteractionListener mListener;
 
-    private String mPageNumber;
+    private String page_current, page_total, page_question;
 
-    public static FragmentDoResult newInstance(String param) {
+    public static FragmentDoResult newInstance(String page_current, String page_total, String page_question, ArrayList<String> option_list) {
         FragmentDoResult fragment = new FragmentDoResult();
-        Bundle args = new Bundle();
-        args.putString("page_number", param);
-        fragment.setArguments(args);
+        Bundle bundle = new Bundle();
+        bundle.putString("page_current", page_current);
+        bundle.putString("page_total", page_total);
+        bundle.putString("page_question", page_question);
+        bundle.putStringArrayList("option_list", option_list);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -39,7 +42,10 @@ public class FragmentDoResult extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPageNumber = getArguments().getString("page_number");
+            page_current = getArguments().getString("page_current");
+            page_total = getArguments().getString("page_total");
+            page_question = getArguments().getString("page_question");
+            mOptionList = getArguments().getStringArrayList("option_list");
         }
     }
 
@@ -55,17 +61,15 @@ public class FragmentDoResult extends Fragment implements View.OnClickListener {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
         mTxtPageMiddle = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
         mTxtPageRight = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
+        mTxtQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_title);
 
-        //从Activity中获取到题号
-        mTxtPageMiddle.setText(mPageNumber);
+        mTxtPageMiddle.setText(page_current);
+        mTxtPageRight.setText(page_total);
+        mTxtQuestion.setText(page_question);
         mTxtPageMiddle.setOnClickListener(this);
 
-        //Fragment内部的题目数据
-        for (int i = 0; i < 5; i++) {
-            mDataList.add("linx: musicPath musicPath musicPath musicPath musicPath" + i);
-        }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new ResultContentAdapter(mDataList, getActivity());
+        mAdapter = new ResultContentAdapter(mOptionList, getActivity());
         mRecyclerView.setAdapter(mAdapter);
     }
 

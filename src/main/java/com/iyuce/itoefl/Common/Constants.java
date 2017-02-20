@@ -15,26 +15,25 @@ public class Constants {
     public static final String FILE_PATH_ITOEFL = "/ITOEFL";
     public static final String FILE_PATH_ITOEFL_EXERCISE = "/ITOEFL/EXERCISE";
 
+
     //数据库相关
-    //TODO  约定好的表名及字段可以作为常量封装在此
     public static final int DATABASE_VERSION = 1;
+    public static final String SQLITE_TPO = "TPO.sqlite";
+    public static final String TABLE_TPO_PAPER = "tpopaper_table";
     public static final String TABLE_ALREADY_DOWNLOAD = "downloaded_table";
     public static final String TABLE_ALREADY_PRACTICED = "practiced_table";
     public static final String ID = "Id";
 
-    public static final String TABLE_USER = "usertable";
-    public static final String TABLE_USER_NAME = "name";
-    public static final String TABLE_USER_PASSWORD = "password";
-
-
     //Exercise 相关的表
+    public static final String TABLE_PAPER = "Iup_TpoPaper";
     public static final String TABLE_PAPER_RULE = "Iup_TpoPaperRule";
     public static final String TABLE_PAPER_QUESTION = "Iup_TpoPaperQuestion";
     public static final String TABLE_QUESTION = "Iup_TpoQuestion";
     public static final String TABLE_OPTION = "Iup_TpoOption";
 
-    //Exercise 相关表中的column
+    //Exercise 相关表中的字段column
     public static final String Id = "Id";
+    public static final String PaperName = "PaperName";
     public static final String PaperId = "PaperId";
     public static final String PaperCode = "PaperCode";
     public static final String QuestionType = "QuestionType";

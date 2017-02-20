@@ -24,7 +24,7 @@ import java.util.List;
 public class PageReadyActivity extends BaseActivity {
 
     private TextView mTxtHeadTitle, mTxtEnglish, mTxtChinese, mTxtCategory, mTxtLevel;
-    private String local_paper_code, local_path, local_music_question, local_sqlite_path;
+    private String local_paper_rule_id, local_paper_code, local_path, local_music_question, local_sqlite_path;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,6 +39,7 @@ public class PageReadyActivity extends BaseActivity {
         LogUtil.i("local_path = " + local_path);
         local_sqlite_path = unZipFile(new File(local_path + "/TPO18L1.zip"));
         LogUtil.i("local_sqlite_path = " + local_sqlite_path);
+//        local_paper_rule_id = getIntent().getStringExtra("local_paper_rule_id");
 
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(new View.OnClickListener() {
@@ -54,10 +55,13 @@ public class PageReadyActivity extends BaseActivity {
         mTxtCategory = (TextView) findViewById(R.id.txt_activity_page_ready_title_category);
         mTxtLevel = (TextView) findViewById(R.id.txt_activity_page_ready_title_level);
 
-        //TODO, 这里查询表中的1是row值，应该从别处来
         SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/TPO18_L1.sqlite", Constants.DATABASE_VERSION).getWritableDatabase();
+        //标题local_paper_code换成从一开始的Intent传过来
         local_paper_code = DbUtil.queryToString(mDatabase, Constants.TABLE_PAPER_RULE, 1, Constants.PaperCode);
-        local_music_question = DbUtil.queryToString(mDatabase, Constants.TABLE_PAPER_RULE, 1, Constants.MusicQuestion);
+        //TODO 从根库的paperrule表中查询
+//        String paper_rule_id = local_paper_rule_id;
+        local_music_question = DbUtil.queryToString(mDatabase, Constants.TABLE_PAPER_RULE, Constants.MusicQuestion, Constants.ID, "2");
+//        local_music_question = DbUtil.queryToString(mDatabase, Constants.TABLE_PAPER_RULE, 1, Constants.MusicQuestion);
         mTxtHeadTitle.setText(local_paper_code);
         mDatabase.close();
     }

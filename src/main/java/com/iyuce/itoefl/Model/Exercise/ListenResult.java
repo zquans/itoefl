@@ -1,4 +1,4 @@
-package com.iyuce.itoefl.Model;
+package com.iyuce.itoefl.Model.Exercise;
 
 /**
  * Created by LeBang on 2017/2/8

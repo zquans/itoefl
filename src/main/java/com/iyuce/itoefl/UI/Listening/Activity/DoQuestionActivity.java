@@ -138,6 +138,8 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
                     intent.putExtra(Constants.PaperCode, local_paper_code);
                     intent.putExtra("local_path", local_path);
                     intent.putExtra(Constants.MusicQuestion, local_music_question);
+                    intent.putStringArrayListExtra("mSortList", mSortList);
+                    intent.putStringArrayListExtra("mQuestionIdList", mQuestionIdList);
                     startActivity(intent);
                     LogUtil.i("all done " + mSelectedQuestionList.toString() + "||" + mSelectedAnswerList.toString());
                     break;

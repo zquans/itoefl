@@ -1,6 +1,7 @@
 package com.iyuce.itoefl.UI.Listening.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,7 @@ public class ResultContentAdapter extends RecyclerView.Adapter<ResultContentAdap
     @Override
     public void onBindViewHolder(ResultContentAdapter.MyViewHolder holder, int position) {
         holder.mTxtAnswer.setText(mDataList.get(position));
+        holder.mTxtNumber.setBackgroundColor(Color.parseColor("#990000"));
     }
 
     @Override

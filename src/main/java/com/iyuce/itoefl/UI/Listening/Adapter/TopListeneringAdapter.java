@@ -2,6 +2,8 @@ package com.iyuce.itoefl.UI.Listening.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,10 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Activity.TopListeneringPageActivity;
+import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.RecyclerItemClickListener;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -23,6 +28,7 @@ public class TopListeneringAdapter extends RecyclerView.Adapter<TopListeneringAd
     private LayoutInflater mLayoutInflater;
     private Context mContext;
     private ArrayList<String> mList;
+    private ArrayList<String> dataList;
     private int mItemCount;
 
     public TopListeneringAdapter(Context context, ArrayList<String> list, int item_count) {
@@ -44,16 +50,23 @@ public class TopListeneringAdapter extends RecyclerView.Adapter<TopListeneringAd
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE
+                + File.separator + "TPO.sqlite";
+
+        SQLiteDatabase mDatabase = DbUtil.getHelper(mContext, path, Constants.DATABASE_VERSION).getWritableDatabase();
+        dataList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER, null, Constants.PaperName);
+        mDatabase.close();
+
         holder.mItemTxtTitle.setText(mList.get(position));
         holder.mItemRecyclerView.setLayoutManager(new GridLayoutManager(mContext, mItemCount));
-        holder.mItemRecyclerView.setAdapter(new TopListeneringModuleAdapter(mContext, mList));
+        holder.mItemRecyclerView.setAdapter(new TopListeneringModuleAdapter(mContext, dataList));
         //如此出发可能会引发问题,重复打开界面
         holder.mItemRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(mContext, holder.mItemRecyclerView,
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(mContext, TopListeneringPageActivity.class);
-                        intent.putExtra("local_section", mList.get(position));
+                        intent.putExtra("local_section", dataList.get(position));
                         mContext.startActivity(intent);
                     }
 

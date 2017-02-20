@@ -15,8 +15,7 @@
         android:clickable="true"
         android:gravity="center"
         android:text="sample"
-        android:textColor="@color/Black"
-        android:textSize="@dimen/txt_size_eighteen" />
+        android:textColor="@color/Black" />
 
     <ProgressBar
         android:id="@+id/progressbar_item_top_listenering_order"

@@ -24,7 +24,7 @@ public class DbUtil {
     }
 
     public static void dropTable(SQLiteDatabase database) {
-        String drop = "DROP TABLE " + Constants.TABLE_USER;
+        String drop = "DROP TABLE " + Constants.TABLE_OPTION;
         database.execSQL(drop);
     }
 
@@ -77,6 +77,7 @@ public class DbUtil {
     public static String queryToString(SQLiteDatabase database, String table, String column, String condition, String condition_value) {
         String target = "";
         Cursor cursor = database.query(table, new String[]{column}, condition + "= " + condition_value, null, null, null, null);
+        //开启事务批量操作
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 return cursor.getString(0);

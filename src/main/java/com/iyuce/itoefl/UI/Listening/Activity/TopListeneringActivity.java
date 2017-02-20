@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.R;
@@ -34,6 +35,8 @@ public class TopListeneringActivity extends BaseActivity {
     }
 
     private void initView() {
+        TextView textView = (TextView) findViewById(R.id.txt_header_title_item);
+        textView.setText("TPO \r听力真题");
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(new View.OnClickListener() {
             @Override

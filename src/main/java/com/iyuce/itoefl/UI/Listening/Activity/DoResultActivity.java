@@ -1,6 +1,7 @@
 package com.iyuce.itoefl.UI.Listening.Activity;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -19,10 +20,11 @@ import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
-import com.iyuce.itoefl.Model.ListenResult;
+import com.iyuce.itoefl.Model.Exercise.ListenResult;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.ResultTitleAdapter;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoResult;
+import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.RecyclerItemClickListener;
 import com.iyuce.itoefl.Utils.TimeUtil;
@@ -52,6 +54,10 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     private ViewPager mViewPager;
     private AnswerAdapter mContentAdapter;
     private ArrayList<Fragment> mResultContentList = new ArrayList<>();
+
+    //传递而来的数组参数
+    private ArrayList<String> mSortList;
+    private ArrayList<String> mQuestionIdList;
 
     //路径
     private String local_paper_code, local_path, local_music_question;
@@ -116,6 +122,8 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         local_paper_code = getIntent().getStringExtra(Constants.PaperCode);
         local_path = getIntent().getStringExtra("local_path");
         local_music_question = getIntent().getStringExtra(Constants.MusicQuestion);
+        mSortList = getIntent().getStringArrayListExtra("mSortList");
+        mQuestionIdList = getIntent().getStringArrayListExtra("mQuestionIdList");
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(this);
         TextView mTxtHeadTitle = (TextView) findViewById(R.id.txt_header_title_item);
@@ -129,13 +137,21 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         mSeekBar.setOnSeekBarChangeListener(this);
 
         //TODO 模拟数据换真实数据
-        for (int i = 1; i < 6; i++) {
+        for (int i = 0; i < mSortList.size(); i++) {
+            //数据源
+            SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/TPO18_L1.sqlite", Constants.DATABASE_VERSION).getWritableDatabase();
+            //查表Question
+            String mContent = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Content, Constants.ID, mQuestionIdList.get(i));
+            String mAnswer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Answer, Constants.ID, mQuestionIdList.get(i));
+            //查表Option
+            ArrayList<String> mOptionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId, mQuestionIdList.get(i));
+            mDatabase.close();
             ListenResult result = new ListenResult();
-            result.question_name = i + "";
+            result.question_name = mSortList.get(i);
             result.question_state = i % 2 == 0;
-            result.question_is_select = i == 1;
+            result.question_is_select = i == 0;
             //传递给Fragment数据,可以增加参数
-            FragmentDoResult mFrgDoResult = FragmentDoResult.newInstance(result.question_name);
+            FragmentDoResult mFrgDoResult = FragmentDoResult.newInstance(result.question_name, mSortList.size() + "", mContent, mOptionList);
             mResultTitleList.add(result);
             mResultContentList.add(mFrgDoResult);
         }
@@ -149,7 +165,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         mViewPager = (ViewPager) findViewById(R.id.viewpager_activity_do_result_question);
         mContentAdapter = new AnswerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mContentAdapter);
-        mViewPager.setOffscreenPageLimit(5);
+        mViewPager.setOffscreenPageLimit(mSortList.size() - 1);
         mViewPager.setOnPageChangeListener(this);
 
         //MediaPlayer

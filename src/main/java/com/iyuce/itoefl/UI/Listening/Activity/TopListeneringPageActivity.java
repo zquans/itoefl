@@ -36,9 +36,11 @@ public class TopListeneringPageActivity extends BaseActivity
 
     private TextView mTxtFinish, mTxtTotal;
     private ImageView mImgReward;
-    private String mSavePath, mSQLitePath;
+    private String mSavePath;
 
-    private String local_section;
+    private String local_section, local_paper_rule_id;
+    //保存根数据库的路径
+    private String root_path;
     private static final String SECTION = "section";
     private static final String MODULE = "module";
     private static final String ISDOWNLOAD = "isdownload";
@@ -57,6 +59,8 @@ public class TopListeneringPageActivity extends BaseActivity
     private void initView() {
         local_section = getIntent().getStringExtra("local_section");
         LogUtil.i("local_section = " + local_section);
+        TextView textView = (TextView) findViewById(R.id.txt_header_title_item);
+        textView.setText(local_section + "\r听力真题");
         findViewById(R.id.txt_header_title_menu).setOnClickListener(this);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(this);
 
@@ -65,10 +69,14 @@ public class TopListeneringPageActivity extends BaseActivity
         mTxtTotal = (TextView) findViewById(R.id.txt_activity_top_listenering_total);
         mTxtTotal.setText("总共 : 12篇");
 
+        //初始化列表数据,从主表中获取到的local_section读取PAPER_RULE表中的RuleName字段
+        root_path = Environment.getExternalStorageDirectory().getAbsolutePath() +
+                Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + Constants.SQLITE_TPO;
+        SQLiteDatabase mDatabase = DbUtil.getHelper(this, root_path, Constants.DATABASE_VERSION).getWritableDatabase();
+        mDataList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.RuleName, Constants.PaperCode, local_section);
+        mDatabase.close();
+
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_activity_top_listenering_page);
-        for (int i = 0; i < 7; i++) {
-            mDataList.add("Lecture " + i);
-        }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new TopListeneringPageAdapter(this, mDataList);
         mAdapter.setOnPageItemClickListener(this);
@@ -180,6 +188,10 @@ public class TopListeneringPageActivity extends BaseActivity
     @Override
     public void OnPageItemClick(int pos) {
         mImgReward.setBackgroundResource(R.mipmap.icon_reward_finish);
+//        SQLiteDatabase mDatabase1 = DbUtil.getHelper(this, root_path, Constants.DATABASE_VERSION).getWritableDatabase();
+//        local_paper_rule_id = DbUtil.queryToString(mDatabase1, Constants.TABLE_PAPER_RULE, Constants.ID, Constants.RuleName, mDataList.get(pos));
+//        mDatabase1.close();
+        LogUtil.i("local_paper_rule_id = " + local_paper_rule_id);
 
         //关键是末位路径
         mSavePath = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE
@@ -198,6 +210,7 @@ public class TopListeneringPageActivity extends BaseActivity
         mDatabase.close();
         Intent intent = new Intent(this, PageReadyActivity.class);
         intent.putExtra("local_path", mSavePath);
+        intent.putExtra("local_paper_rule_id", local_paper_rule_id);
         startActivity(intent);
     }
 }

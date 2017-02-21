@@ -36,8 +36,7 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
     private ArrayList<String> mDataBottomList = new ArrayList<>();
     private BottomDoQuestionAdapter mAdapter;
 
-    //TODO 总题量应该等于mSortList的长度
-//    private static final int TOTAL_QUESTION_COUNT = 5;
+    private String TOTAL_QUESTION_COUNT;
     private ArrayList<String> mSortList;
     private ArrayList<String> mMusicQuestionList;
     private ArrayList<String> mQuestionIdList;
@@ -95,11 +94,13 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
         mQuestionIdList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_QUESTION, null, Constants.QuestionId);
         mDatabase.close();
 
+        TOTAL_QUESTION_COUNT = String.valueOf(mSortList.size());
+        mTxtTotal.setText(TOTAL_QUESTION_COUNT);
         for (int i = 0; i < mSortList.size(); i++) {
             mDataBottomList.add(mSortList.get(i));
         }
         //应该传递给Fragment的参数  QuestionId(用于在Fragment中继续查表)、Sort题号、MusicQuestion音频
-        FragmentDoQuestion frgment = FragmentDoQuestion.newInstance(mSortList.get(0), mMusicQuestionList.get(0), mQuestionIdList.get(0), local_path);
+        FragmentDoQuestion frgment = FragmentDoQuestion.newInstance(TOTAL_QUESTION_COUNT, mSortList.get(0), mMusicQuestionList.get(0), mQuestionIdList.get(0), local_path);
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, frgment).commit();
     }
 
@@ -190,13 +191,11 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
 
     /**
      * 跳到某题，传参数给相应控件
-     *
-     * @param position
      */
     private void SkipToQuestion(int position) {
         mTxtCurrent.setText(mSortList.get(position - 1));
         FragmentDoQuestion frgment = FragmentDoQuestion
-                .newInstance(mSortList.get(position - 1), mMusicQuestionList.get(position - 1), mQuestionIdList.get(position - 1), local_path);
+                .newInstance(TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1), mQuestionIdList.get(position - 1), local_path);
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, frgment).commit();
     }
 }

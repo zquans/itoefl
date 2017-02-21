@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -39,7 +38,10 @@ public class PageReadyActivity extends BaseActivity {
         LogUtil.i("local_path = " + local_path);
         local_sqlite_path = unZipFile(new File(local_path + "/TPO18L1.zip"));
         LogUtil.i("local_sqlite_path = " + local_sqlite_path);
-//        local_paper_rule_id = getIntent().getStringExtra("local_paper_rule_id");
+        //通过这个根库的PaperRule表中的Id值，查子库的PaperRule表的字段
+        local_paper_rule_id = getIntent().getStringExtra("local_paper_rule_id");
+        //不从表中查，直接拼装上一级的section和module
+        local_paper_code = getIntent().getStringExtra("local_section") + "_" + getIntent().getStringExtra("local_module");
 
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(new View.OnClickListener() {
@@ -55,13 +57,10 @@ public class PageReadyActivity extends BaseActivity {
         mTxtCategory = (TextView) findViewById(R.id.txt_activity_page_ready_title_category);
         mTxtLevel = (TextView) findViewById(R.id.txt_activity_page_ready_title_level);
 
-        SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/TPO18_L1.sqlite", Constants.DATABASE_VERSION).getWritableDatabase();
-        //标题local_paper_code换成从一开始的Intent传过来
-        local_paper_code = DbUtil.queryToString(mDatabase, Constants.TABLE_PAPER_RULE, 1, Constants.PaperCode);
-        //TODO 从根库的paperrule表中查询
-//        String paper_rule_id = local_paper_rule_id;
-        local_music_question = DbUtil.queryToString(mDatabase, Constants.TABLE_PAPER_RULE, Constants.MusicQuestion, Constants.ID, "2");
-//        local_music_question = DbUtil.queryToString(mDatabase, Constants.TABLE_PAPER_RULE, 1, Constants.MusicQuestion);
+        //TODO 动态打开指定数据库，这里应该是翔哥还没同步除L1外的数据造成错误
+        SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite",
+                Constants.DATABASE_VERSION).getWritableDatabase();
+        local_music_question = DbUtil.queryToString(mDatabase, Constants.TABLE_PAPER_RULE, Constants.MusicQuestion, Constants.ID, local_paper_rule_id);
         mTxtHeadTitle.setText(local_paper_code);
         mDatabase.close();
     }
@@ -107,11 +106,5 @@ public class PageReadyActivity extends BaseActivity {
 //        LogUtil.i("list = column_1" + DbUtil.queryToArrayList(mDatabase1, Constants.TABLE_USER, null, 0).toString());
 //        LogUtil.i("list = dream" + DbUtil.queryToArrayList(mDatabase1, Constants.TABLE_USER, null, "dream").toString());
 //        mDatabase1.close();
-
-        if (!TextUtils.isEmpty(local_sqlite_path)) {
-            SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_sqlite_path, Constants.DATABASE_VERSION).getWritableDatabase();
-            LogUtil.i(DbUtil.queryToArrayList(mDatabase, "lyric", null, 0).toString());
-            mDatabase.close();
-        }
     }
 }

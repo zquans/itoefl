@@ -7,6 +7,9 @@ public class Constants {
 
     public static final String URL_WEB_ONE_TO_ONE = "http://www.iyuce.com/m/appjxy.html";
 
+    //
+    public static final String NONE = "none";
+
     //音频状态
     public static final int FLAG_AUDIO_PLAY = 0;
     public static final int FLAG_AUDIO_PAUSE = 1;
@@ -15,16 +18,17 @@ public class Constants {
     public static final String FILE_PATH_ITOEFL = "/ITOEFL";
     public static final String FILE_PATH_ITOEFL_EXERCISE = "/ITOEFL/EXERCISE";
 
-
     //数据库相关
     public static final int DATABASE_VERSION = 1;
     public static final String SQLITE_TPO = "TPO.sqlite";
     public static final String TABLE_TPO_PAPER = "tpopaper_table";
+    public static final String SQLITE_DOWNLOAD = "downloaded.db";
     public static final String TABLE_ALREADY_DOWNLOAD = "downloaded_table";
     public static final String TABLE_ALREADY_PRACTICED = "practiced_table";
-    public static final String ID = "Id";
 
     //Exercise 相关的表
+    public static final String TABLE_SQLITE_MASTER = "sqlite_master";
+
     public static final String TABLE_PAPER = "Iup_TpoPaper";
     public static final String TABLE_PAPER_RULE = "Iup_TpoPaperRule";
     public static final String TABLE_PAPER_QUESTION = "Iup_TpoPaperQuestion";
@@ -32,7 +36,8 @@ public class Constants {
     public static final String TABLE_OPTION = "Iup_TpoOption";
 
     //Exercise 相关表中的字段column
-    public static final String Id = "Id";
+    public static final String TABLE_NAME = "tbl_name";
+    public static final String ID = "Id";
     public static final String PaperName = "PaperName";
     public static final String PaperId = "PaperId";
     public static final String PaperCode = "PaperCode";

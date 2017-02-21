@@ -37,7 +37,7 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
     //题目序号、内容
-    private TextView mTxtCurrentQuestion, mTxtQuestionContent;
+    private TextView mTxtCurrentQuestion, mTxtTotalQuestion, mTxtQuestionContent;
     //可选视图
     private RelativeLayout mRelativeLayout;
 
@@ -49,16 +49,17 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
     private MediaPlayer mMediaPlayer;
 
     //接收参数
-    private String current_question, current_music, current_question_id, local_path;
+    private String total_question, current_question, current_music, current_question_id, local_path;
     //查表所得的属性
     private String mQuestionType, mContent, mAnswer;
 
     private OnFragmentInteractionListener mListener;
 
     //获取到的参数  QuestionId(用于在Fragment中继续查表)    Sort题号     MusicQuestion音频
-    public static FragmentDoQuestion newInstance(String current_question, String current_music, String current_question_id, String local_path) {
+    public static FragmentDoQuestion newInstance(String total_question, String current_question, String current_music, String current_question_id, String local_path) {
         FragmentDoQuestion fragment = new FragmentDoQuestion();
         Bundle args = new Bundle();
+        args.putString("total_question", total_question);
         args.putString("current_question", current_question);
         args.putString("current_music", current_music);
         args.putString("current_question_id", current_question_id);
@@ -71,6 +72,7 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            total_question = getArguments().getString("total_question");
             current_question = getArguments().getString("current_question");
             current_music = getArguments().getString("current_music");
             current_question_id = getArguments().getString("current_question_id");
@@ -110,8 +112,8 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         mDatabase.close();
 
         mTxtCurrentQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
+        mTxtTotalQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
         mTxtQuestionContent = (TextView) view.findViewById(R.id.txt_fragment_do_result_title);
-        mTxtQuestionContent.setText(mContent);
         mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_fragment_do_result_page);
         if (TextUtils.equals(mQuestionType, "SINGLE")) {
             mRelativeLayout.setVisibility(View.GONE);
@@ -124,6 +126,8 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
 
         //布置参数到对应控件
         mTxtCurrentQuestion.setText(current_question);
+        mTxtTotalQuestion.setText(total_question);
+        mTxtQuestionContent.setText(mContent);
 
         //MediaPlayer
         mMediaPlayer = new MediaPlayer();

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,7 +20,6 @@ import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.HttpUtil;
 import com.iyuce.itoefl.Utils.Interface.HttpInterface;
 import com.iyuce.itoefl.Utils.LogUtil;
-import com.iyuce.itoefl.Utils.PreferenceUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -87,19 +87,21 @@ public class TopListeneringPageActivity extends BaseActivity
     }
 
     /**
-     * 打开或者新建一个数据库，无表则新建一张DownLoad清单表
+     * 打开或者新建一个我创建的本地数据库，查询是否有表,无表则新建一张DownLoad清单表
      */
     private void CreateOrOpenDbTable() {
+        //打开或者创建我的本地数据库DOWNLOAD
         downloaded_sql_path = Environment.getExternalStorageDirectory().getAbsolutePath()
-                + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + "downloaded.db";
+                + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + Constants.SQLITE_DOWNLOAD;
         SQLiteDatabase mDatabase = DbUtil
                 .getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
         //无表则创建表
-        if (PreferenceUtil.getSharePre(this).getString(Constants.TABLE_ALREADY_DOWNLOAD, "false").equals("false")) {
+        String isNone = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, "name", Constants.TABLE_NAME, Constants.TABLE_ALREADY_DOWNLOAD);
+        if (TextUtils.equals(isNone, Constants.NONE)) {
+            //本地表的字段
             String create = "create table " + Constants.TABLE_ALREADY_DOWNLOAD
-                    + "(_id integer primary key autoincrement," + SECTION + " text," + MODULE + " text," + ISDOWNLOAD + " text)";
+                    + "(Id integer primary key autoincrement," + SECTION + " text," + MODULE + " text," + ISDOWNLOAD + " text)";
             mDatabase.execSQL(create);
-            PreferenceUtil.save(this, Constants.TABLE_ALREADY_DOWNLOAD, "true");
         }
         mDatabase.close();
     }
@@ -122,6 +124,7 @@ public class TopListeneringPageActivity extends BaseActivity
 
             @Override
             public void doSuccess(File file, Call call, Response response) {
+                //下载到最末路径
                 SQLiteDatabase mDatabase = DbUtil
                         .getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
                 ContentValues mValues = new ContentValues();
@@ -188,29 +191,32 @@ public class TopListeneringPageActivity extends BaseActivity
     @Override
     public void OnPageItemClick(int pos) {
         mImgReward.setBackgroundResource(R.mipmap.icon_reward_finish);
-//        SQLiteDatabase mDatabase1 = DbUtil.getHelper(this, root_path, Constants.DATABASE_VERSION).getWritableDatabase();
-//        local_paper_rule_id = DbUtil.queryToString(mDatabase1, Constants.TABLE_PAPER_RULE, Constants.ID, Constants.RuleName, mDataList.get(pos));
-//        mDatabase1.close();
-        LogUtil.i("local_paper_rule_id = " + local_paper_rule_id);
+        SQLiteDatabase mDatabase1 = DbUtil.getHelper(this, root_path, Constants.DATABASE_VERSION).getWritableDatabase();
+        local_paper_rule_id = DbUtil.queryToString(mDatabase1, Constants.TABLE_PAPER_RULE, Constants.ID, Constants.RuleName, mDataList.get(pos));
+        mDatabase1.close();
+//        LogUtil.i("local_paper_rule_id = " + local_paper_rule_id);
 
         //关键是末位路径
         mSavePath = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE
                 + File.separator + local_section + File.separator + mDataList.get(pos);
 
-        //从List的属性中，判断是否下载到本地了，是则进入，否则下载
+        //从List的属性中，判断是否下载到本地了，是则进入，否则下载//TODO (或者判断路径中是否存在该文件)
         SQLiteDatabase mDatabase = DbUtil
                 .getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
-        int isExist = DbUtil.queryToID(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, MODULE, mDataList.get(pos));
+        String isExist = DbUtil.queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, Constants.ID, MODULE, mDataList.get(pos));
         LogUtil.i("isExist = " + isExist);
-        if (isExist == -1) {
-            doDownLoad(pos, mSavePath);
+        if (isExist.equals(Constants.NONE)) {
             mDatabase.close();
+            doDownLoad(pos, mSavePath);
             return;
         }
         mDatabase.close();
         Intent intent = new Intent(this, PageReadyActivity.class);
         intent.putExtra("local_path", mSavePath);
         intent.putExtra("local_paper_rule_id", local_paper_rule_id);
+        //给子数据库拼装末位路径
+        intent.putExtra("local_section", local_section);
+        intent.putExtra("local_module", mDataList.get(pos));
         startActivity(intent);
     }
 }

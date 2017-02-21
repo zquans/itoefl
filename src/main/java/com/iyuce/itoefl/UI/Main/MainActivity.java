@@ -87,7 +87,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 
         LogUtil.i("main table is exist ? = " + PreferenceUtil.getSharePre(this).getString(Constants.TABLE_ALREADY_DOWNLOAD, "false"));
-        //判断是否已经下载了链表主表
         if (PreferenceUtil.getSharePre(this).getString(Constants.TABLE_ALREADY_DOWNLOAD, "false").equals("false")) {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE;
             LogUtil.i("path = " + path);

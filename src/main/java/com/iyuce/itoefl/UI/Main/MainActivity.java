@@ -15,7 +15,6 @@ import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.LogUtil;
-import com.iyuce.itoefl.Utils.PreferenceUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 import com.iyuce.itoefl.Utils.ZipUtil;
 import com.lzy.okgo.OkGo;
@@ -23,7 +22,6 @@ import com.lzy.okgo.callback.FileCallback;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -85,13 +83,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mMyTabAdapter = new MyMainTabAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mMyTabAdapter);
 
-
-        LogUtil.i("main table is exist ? = " + PreferenceUtil.getSharePre(this).getString(Constants.TABLE_ALREADY_DOWNLOAD, "false"));
-        if (PreferenceUtil.getSharePre(this).getString(Constants.TABLE_ALREADY_DOWNLOAD, "false").equals("false")) {
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE;
-            LogUtil.i("path = " + path);
+        //查看根文件路径中是否已存在根sql库,否则下载
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE;
+        String filePath = path + File.separator + Constants.SQLITE_TPO;
+        File file = new File(filePath);
+        LogUtil.i("sql exist = " + file.exists());
+        if (!file.exists()) {
             doDownLoad(path);
-            PreferenceUtil.save(this, Constants.TABLE_ALREADY_DOWNLOAD, "true");
         }
     }
 
@@ -121,20 +119,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     @Override
                     public void onSuccess(File file, Call call, Response response) {
                         unZipFile(file, path);
-                        PreferenceUtil.save(MainActivity.this, Constants.TABLE_TPO_PAPER, "true");
                     }
                 });
     }
 
     private void unZipFile(File file, String path) {
-        List<File> mList;
         try {
-            mList = ZipUtil.GetFileList(file.getAbsolutePath(), true, true);
-            for (int i = 0; i < mList.size(); i++) {
-                LogUtil.i("mList = " + mList.get(i).getName());
-            }
             //解压zip文件到对应路径
             ZipUtil.UnZipFolder(file.getAbsolutePath(), path);
+            //删除该文件压缩包.zip
+            LogUtil.i("zip delete = " + file.delete());
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -11,7 +11,6 @@ import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.DbUtil;
-import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.ZipUtil;
 
 import java.io.File;
@@ -35,12 +34,13 @@ public class PageReadyActivity extends BaseActivity {
 
     private void initView() {
         local_path = getIntent().getStringExtra("local_path");
-        LogUtil.i("local_path = " + local_path);
+        //遍历文件夹获取sqlite文件名,这个local_sqlite_path其实没用//TODO 除非数据库命名的方式不是用local_section + _ + local_module拼接的
         local_sqlite_path = unZipFile(new File(local_path + "/TPO18L1.zip"));
-        LogUtil.i("local_sqlite_path = " + local_sqlite_path);
+//        LogUtil.i("local_sqlite_path = " + local_sqlite_path);
+
         //通过这个根库的PaperRule表中的Id值，查子库的PaperRule表的字段
         local_paper_rule_id = getIntent().getStringExtra("local_paper_rule_id");
-        //不从表中查，直接拼装上一级的section和module
+        //不从表中查，直接拼装上一级的section和module //TODO 用作标题，及数据库名的命名方式, 注意和第60行的TODO是有关系的
         local_paper_code = getIntent().getStringExtra("local_section") + "_" + getIntent().getStringExtra("local_module");
 
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
@@ -61,8 +61,9 @@ public class PageReadyActivity extends BaseActivity {
         SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite",
                 Constants.DATABASE_VERSION).getWritableDatabase();
         local_music_question = DbUtil.queryToString(mDatabase, Constants.TABLE_PAPER_RULE, Constants.MusicQuestion, Constants.ID, local_paper_rule_id);
-        mTxtHeadTitle.setText(local_paper_code);
         mDatabase.close();
+
+        mTxtHeadTitle.setText(local_paper_code);
     }
 
     /**
@@ -92,6 +93,7 @@ public class PageReadyActivity extends BaseActivity {
         Intent intent = new Intent(this, DoQuestionReadyActivity.class);
         intent.putExtra(Constants.PaperCode, local_paper_code);
         intent.putExtra("local_path", local_path);
+        //TODO 这个路径不一定传，本意是留给doResult中音频的，但老大的音频解析有分段的
         intent.putExtra(Constants.MusicQuestion, local_music_question);
         startActivity(intent);
     }

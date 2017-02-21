@@ -45,7 +45,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     private MediaPlayer mMediaPlayer;
     private SeekBar mSeekBar;
     private boolean isPlay = true;
-    private boolean isfinish = false;
+    private boolean isFinish = false;
 
     //答案相关
     private RecyclerView mRecyclerView;
@@ -55,12 +55,14 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     private AnswerAdapter mContentAdapter;
     private ArrayList<Fragment> mResultContentList = new ArrayList<>();
 
-    //传递而来的数组参数
+    //传递而来的数组参数,省去查表的开销
     private ArrayList<String> mSortList;
     private ArrayList<String> mQuestionIdList;
 
     //路径
     private String local_paper_code, local_path, local_music_question;
+
+    private static final int BEGIN = 0;
 
     private Handler mMediaProgressHandler = new Handler() {
         @Override
@@ -71,12 +73,12 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
                     mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
                     break;
                 case Constants.FLAG_AUDIO_PLAY:
-                    if (isfinish) {
+                    if (isFinish) {
                         mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
                         mImageButton.setBackgroundResource(R.mipmap.icon_media_play);
                         mTxtCurrent.setText(R.string.txt_audio_time_begin);
-                        mSeekBar.setProgress(0);
-                        isfinish = false;
+                        mSeekBar.setProgress(BEGIN);
+                        isFinish = false;
                         isPlay = false;
                         break;
                     }
@@ -139,7 +141,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         //TODO 模拟数据换真实数据
         for (int i = 0; i < mSortList.size(); i++) {
             //数据源
-            SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/TPO18_L1.sqlite", Constants.DATABASE_VERSION).getWritableDatabase();
+            SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite", Constants.DATABASE_VERSION).getWritableDatabase();
             //查表Question
             String mContent = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Content, Constants.ID, mQuestionIdList.get(i));
             String mAnswer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Answer, Constants.ID, mQuestionIdList.get(i));
@@ -169,8 +171,9 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         mViewPager.setOnPageChangeListener(this);
 
         //MediaPlayer
+        //TODO 音频应该改为每题一小段
         String musicPath = local_path + File.separator + local_music_question;
-        LogUtil.i("musicPath = " + musicPath);
+        LogUtil.i("doResult musicPath = " + musicPath);
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnErrorListener(this);
@@ -316,14 +319,13 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onCompletion(MediaPlayer mp) {
         mTxtCurrent.setText(R.string.txt_audio_time_begin);
-        mSeekBar.setProgress(0);
-        isfinish = true;
+        mSeekBar.setProgress(BEGIN);
+        isFinish = true;
     }
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         mp.reset();
-        LogUtil.i("what ? = " + what);
         return false;
     }
 

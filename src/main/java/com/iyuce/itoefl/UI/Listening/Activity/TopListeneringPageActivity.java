@@ -36,17 +36,19 @@ public class TopListeneringPageActivity extends BaseActivity
 
     private TextView mTxtFinish, mTxtTotal;
     private ImageView mImgReward;
-    private String mSavePath;
 
-    private String local_section, local_paper_rule_id;
+    private String local_section;
+
     //保存根数据库的路径
     private String root_path;
-    private static final String SECTION = "section";
-    private static final String MODULE = "module";
-    private static final String ISDOWNLOAD = "isdownload";
 
     //自创的SQL库，路径
     private String downloaded_sql_path;
+
+    //自建的表中的column字段
+    private static final String SECTION = "section";
+    private static final String MODULE = "module";
+    private static final String ISDOWNLOAD = "isdownload";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,6 @@ public class TopListeneringPageActivity extends BaseActivity
 
     private void initView() {
         local_section = getIntent().getStringExtra("local_section");
-        LogUtil.i("local_section = " + local_section);
         TextView textView = (TextView) findViewById(R.id.txt_header_title_item);
         textView.setText(local_section + "\r听力真题");
         findViewById(R.id.txt_header_title_menu).setOnClickListener(this);
@@ -67,7 +68,8 @@ public class TopListeneringPageActivity extends BaseActivity
         mImgReward = (ImageView) findViewById(R.id.img_activity_top_listenering_award);
         mTxtFinish = (TextView) findViewById(R.id.txt_activity_top_listenering_finish);
         mTxtTotal = (TextView) findViewById(R.id.txt_activity_top_listenering_total);
-        mTxtTotal.setText("总共 : 12篇");
+        mTxtFinish.setText("已练习 ：１篇");
+        mTxtTotal.setText("总共 :  6 篇");
 
         //初始化列表数据,从主表中获取到的local_section读取PAPER_RULE表中的RuleName字段
         root_path = Environment.getExternalStorageDirectory().getAbsolutePath() +
@@ -96,9 +98,9 @@ public class TopListeneringPageActivity extends BaseActivity
         SQLiteDatabase mDatabase = DbUtil
                 .getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
         //无表则创建表
-        String isNone = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, "name", Constants.TABLE_NAME, Constants.TABLE_ALREADY_DOWNLOAD);
+        String isNone = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_ALREADY_DOWNLOAD);
         if (TextUtils.equals(isNone, Constants.NONE)) {
-            //本地表的字段
+            //新建本地下载表,表中字段用常量
             String create = "create table " + Constants.TABLE_ALREADY_DOWNLOAD
                     + "(Id integer primary key autoincrement," + SECTION + " text," + MODULE + " text," + ISDOWNLOAD + " text)";
             mDatabase.execSQL(create);
@@ -119,6 +121,8 @@ public class TopListeneringPageActivity extends BaseActivity
                     TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
                     textView.setVisibility(View.VISIBLE);
                     textView.setText(((int) (progress * 100) + "%"));
+                    //TODO 作不可点击,或者直接不响应它的下载状态return
+                    //mAdapter.setClickable
                 }
             }
 
@@ -190,31 +194,33 @@ public class TopListeneringPageActivity extends BaseActivity
 
     @Override
     public void OnPageItemClick(int pos) {
+        //奖杯图标，当全部题目完成后设为亮
         mImgReward.setBackgroundResource(R.mipmap.icon_reward_finish);
-        SQLiteDatabase mDatabase1 = DbUtil.getHelper(this, root_path, Constants.DATABASE_VERSION).getWritableDatabase();
-        local_paper_rule_id = DbUtil.queryToString(mDatabase1, Constants.TABLE_PAPER_RULE, Constants.ID, Constants.RuleName, mDataList.get(pos));
-        mDatabase1.close();
-//        LogUtil.i("local_paper_rule_id = " + local_paper_rule_id);
 
-        //关键是末位路径
-        mSavePath = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE
+        //这个路径用来存放下载的文件，或者传递给下一级
+        String local_path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE
                 + File.separator + local_section + File.separator + mDataList.get(pos);
-
-        //从List的属性中，判断是否下载到本地了，是则进入，否则下载//TODO (或者判断路径中是否存在该文件)
+        //查询download库中的下载表,判断是否下载到本地了，是则进入，否则下载
         SQLiteDatabase mDatabase = DbUtil
                 .getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
         String isExist = DbUtil.queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, Constants.ID, MODULE, mDataList.get(pos));
-        LogUtil.i("isExist = " + isExist);
+        LogUtil.i(mDataList.get(pos) + " isExist = " + isExist);
         if (isExist.equals(Constants.NONE)) {
             mDatabase.close();
-            doDownLoad(pos, mSavePath);
+            doDownLoad(pos, local_path);
             return;
         }
         mDatabase.close();
+
+        //给intent的参数,根据用户所选项，获得PaperRuleName对应的PaperRuleId，以便查找下一张表用
+        SQLiteDatabase mDatabase1 = DbUtil.getHelper(this, root_path, Constants.DATABASE_VERSION).getWritableDatabase();
+        String local_paper_rule_id = DbUtil.queryToString(mDatabase1, Constants.TABLE_PAPER_RULE, Constants.ID, Constants.RuleName, mDataList.get(pos));
+        mDatabase1.close();
+
         Intent intent = new Intent(this, PageReadyActivity.class);
-        intent.putExtra("local_path", mSavePath);
+        intent.putExtra("local_path", local_path);
         intent.putExtra("local_paper_rule_id", local_paper_rule_id);
-        //给子数据库拼装末位路径
+        //留给子数据库拼装末位路径
         intent.putExtra("local_section", local_section);
         intent.putExtra("local_module", mDataList.get(pos));
         startActivity(intent);

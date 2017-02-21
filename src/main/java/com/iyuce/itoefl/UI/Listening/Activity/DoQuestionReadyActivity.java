@@ -46,6 +46,8 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     private ArrayAdapter<String> mSpinnerAdapter;
     private ArrayList<String> mRateList = new ArrayList<>();
 
+    private static final int BEGIN = 0;
+
     //路径
     private String local_paper_code, local_path, local_music_question;
 
@@ -62,7 +64,7 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
                         mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
                         mImageButton.setBackgroundResource(R.mipmap.icon_media_play);
                         mTxtCurrent.setText(R.string.txt_audio_time_begin);
-                        mSeekBar.setProgress(0);
+                        mSeekBar.setProgress(BEGIN);
                         isfinish = false;
                         isPlay = false;
                         break;
@@ -161,6 +163,7 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
                 Intent intent = new Intent(this, DoQuestionActivity.class);
                 intent.putExtra(Constants.PaperCode, local_paper_code);
                 intent.putExtra("local_path", local_path);
+                //TODO 这个路径不一定传，本意是留给doResult中音频的，但老大的音频解析有分段的
                 intent.putExtra(Constants.MusicQuestion, local_music_question);
                 startActivity(intent);
                 break;
@@ -205,14 +208,13 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     @Override
     public void onCompletion(MediaPlayer mp) {
         mTxtCurrent.setText(R.string.txt_audio_time_begin);
-        mSeekBar.setProgress(0);
+        mSeekBar.setProgress(BEGIN);
         isfinish = true;
     }
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         mp.reset();
-        LogUtil.i("what ? = " + what);
         return false;
     }
 
@@ -244,22 +246,22 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     //Spinner
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        LogUtil.i("position = " + position);
+        LogUtil.i("onItemSelected = " + position);
         switch (position) {
             case 0:
                 changeSpeed(1.0f);
                 break;
             case 1:
-                changeSpeed(1.2f);
+                changeSpeed(1.1f);
                 break;
             case 2:
-                changeSpeed(1.4f);
+                changeSpeed(1.2f);
                 break;
             case 3:
-                changeSpeed(1.6f);
+                changeSpeed(1.3f);
                 break;
             case 4:
-                changeSpeed(1.8f);
+                changeSpeed(1.4f);
                 break;
         }
     }

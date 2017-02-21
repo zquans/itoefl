@@ -50,8 +50,9 @@ public class TopListeneringAdapter extends RecyclerView.Adapter<TopListeneringAd
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+        //TODO 修改数据源，这里的数据源这么写是因为，我们没有一级目录,如："TPO31-40"
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE
-                + File.separator + "TPO.sqlite";
+                + File.separator + Constants.SQLITE_TPO;
 
         SQLiteDatabase mDatabase = DbUtil.getHelper(mContext, path, Constants.DATABASE_VERSION).getWritableDatabase();
         dataList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER, null, Constants.PaperName);

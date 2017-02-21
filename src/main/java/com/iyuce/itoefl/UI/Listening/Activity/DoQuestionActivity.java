@@ -28,10 +28,13 @@ import java.util.ArrayList;
 public class DoQuestionActivity extends BaseActivity implements View.OnClickListener,
         FragmentDoQuestion.OnFragmentInteractionListener, BottomDoQuestionAdapter.OnButtonItemClickListener {
 
-    private TextView mTxtTimer, mTxtReview, mTxtNext, mTxtCurrent, mTxtTotal;
-    private ImageButton mImgClose;
+    private TextView mTxtReview;
+    private TextView mTxtNext;
+    private TextView mTxtCurrent;
+    private TextView mTxtTotal;
 
     private BottomSheetDialog mBottomDialog;
+
     private RecyclerView mRecyclerView;
     private ArrayList<String> mDataBottomList = new ArrayList<>();
     private BottomDoQuestionAdapter mAdapter;
@@ -41,7 +44,7 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
     private ArrayList<String> mMusicQuestionList;
     private ArrayList<String> mQuestionIdList;
 
-    //当前题
+    //变量，当前题,预设为1
     private int mCurrentQuestion = 1;
 
     //保存所选答案的题号和内容
@@ -69,11 +72,11 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
         local_path = getIntent().getStringExtra("local_path");
         local_music_question = getIntent().getStringExtra(Constants.MusicQuestion);
 
-        mTxtTimer = (TextView) findViewById(R.id.txt_header_title_menu);
+        TextView mTxtTimer = (TextView) findViewById(R.id.txt_header_title_menu);
         TextView mTxtHeadTitle = (TextView) findViewById(R.id.txt_header_title_item);
         mTxtHeadTitle.setText(local_paper_code);
         mTxtTimer.setText("用时0:48");
-        mImgClose = (ImageButton) findViewById(R.id.imgbtn_header_title);
+        ImageButton mImgClose = (ImageButton) findViewById(R.id.imgbtn_header_title);
         mImgClose.setBackgroundResource(R.mipmap.icon_close);
         mImgClose.setOnClickListener(this);
 
@@ -88,7 +91,9 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
         initBottomSheet();
 
         //数据源
-        SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/TPO18_L1.sqlite", Constants.DATABASE_VERSION).getWritableDatabase();
+        SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite",
+                Constants.DATABASE_VERSION).getWritableDatabase();
+        //传递给Fragment的参数
         mSortList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_QUESTION, null, Constants.Sort);
         mMusicQuestionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_QUESTION, null, Constants.MusicQuestion);
         mQuestionIdList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_QUESTION, null, Constants.QuestionId);
@@ -99,7 +104,7 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
         for (int i = 0; i < mSortList.size(); i++) {
             mDataBottomList.add(mSortList.get(i));
         }
-        //应该传递给Fragment的参数  QuestionId(用于在Fragment中继续查表)、Sort题号、MusicQuestion音频
+        //应该传递给Fragment的参数  QuestionId(用于在Fragment中继续查表)、Sort题号、MusicQuestion音频,默认是pos=0的值
         FragmentDoQuestion frgment = FragmentDoQuestion.newInstance(TOTAL_QUESTION_COUNT, mSortList.get(0), mMusicQuestionList.get(0), mQuestionIdList.get(0), local_path);
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, frgment).commit();
     }
@@ -127,9 +132,11 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
             case R.id.txt_activity_do_question_next:
                 //保存或替换当前题号和所选答案
                 if (mSelectedQuestionList.contains(mCurrentQuestion)) {
+                    //模拟答案,回做某题
                     mSelectedAnswerList.set(mCurrentQuestion - 1, ((int) (Math.random() * 5)) + "");
                 } else {
                     mSelectedQuestionList.add(mCurrentQuestion);
+                    //模拟答案,下一题
                     mSelectedAnswerList.add(((int) (Math.random() * 5)) + "");
                 }
                 LogUtil.i("all = " + mSelectedQuestionList.toString() + "||" + mSelectedAnswerList.toString());
@@ -138,7 +145,9 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
                     Intent intent = new Intent(this, DoResultActivity.class);
                     intent.putExtra(Constants.PaperCode, local_paper_code);
                     intent.putExtra("local_path", local_path);
+                    //TODO 这个路径不一定传，本意是留给doResult中音频的，但老大的音频解析有分段的
                     intent.putExtra(Constants.MusicQuestion, local_music_question);
+                    //留给下一级，省去查表的开销
                     intent.putStringArrayListExtra("mSortList", mSortList);
                     intent.putStringArrayListExtra("mQuestionIdList", mQuestionIdList);
                     startActivity(intent);

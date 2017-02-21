@@ -21,7 +21,6 @@ import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.QuestionAdapter;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
-import com.iyuce.itoefl.Utils.ToastUtil;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -47,16 +46,19 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
     private QuestionAdapter mAdapter;
 
     private MediaPlayer mMediaPlayer;
+    private boolean isFinish = false;
 
     //接收参数
-    private String total_question, current_question, current_music, current_question_id, local_path;
+    private String total_question, current_question, current_music, current_question_id, local_path, local_paper_code;
+
     //查表所得的属性
     private String mQuestionType, mContent, mAnswer;
 
     private OnFragmentInteractionListener mListener;
 
     //获取到的参数  QuestionId(用于在Fragment中继续查表)    Sort题号     MusicQuestion音频
-    public static FragmentDoQuestion newInstance(String total_question, String current_question, String current_music, String current_question_id, String local_path) {
+    public static FragmentDoQuestion newInstance(String total_question,
+                                                 String current_question, String current_music, String current_question_id, String local_path, String local_paper_code) {
         FragmentDoQuestion fragment = new FragmentDoQuestion();
         Bundle args = new Bundle();
         args.putString("total_question", total_question);
@@ -64,6 +66,7 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         args.putString("current_music", current_music);
         args.putString("current_question_id", current_question_id);
         args.putString("local_path", local_path);
+        args.putString("local_paper_code", local_paper_code);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,6 +80,7 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
             current_music = getArguments().getString("current_music");
             current_question_id = getArguments().getString("current_question_id");
             local_path = getArguments().getString("local_path");
+            local_paper_code = getArguments().getString("local_paper_code");
         }
     }
 
@@ -102,7 +106,8 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
 
     private void initView(View view) {
         //数据源
-        SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), local_path + "/TPO18_L1.sqlite", Constants.DATABASE_VERSION).getWritableDatabase();
+        SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), local_path + "/" + local_paper_code + ".sqlite"
+                , Constants.DATABASE_VERSION).getWritableDatabase();
         //查表Question
         mContent = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Content, Constants.ID, current_question_id);
         mQuestionType = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.QuestionType, Constants.ID, current_question_id);
@@ -119,10 +124,6 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
             mRelativeLayout.setVisibility(View.GONE);
         }
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new QuestionAdapter(mDataList, getActivity());
-        mAdapter.setOnQuestionItemClickListener(this);
-        mRecyclerView.setAdapter(mAdapter);
 
         //布置参数到对应控件
         mTxtCurrentQuestion.setText(current_question);
@@ -169,13 +170,21 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         mListener = null;
     }
 
-    //MediaPlayer's Interface
+    public boolean finishMediaPlayer() {
+        return isFinish;
+    }
+
+    //MediaPlayer
     @Override
     public void onCompletion(MediaPlayer mp) {
-        ToastUtil.showMessage(getActivity(), "播放题目录音完毕，显示题号");
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new QuestionAdapter(mDataList, getActivity());
+        mAdapter.setOnQuestionItemClickListener(this);
+        mRecyclerView.setAdapter(mAdapter);
+        isFinish = true;
 
+        //TODO 额外尝试，读取本地json  ,IO流
         String myjson = "";
-        //TODO 读取本地json  ,IO流
         File file = new File("/storage/emulated/0/ITOEFL_JSON/andoird.json");
         try {
             InputStreamReader isr = new InputStreamReader(new FileInputStream(file), "UTF-8");

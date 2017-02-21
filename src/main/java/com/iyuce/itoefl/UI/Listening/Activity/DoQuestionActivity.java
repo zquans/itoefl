@@ -54,6 +54,8 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
     //路径
     private String local_paper_code, local_path, local_music_question;
 
+    private FragmentDoQuestion mFrgment;
+
     @Override
     public void onBackPressed() {
         doBackPageReady();
@@ -105,8 +107,9 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
             mDataBottomList.add(mSortList.get(i));
         }
         //应该传递给Fragment的参数  QuestionId(用于在Fragment中继续查表)、Sort题号、MusicQuestion音频,默认是pos=0的值
-        FragmentDoQuestion frgment = FragmentDoQuestion.newInstance(TOTAL_QUESTION_COUNT, mSortList.get(0), mMusicQuestionList.get(0), mQuestionIdList.get(0), local_path);
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, frgment).commit();
+        mFrgment = FragmentDoQuestion.newInstance(
+                TOTAL_QUESTION_COUNT, mSortList.get(0), mMusicQuestionList.get(0), mQuestionIdList.get(0), local_path, local_paper_code);
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
     }
 
     private void initBottomSheet() {
@@ -130,6 +133,12 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
                 mBottomDialog.show();
                 break;
             case R.id.txt_activity_do_question_next:
+                //若未播放完音频，不允许操作下一步
+                if (!mFrgment.finishMediaPlayer()) {
+                    ToastUtil.showMessage(this, "本题未答完");
+                    return;
+                }
+
                 //保存或替换当前题号和所选答案
                 if (mSelectedQuestionList.contains(mCurrentQuestion)) {
                     //模拟答案,回做某题
@@ -203,8 +212,9 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
      */
     private void SkipToQuestion(int position) {
         mTxtCurrent.setText(mSortList.get(position - 1));
-        FragmentDoQuestion frgment = FragmentDoQuestion
-                .newInstance(TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1), mQuestionIdList.get(position - 1), local_path);
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, frgment).commit();
+        mFrgment = FragmentDoQuestion.newInstance(
+                TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1), mQuestionIdList.get(position - 1),
+                local_path, local_paper_code);
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
     }
 }

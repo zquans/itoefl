@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
+import com.iyuce.itoefl.Model.UserOprate;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.TopListeneringPageAdapter;
 import com.iyuce.itoefl.Utils.DbUtil;
@@ -32,7 +33,11 @@ public class TopListeneringPageActivity extends BaseActivity
 
     private RecyclerView mRecyclerView;
     private TopListeneringPageAdapter mAdapter;
-    private ArrayList<String> mDataList = new ArrayList<>();
+    //列表对象，包含两个库中查询的数据
+    private ArrayList<UserOprate> mUserOprateList = new ArrayList<>();
+    private ArrayList<String> mModuleList = new ArrayList<>();
+    private ArrayList<String> mLoadingList = new ArrayList<>();
+    private ArrayList<String> mDownloadList = new ArrayList<>();
 
     private TextView mTxtFinish, mTxtTotal;
     private ImageView mImgReward;
@@ -46,9 +51,10 @@ public class TopListeneringPageActivity extends BaseActivity
     private String downloaded_sql_path;
 
     //自建的表中的column字段
-    private static final String SECTION = "section";
-    private static final String MODULE = "module";
-    private static final String ISDOWNLOAD = "isdownload";
+    private static final String SECTION = "Section";
+    private static final String MODULE = "Module";
+    private static final String DOWNLOAD = "Download";
+    private static final String LOADING = "Loading";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,17 +81,25 @@ public class TopListeneringPageActivity extends BaseActivity
         root_path = Environment.getExternalStorageDirectory().getAbsolutePath() +
                 Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + Constants.SQLITE_TPO;
         SQLiteDatabase mDatabase = DbUtil.getHelper(this, root_path, Constants.DATABASE_VERSION).getWritableDatabase();
-        mDataList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.RuleName, Constants.PaperCode, local_section);
+        mModuleList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.RuleName, Constants.PaperCode, local_section);
         mDatabase.close();
+        //初始化用户操作数据库(打开或创建)
+        CreateOrOpenDbTable();
 
+        //从两个数据库中查询完成数据拼装，Adapter装载数据
+        UserOprate mUserOprate;
+        for (int i = 0; i < mModuleList.size(); i++) {
+            mUserOprate = new UserOprate();
+            mUserOprate.module = mModuleList.get(i);
+            mUserOprate.download = mDownloadList.get(i);
+            mUserOprate.loading = mLoadingList.get(i);
+            mUserOprateList.add(mUserOprate);
+        }
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_activity_top_listenering_page);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new TopListeneringPageAdapter(this, mDataList);
+        mAdapter = new TopListeneringPageAdapter(this, mUserOprateList);
         mAdapter.setOnPageItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
-
-        //初始化数据库(打开或创建)
-        CreateOrOpenDbTable();
     }
 
     /**
@@ -97,15 +111,25 @@ public class TopListeneringPageActivity extends BaseActivity
                 + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + Constants.SQLITE_DOWNLOAD;
         SQLiteDatabase mDatabase = DbUtil
                 .getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
-        //无表则创建表
+        //判断是否有表
         String isNone = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_ALREADY_DOWNLOAD);
         if (TextUtils.equals(isNone, Constants.NONE)) {
-            //新建本地下载表,表中字段用常量
-            String create = "create table " + Constants.TABLE_ALREADY_DOWNLOAD
-                    + "(Id integer primary key autoincrement," + SECTION + " text," + MODULE + " text," + ISDOWNLOAD + " text)";
+            //无表则创建本地用户操作表,表中字段用常量
+            String create = "create table " + Constants.TABLE_ALREADY_DOWNLOAD + "(Id integer primary key autoincrement,"
+                    + SECTION + " text,"
+                    + MODULE + " text,"
+                    + LOADING + " text,"
+                    + DOWNLOAD + " text)";
             mDatabase.execSQL(create);
         }
+        for (int i = 0; i < mModuleList.size(); i++) {
+            mDownloadList.add(DbUtil.
+                    queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, DOWNLOAD, MODULE, mModuleList.get(i)));
+            mLoadingList.add(DbUtil.
+                    queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, LOADING, MODULE, mModuleList.get(i)));
+        }
         mDatabase.close();
+        LogUtil.i(mDownloadList.toString() + "////" + mLoadingList.toString());
     }
 
     /**
@@ -114,75 +138,76 @@ public class TopListeneringPageActivity extends BaseActivity
     private void doDownLoad(final int pos, final String path) {
         HttpUtil.downLoad(pos, path, new HttpInterface() {
             @Override
+            public void onBefore() {
+                mRecyclerView.getChildAt(pos).setClickable(false);
+            }
+
+            @Override
+            public void onAfter() {
+                mRecyclerView.getChildAt(pos).setClickable(true);
+            }
+
+            @Override
             public void inProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
                 if (pos != -1) {
-                    ImageView imgview = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
-                    imgview.setBackgroundResource(R.mipmap.icon_download_finish);
+                    mUserOprateList.get(pos).loading = "true";
+
+                    ImageView imgDownload = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
+                    ImageView imgReady = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download_ready);
+                    imgDownload.setVisibility(View.VISIBLE);
+                    imgReady.setVisibility(View.INVISIBLE);
                     TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
                     textView.setVisibility(View.VISIBLE);
                     textView.setText(((int) (progress * 100) + "%"));
-                    //TODO 作不可点击,或者直接不响应它的下载状态return
-                    //mAdapter.setClickable
                 }
             }
 
             @Override
             public void doSuccess(File file, Call call, Response response) {
-                //下载到最末路径
+                mUserOprateList.get(pos).loading = "false";
+                mUserOprateList.get(pos).download = "true";
+
                 SQLiteDatabase mDatabase = DbUtil
                         .getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
                 ContentValues mValues = new ContentValues();
                 mValues.put(SECTION, local_section);
-                mValues.put(MODULE, mDataList.get(pos));
-                mValues.put(ISDOWNLOAD, "true");
+                mValues.put(MODULE, mModuleList.get(pos));
+                mValues.put(DOWNLOAD, "true");
+                mValues.put(LOADING, "false");
                 DbUtil.insert(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, mValues);
+                //TODO 用户操作表中，光查MODULE是不够的，还要加查SECTION = "TPO18" 作为筛选条件
                 LogUtil.i(DbUtil.queryToArrayList(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, null, MODULE).toString());
                 mDatabase.close();
                 if (pos != -1) {
                     //下载箭头、文字设为不可见
-                    ImageView imgview = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
-                    imgview.setVisibility(View.INVISIBLE);
+                    ImageView imgDownload = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
+                    ImageView imgProgress = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_progress);
+                    if (pos == 0) {
+                        imgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_first);
+                    } else if (pos == mDownloadList.size() - 1) {
+                        imgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_last);
+                    } else {
+                        imgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_center);
+                    }
+                    imgDownload.setVisibility(View.INVISIBLE);
                     TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
                     textView.setVisibility(View.INVISIBLE);
                 }
             }
         });
-
-//        OkGo.get("http://img.enhance.cn/toefl/zip/listenaudiozip/1402.zip")
-//                .execute(new FileCallback(path, "") {
-//                    @Override
-//                    public void downloadProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
-//                        super.downloadProgress(currentSize, totalSize, progress, networkSpeed);
-//                        LogUtil.i(currentSize + "||" + totalSize + "||" + progress);
-//                        if (pos != -1) {
-//                            ImageView imgview = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
-//                            imgview.setBackgroundResource(R.mipmap.icon_download_finish);
-//                            TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
-//                            textView.setVisibility(View.VISIBLE);
-//                            textView.setText(((int) (progress * 100) + "%"));
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onSuccess(File file, Call call, Response response) {
-//                        if (pos != -1) {
-//                            //下载箭头、文字设为不可见
-//                            ImageView imgview = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
-//                            imgview.setVisibility(View.INVISIBLE);
-//                            TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
-//                            textView.setVisibility(View.INVISIBLE);
-//                        }
-//                    }
-//                });
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.txt_header_title_menu:
-                for (int i = 0; i < mDataList.size(); i++) {
+                for (int i = 0; i < mModuleList.size(); i++) {
+                    //查对象属性,loading或者downloaded，则不下载
+                    if (mUserOprateList.get(i).loading.equals("true") || mUserOprateList.get(i).download.equals("true")) {
+                        continue;
+                    }
                     String path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE
-                            + File.separator + local_section + File.separator + mDataList.get(i);
+                            + File.separator + local_section + File.separator + mModuleList.get(i);
                     doDownLoad(i, path);
                 }
                 break;
@@ -199,12 +224,13 @@ public class TopListeneringPageActivity extends BaseActivity
 
         //这个路径用来存放下载的文件，或者传递给下一级
         String local_path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE
-                + File.separator + local_section + File.separator + mDataList.get(pos);
+                + File.separator + local_section + File.separator + mModuleList.get(pos);
         //查询download库中的下载表,判断是否下载到本地了，是则进入，否则下载
         SQLiteDatabase mDatabase = DbUtil
                 .getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
-        String isExist = DbUtil.queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, Constants.ID, MODULE, mDataList.get(pos));
-        LogUtil.i(mDataList.get(pos) + " isExist = " + isExist);
+        //TODO 用户操作表中，光加MODULE作为条件是不够的，还要加查SECTION作为筛选条件
+        String isExist = DbUtil.queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, Constants.ID, MODULE, mModuleList.get(pos));
+        LogUtil.i(mModuleList.get(pos) + " isExist = " + isExist);
         if (isExist.equals(Constants.NONE)) {
             mDatabase.close();
             doDownLoad(pos, local_path);
@@ -214,7 +240,7 @@ public class TopListeneringPageActivity extends BaseActivity
 
         //给intent的参数,根据用户所选项，获得PaperRuleName对应的PaperRuleId，以便查找下一张表用
         SQLiteDatabase mDatabase1 = DbUtil.getHelper(this, root_path, Constants.DATABASE_VERSION).getWritableDatabase();
-        String local_paper_rule_id = DbUtil.queryToString(mDatabase1, Constants.TABLE_PAPER_RULE, Constants.ID, Constants.RuleName, mDataList.get(pos));
+        String local_paper_rule_id = DbUtil.queryToString(mDatabase1, Constants.TABLE_PAPER_RULE, Constants.ID, Constants.RuleName, mModuleList.get(pos));
         mDatabase1.close();
 
         Intent intent = new Intent(this, PageReadyActivity.class);
@@ -222,7 +248,7 @@ public class TopListeneringPageActivity extends BaseActivity
         intent.putExtra("local_paper_rule_id", local_paper_rule_id);
         //留给子数据库拼装末位路径
         intent.putExtra("local_section", local_section);
-        intent.putExtra("local_module", mDataList.get(pos));
+        intent.putExtra("local_module", mModuleList.get(pos));
         startActivity(intent);
     }
 }

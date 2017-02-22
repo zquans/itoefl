@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.Model.UserOprate;
 import com.iyuce.itoefl.R;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneringPageAdapter.PageViewHolder> {
 
     private Context mContext;
-    private ArrayList<String> mDataList;
+    private ArrayList<UserOprate> mDataList;
 
     private OnPageItemClickListener mListener;
 
@@ -26,7 +27,7 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
         mListener = listener;
     }
 
-    public TopListeneringPageAdapter(Context context, ArrayList<String> list) {
+    public TopListeneringPageAdapter(Context context, ArrayList<UserOprate> list) {
         mContext = context;
         mDataList = list;
     }
@@ -39,19 +40,21 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
 
     @Override
     public void onBindViewHolder(PageViewHolder holder, final int position) {
-        holder.mTxtContent.setText(mDataList.get(position));
-        if (position % 3 == 0) {
-            holder.mTxtContentState.setText("精听次数 : 3");
+        holder.mTxtContent.setText(mDataList.get(position).module);
+
+        //TODO 已经下载过，则隐藏下载相关图标
+        if (mDataList.get(position).download.equals("true")) {
+            holder.mImgDownloadReady.setVisibility(View.INVISIBLE);
             holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_center);
-//            holder.mImgDownload.setBackgroundResource(R.mipmap.icon_download_finish);
-            holder.mImgDownload.setVisibility(View.INVISIBLE);
-            holder.mTxtPracticed.setVisibility(View.VISIBLE);
-            holder.mTxtPracticed.setText("5/6");
+            holder.mTxtContentState.setText("精听次数 1");
+        }
+        //TODO 已经练习过，则显示相关文字，并修改前面的进度图标为亮，隐藏下载相关图标
+        if (position == 2) {
+//            holder.mTxtPracticed.setText("5/6");
         }
         if (position == 0) {
-            holder.mImgDownload.setVisibility(View.VISIBLE);
-            holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_first);
-            holder.mTxtPracticed.setVisibility(View.INVISIBLE);
+            holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_first);
+            holder.mTxtContentState.setText("未下载");
         }
         if (position == mDataList.size() - 1) {
             holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_last);
@@ -72,7 +75,7 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
     class PageViewHolder extends RecyclerView.ViewHolder {
 
         TextView mTxtContent, mTxtContentState, mTxtDownload, mTxtPracticed;
-        ImageView mImgProgress, mImgDownload;
+        ImageView mImgProgress, mImgDownload, mImgDownloadReady;
 
         public PageViewHolder(View itemView) {
             super(itemView);
@@ -82,6 +85,7 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
             mTxtPracticed = (TextView) itemView.findViewById(R.id.txt_recycler_item_top_listenering_page_practiced);
             mImgProgress = (ImageView) itemView.findViewById(R.id.img_recycler_item_top_listenering_page_progress);
             mImgDownload = (ImageView) itemView.findViewById(R.id.img_recycler_item_top_listenering_page_download);
+            mImgDownloadReady = (ImageView) itemView.findViewById(R.id.img_recycler_item_top_listenering_page_download_ready);
         }
     }
 

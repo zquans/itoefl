@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Activity.TopListeneringPageActivity;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.RecyclerItemClickListener;
+import com.iyuce.itoefl.Utils.ToastUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -55,6 +57,14 @@ public class TopListeneringAdapter extends RecyclerView.Adapter<TopListeneringAd
                 + File.separator + Constants.SQLITE_TPO;
 
         SQLiteDatabase mDatabase = DbUtil.getHelper(mContext, path, Constants.DATABASE_VERSION).getWritableDatabase();
+        //从默认主表中查，是否有这张表，其实还应该放在Main中去做
+        String isNone = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER);
+//        LogUtil.i("isNone = " + isNone);
+        if (TextUtils.equals(isNone, Constants.NONE)) {
+            ToastUtil.showMessage(mContext, "网络不佳，请重试");
+            mDatabase.close();
+            return;
+        }
         dataList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER, null, Constants.PaperName);
         mDatabase.close();
 

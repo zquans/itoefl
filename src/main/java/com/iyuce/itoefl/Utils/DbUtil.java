@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 import com.iyuce.itoefl.Common.Constants;
 
@@ -74,6 +75,21 @@ public class DbUtil {
         return target;
     }
 
+    public static String queryToString(SQLiteDatabase database, String table, String[] column, String condition, String[] condition_value) {
+        String target = "none";
+        Cursor cursor = database.query(table, column, condition, null, null, null, null);
+        //开启事务批量操作
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                if (TextUtils.isEmpty(cursor.getString(0))) {
+                    return target;
+                }
+                return cursor.getString(0);
+            }
+        }
+        return target;
+    }
+
     public static String queryToString(SQLiteDatabase database, String table, String column, String condition, String condition_value) {
         String target = "none";
         Cursor cursor = database.query(table, new String[]{column}, condition + "= \"" + condition_value + "\"", null, null, null, null);
@@ -125,6 +141,23 @@ public class DbUtil {
     }
 
     //重载方法,还可以加group,order,having子句条件
+    public static ArrayList<String> queryToArrayList(SQLiteDatabase database, String table, String column, String arg, String where, String order_by) {
+        ArrayList<String> mList = new ArrayList<>();
+        Cursor cursor = database.query(table, new String[]{column}, arg, new String[]{"\"" + where + "\""}, null, null, order_by);
+        //开启事务批量操作
+        database.beginTransaction();
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String target = cursor.getString(0);
+                mList.add(target);
+            }
+        }
+        //批量操作成功,关闭事务
+        database.setTransactionSuccessful();
+        database.endTransaction();
+        return mList;
+    }
+
     public static ArrayList<String> queryToArrayList(SQLiteDatabase database, String table, String order_by, String column_name) {
         ArrayList<String> mList = new ArrayList<>();
         Cursor cursor = database.query(table, null, null, null, null, null, order_by);
@@ -186,5 +219,28 @@ public class DbUtil {
             }
         }
         return mList;
+    }
+
+    public static String cursorToString(Cursor cursor) {
+        String target = "none";
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                target = cursor.getString(0);
+            }
+        }
+        return target;
+    }
+
+    public static String cursorToNotNullString(Cursor cursor) {
+        String target = "none";
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                if (TextUtils.isEmpty(cursor.getString(0))) {
+                    return target;
+                }
+                target = cursor.getString(0);
+            }
+        }
+        return target;
     }
 }

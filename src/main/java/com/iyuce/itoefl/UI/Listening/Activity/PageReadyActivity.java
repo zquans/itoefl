@@ -35,8 +35,7 @@ public class PageReadyActivity extends BaseActivity {
     private void initView() {
         local_path = getIntent().getStringExtra("local_path");
         //遍历文件夹获取sqlite文件名,这个local_sqlite_path其实没用//TODO 除非数据库命名的方式不是用local_section + _ + local_module拼接的
-        local_sqlite_path = unZipFile(new File(local_path + "/TPO18L1.zip"));
-//        LogUtil.i("local_sqlite_path = " + local_sqlite_path);
+//        local_sqlite_path = unZipFile(new File(local_path + "/TPO18L1.zip"));
 
         //通过这个根库的PaperRule表中的Id值，查子库的PaperRule表的字段
         local_paper_rule_id = getIntent().getStringExtra("local_paper_rule_id");

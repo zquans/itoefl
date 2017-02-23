@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +20,7 @@ import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.HttpUtil;
 import com.iyuce.itoefl.Utils.Interface.HttpInterface;
 import com.iyuce.itoefl.Utils.LogUtil;
+import com.iyuce.itoefl.Utils.ZipUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -74,12 +74,9 @@ public class TopListeneringPageActivity extends BaseActivity
         mImgReward = (ImageView) findViewById(R.id.img_activity_top_listenering_award);
         mTxtFinish = (TextView) findViewById(R.id.txt_activity_top_listenering_finish);
         mTxtTotal = (TextView) findViewById(R.id.txt_activity_top_listenering_total);
-        mTxtFinish.setText("已练习 ：１篇");
-        mTxtTotal.setText("总共 :  6 篇");
 
         //初始化列表数据,从主表中获取到的local_section读取PAPER_RULE表中的RuleName字段
-        root_path = Environment.getExternalStorageDirectory().getAbsolutePath() +
-                Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + Constants.SQLITE_TPO;
+        root_path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + Constants.SQLITE_TPO;
         SQLiteDatabase mDatabase = DbUtil.getHelper(this, root_path, Constants.DATABASE_VERSION).getWritableDatabase();
         mModuleList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.RuleName, Constants.PaperCode, local_section);
         mDatabase.close();
@@ -100,6 +97,9 @@ public class TopListeneringPageActivity extends BaseActivity
         mAdapter = new TopListeneringPageAdapter(this, mUserOprateList);
         mAdapter.setOnPageItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
+
+        mTxtFinish.setText("已练习 ：１篇");
+        mTxtTotal.setText("总共 :  " + mModuleList.size() + " 篇");
     }
 
     /**
@@ -107,26 +107,27 @@ public class TopListeneringPageActivity extends BaseActivity
      */
     private void CreateOrOpenDbTable() {
         //打开或者创建我的本地数据库DOWNLOAD
-        downloaded_sql_path = Environment.getExternalStorageDirectory().getAbsolutePath()
-                + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + Constants.SQLITE_DOWNLOAD;
-        SQLiteDatabase mDatabase = DbUtil
-                .getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
-        //判断是否有表
-        String isNone = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_ALREADY_DOWNLOAD);
-        if (TextUtils.equals(isNone, Constants.NONE)) {
-            //无表则创建本地用户操作表,表中字段用常量
-            String create = "create table " + Constants.TABLE_ALREADY_DOWNLOAD + "(Id integer primary key autoincrement,"
-                    + SECTION + " text,"
-                    + MODULE + " text,"
-                    + LOADING + " text,"
-                    + DOWNLOAD + " text)";
-            mDatabase.execSQL(create);
-        }
+        downloaded_sql_path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + Constants.SQLITE_DOWNLOAD;
+        SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
+        String create = "create table if not exists " + Constants.TABLE_ALREADY_DOWNLOAD + "("
+                + Constants.ID + " integer primary key autoincrement,"
+                + SECTION + " text,"
+                + MODULE + " text,"
+                + LOADING + " text,"
+                + DOWNLOAD + " text)";
+        mDatabase.execSQL(create);
+        String query;
         for (int i = 0; i < mModuleList.size(); i++) {
-            mDownloadList.add(DbUtil.
-                    queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, DOWNLOAD, MODULE, mModuleList.get(i)));
-            mLoadingList.add(DbUtil.
-                    queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, LOADING, MODULE, mModuleList.get(i)));
+            query = "select " + DOWNLOAD + " from " + Constants.TABLE_ALREADY_DOWNLOAD + " where " + SECTION + " = ? and " + MODULE + " = ?";
+            mDownloadList.add(DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{local_section, mModuleList.get(i)})));
+            query = "select " + LOADING + " from " + Constants.TABLE_ALREADY_DOWNLOAD + " where " + SECTION + " = ? and " + MODULE + " = ?";
+            mLoadingList.add(DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{local_section, mModuleList.get(i)})));
+//            mDownloadList.add(DbUtil.queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD
+//                    , new String[]{DOWNLOAD}, SECTION + " =? and " + MODULE + " =?", new String[]{local_section, mModuleList.get(i)}));
+//            mLoadingList.add(DbUtil.queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD
+//                    , new String[]{LOADING}, SECTION + " =? and " + MODULE + " =?", new String[]{local_section, mModuleList.get(i)}));
+//            mDownloadList.add(DbUtil.queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, DOWNLOAD, MODULE, mModuleList.get(i)));
+//            mLoadingList.add(DbUtil.queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, LOADING, MODULE, mModuleList.get(i)));
         }
         mDatabase.close();
         LogUtil.i(mDownloadList.toString() + "////" + mLoadingList.toString());
@@ -167,17 +168,21 @@ public class TopListeneringPageActivity extends BaseActivity
                 mUserOprateList.get(pos).loading = "false";
                 mUserOprateList.get(pos).download = "true";
 
-                SQLiteDatabase mDatabase = DbUtil
-                        .getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
+                SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
                 ContentValues mValues = new ContentValues();
                 mValues.put(SECTION, local_section);
                 mValues.put(MODULE, mModuleList.get(pos));
                 mValues.put(DOWNLOAD, "true");
                 mValues.put(LOADING, "false");
                 DbUtil.insert(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, mValues);
-                //TODO 用户操作表中，光查MODULE是不够的，还要加查SECTION = "TPO18" 作为筛选条件
-                LogUtil.i(DbUtil.queryToArrayList(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, null, MODULE).toString());
+                //用户操作表中，SECTION = local_section 作为筛选条件
+                String sql_query = "select " + MODULE + " from " + Constants.TABLE_ALREADY_DOWNLOAD + " where " + SECTION + " = ?";
+                LogUtil.i(DbUtil.cursorToArrayList(mDatabase.rawQuery(sql_query, new String[]{local_section})).toString());
                 mDatabase.close();
+
+                //解压文件夹
+                unZipFile(file, path);
+
                 if (pos != -1) {
                     //下载箭头、文字设为不可见
                     ImageView imgDownload = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
@@ -197,6 +202,20 @@ public class TopListeneringPageActivity extends BaseActivity
         });
     }
 
+    /**
+     * UnZip解压文件夹
+     */
+    private void unZipFile(File file, String path) {
+        try {
+            //解压zip文件到对应路径
+            ZipUtil.UnZipFolder(file.getAbsolutePath(), path);
+            //删除文件夹,有bool值返回，可以根据做操作
+            LogUtil.i("zip delete = " + file.delete());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -206,8 +225,7 @@ public class TopListeneringPageActivity extends BaseActivity
                     if (mUserOprateList.get(i).loading.equals("true") || mUserOprateList.get(i).download.equals("true")) {
                         continue;
                     }
-                    String path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE
-                            + File.separator + local_section + File.separator + mModuleList.get(i);
+                    String path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + local_section + File.separator + mModuleList.get(i);
                     doDownLoad(i, path);
                 }
                 break;
@@ -223,14 +241,14 @@ public class TopListeneringPageActivity extends BaseActivity
         mImgReward.setBackgroundResource(R.mipmap.icon_reward_finish);
 
         //这个路径用来存放下载的文件，或者传递给下一级
-        String local_path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE
-                + File.separator + local_section + File.separator + mModuleList.get(pos);
+        String local_path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + local_section + File.separator + mModuleList.get(pos);
+
         //查询download库中的下载表,判断是否下载到本地了，是则进入，否则下载
-        SQLiteDatabase mDatabase = DbUtil
-                .getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
-        //TODO 用户操作表中，光加MODULE作为条件是不够的，还要加查SECTION作为筛选条件
-        String isExist = DbUtil.queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, Constants.ID, MODULE, mModuleList.get(pos));
-        LogUtil.i(mModuleList.get(pos) + " isExist = " + isExist);
+        SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
+        String sql_query = "select " + Constants.ID + " from " + Constants.TABLE_ALREADY_DOWNLOAD
+                + " where " + SECTION + " = ? and " + MODULE + " = ? ";
+        String isExist = DbUtil.cursorToString(mDatabase.rawQuery(sql_query, new String[]{local_section, mModuleList.get(pos)}));
+        LogUtil.i(local_section + "_" + mModuleList.get(pos) + " isExist = " + isExist);
         if (isExist.equals(Constants.NONE)) {
             mDatabase.close();
             doDownLoad(pos, local_path);

@@ -1,5 +1,6 @@
 package com.iyuce.itoefl.UI.Main;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
+import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 import com.iyuce.itoefl.Utils.ZipUtil;
@@ -89,7 +92,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         File file = new File(filePath);
         LogUtil.i("sql exist = " + file.exists());
         if (!file.exists()) {
-            doDownLoad(path);
+//            doDownLoad(path);
+        } else {
+            LogUtil.i("sql exist = yes");
+            SQLiteDatabase mDatabase = DbUtil.getHelper(this, filePath, Constants.DATABASE_VERSION).getWritableDatabase();
+            String isNone = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER);
+            mDatabase.close();
+            if (TextUtils.equals(isNone, Constants.NONE)) {
+                LogUtil.i("still download the zip");
+                doDownLoad(path);
+            }
         }
     }
 

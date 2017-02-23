@@ -20,7 +20,7 @@ public class Constants {
     //数据库相关
     public static final int DATABASE_VERSION = 1;                   //默认版本号
     public static final String SQLITE_TPO = "TPO.sqlite";           //根库
-    public static final String SQLITE_DOWNLOAD = "downloaded.db";   //用户操作记录库
+    public static final String SQLITE_DOWNLOAD = "DOWNLOAD.db";   //用户操作记录库
     public static final String TABLE_ALREADY_DOWNLOAD = "downloaded_table";  //下载记录表
     public static final String TABLE_ALREADY_PRACTICED = "practiced_table";  //练习记录表
 

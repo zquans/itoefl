@@ -42,11 +42,15 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
 
     //答题选项
     private RecyclerView mRecyclerView;
-    private ArrayList<String> mDataList = new ArrayList<>();
+    private ArrayList<String> mOptionContentList = new ArrayList<>();
+    private ArrayList<String> mOptionCodeList = new ArrayList<>();
     private QuestionAdapter mAdapter;
 
     private MediaPlayer mMediaPlayer;
-    private boolean isFinish = false;
+    //提供给Activity用于判断是否播放录音完毕
+    private boolean isFinish = true;
+    //提供给Activity一个默认答案，如果为空则未答完，不让进入下一题
+    private String answerDefault;
 
     //接收参数
     private String total_question, current_question, current_music, current_question_id, local_path, local_paper_code;
@@ -113,7 +117,8 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         mQuestionType = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.QuestionType, Constants.ID, current_question_id);
         mAnswer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Answer, Constants.ID, current_question_id);
         //查表Option
-        mDataList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId, current_question_id);
+        mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId, current_question_id);
+        mOptionCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Code, Constants.QuestionId, current_question_id);
         mDatabase.close();
 
         mTxtCurrentQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
@@ -170,6 +175,10 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         mListener = null;
     }
 
+    public String selectAnswer() {
+        return answerDefault;
+    }
+
     public boolean finishMediaPlayer() {
         return isFinish;
     }
@@ -178,7 +187,7 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
     @Override
     public void onCompletion(MediaPlayer mp) {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new QuestionAdapter(mDataList, getActivity());
+        mAdapter = new QuestionAdapter(mOptionContentList, getActivity());
         mAdapter.setOnQuestionItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         isFinish = true;
@@ -221,7 +230,8 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
     @Override
     public void onQuestionClick(int pos) {
         resetItemSelectStyle(pos);
-        LogUtil.i("mAnswer = " + mAnswer + ",,and you choose" + pos);
+        answerDefault = mOptionCodeList.get(pos);
+        LogUtil.i("mAnswer = " + mAnswer + ",,and you choose " + mOptionCodeList.get(pos));
     }
 
     /**
@@ -229,7 +239,7 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
      */
     private void resetItemSelectStyle(int pos) {
         TextView textView;
-        for (int i = 0; i < mDataList.size(); i++) {
+        for (int i = 0; i < mOptionContentList.size(); i++) {
             if (pos == i) {
                 textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_item_fragment_do_question);
                 textView.setBackgroundResource(R.drawable.view_bound_orange_stroke);

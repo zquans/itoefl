@@ -1,13 +1,13 @@
 package com.iyuce.itoefl.UI.Listening.Adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.Model.Exercise.ListenResultContent;
 import com.iyuce.itoefl.R;
 
 import java.util.ArrayList;
@@ -17,10 +17,10 @@ import java.util.ArrayList;
  */
 public class ResultContentAdapter extends RecyclerView.Adapter<ResultContentAdapter.MyViewHolder> {
 
-    private ArrayList<String> mDataList;
+    private ArrayList<ListenResultContent> mDataList;
     private Context mContext;
 
-    public ResultContentAdapter(ArrayList<String> mDataList, Context mContext) {
+    public ResultContentAdapter(Context mContext, ArrayList<ListenResultContent> mDataList) {
         this.mDataList = mDataList;
         this.mContext = mContext;
     }
@@ -33,8 +33,13 @@ public class ResultContentAdapter extends RecyclerView.Adapter<ResultContentAdap
 
     @Override
     public void onBindViewHolder(ResultContentAdapter.MyViewHolder holder, int position) {
-        holder.mTxtAnswer.setText(mDataList.get(position));
-        holder.mTxtNumber.setBackgroundColor(Color.parseColor("#990000"));
+        holder.mTxtAnswer.setText(mDataList.get(position).content);
+        holder.mTxtNumber.setText(mDataList.get(position).number);
+        if (mDataList.get(position).state.equals("true")) {
+            holder.mTxtNumber.setBackgroundResource(R.mipmap.icon_answer_cycle_right_full);
+        } else if (mDataList.get(position).state.equals("false")) {
+            holder.mTxtNumber.setBackgroundResource(R.mipmap.icon_answer_cycle_wrong_full);
+        }
     }
 
     @Override

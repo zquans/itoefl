@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.Model.Exercise.ListenResultContent;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.ResultContentAdapter;
 
@@ -20,20 +21,24 @@ public class FragmentDoResult extends Fragment implements View.OnClickListener {
     private TextView mTxtPageMiddle, mTxtPageRight, mTxtQuestion;
 
     private RecyclerView mRecyclerView;
+    private ArrayList<ListenResultContent> mResultList = new ArrayList<>();
     private ArrayList<String> mOptionList;
     private ResultContentAdapter mAdapter;
 
     private OnFragmentInteractionListener mListener;
 
-    private String page_current, page_total, page_question;
+    private String page_current, page_total, page_question, answer_select, answer_option;
 
-    public static FragmentDoResult newInstance(String page_current, String page_total, String page_question, ArrayList<String> option_list) {
+    public static FragmentDoResult newInstance(String page_current, String page_total, String page_question,
+                                               ArrayList<String> option_list, String answer_select, String answer_option) {
         FragmentDoResult fragment = new FragmentDoResult();
         Bundle bundle = new Bundle();
         bundle.putString("page_current", page_current);
         bundle.putString("page_total", page_total);
         bundle.putString("page_question", page_question);
         bundle.putStringArrayList("option_list", option_list);
+        bundle.putString("answer_select", answer_select);
+        bundle.putString("answer_option", answer_option);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -46,6 +51,8 @@ public class FragmentDoResult extends Fragment implements View.OnClickListener {
             page_total = getArguments().getString("page_total");
             page_question = getArguments().getString("page_question");
             mOptionList = getArguments().getStringArrayList("option_list");
+            answer_select = getArguments().getString("answer_select");
+            answer_option = getArguments().getString("answer_option");
         }
     }
 
@@ -68,8 +75,24 @@ public class FragmentDoResult extends Fragment implements View.OnClickListener {
         mTxtQuestion.setText(page_question);
         mTxtPageMiddle.setOnClickListener(this);
 
+        ListenResultContent result;
+        for (int i = 'A'; i < 'E'; i++) {
+            result = new ListenResultContent();
+            result.number = String.valueOf((char) i);
+            mResultList.add(result);
+        }
+        for (int i = 0; i < mOptionList.size(); i++) {
+            mResultList.get(i).content = mOptionList.get(i);
+            if (mResultList.get(i).number.equals(answer_select)) {
+                mResultList.get(i).state = "false";
+            } else if (mResultList.get(i).number.equals(answer_option)) {
+                mResultList.get(i).state = "true";
+            } else {
+                mResultList.get(i).state = "none";
+            }
+        }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new ResultContentAdapter(mOptionList, getActivity());
+        mAdapter = new ResultContentAdapter(getActivity(), mResultList);
         mRecyclerView.setAdapter(mAdapter);
     }
 

@@ -9,6 +9,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -42,6 +43,7 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
     private String TOTAL_QUESTION_COUNT;
     private ArrayList<String> mSortList;
     private ArrayList<String> mMusicQuestionList;
+    private ArrayList<String> mMusicAnswerList;
     private ArrayList<String> mQuestionIdList;
 
     //变量，当前题,预设为1
@@ -50,6 +52,8 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
     //保存所选答案的题号和内容
     private ArrayList<Integer> mSelectedQuestionList = new ArrayList<>();
     private ArrayList<String> mSelectedAnswerList = new ArrayList<>();
+    //表中正确答案数组
+    private ArrayList<String> mOptionAnswerList = new ArrayList<>();
 
     //路径
     private String local_paper_code, local_path, local_music_question;
@@ -99,6 +103,10 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
         mSortList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_QUESTION, null, Constants.Sort);
         mMusicQuestionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_QUESTION, null, Constants.MusicQuestion);
         mQuestionIdList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_QUESTION, null, Constants.QuestionId);
+        //这个直接传给DoResult就好
+        mMusicAnswerList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_QUESTION, null, Constants.MusicAnswer);
+        //查另一张表,正确答案的数组
+        mOptionAnswerList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.Answer);
         mDatabase.close();
 
         TOTAL_QUESTION_COUNT = String.valueOf(mSortList.size());
@@ -135,18 +143,23 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
             case R.id.txt_activity_do_question_next:
                 //若未播放完音频，不允许操作下一步
                 if (!mFrgment.finishMediaPlayer()) {
+                    ToastUtil.showMessage(this, "未播放完录音");
+                    return;
+                }
+                //若未选择答案，也不允许操作下一步
+                if (TextUtils.isEmpty(mFrgment.selectAnswer())) {
                     ToastUtil.showMessage(this, "本题未答完");
                     return;
                 }
 
                 //保存或替换当前题号和所选答案
                 if (mSelectedQuestionList.contains(mCurrentQuestion)) {
-                    //模拟答案,回做某题
-                    mSelectedAnswerList.set(mCurrentQuestion - 1, ((int) (Math.random() * 5)) + "");
+                    //替换答案
+                    mSelectedAnswerList.set(mCurrentQuestion - 1, mFrgment.selectAnswer());
                 } else {
+                    //保存答案
                     mSelectedQuestionList.add(mCurrentQuestion);
-                    //模拟答案,下一题
-                    mSelectedAnswerList.add(((int) (Math.random() * 5)) + "");
+                    mSelectedAnswerList.add(mFrgment.selectAnswer());
                 }
                 LogUtil.i("all = " + mSelectedQuestionList.toString() + "||" + mSelectedAnswerList.toString());
                 //答完,进入下一个页面
@@ -156,6 +169,13 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
                     intent.putExtra("local_path", local_path);
                     //TODO 这个路径不一定传，本意是留给doResult中音频的，但老大的音频解析有分段的
                     intent.putExtra(Constants.MusicQuestion, local_music_question);
+                    //TODO 所以这次我传了这个，所有音频答案末位路径的数组
+                    intent.putStringArrayListExtra(Constants.MusicAnswer, mMusicAnswerList);
+                    //TODO 以及这两个，正确答案的数组，我的选择结果的数组
+                    intent.putStringArrayListExtra("mOptionAnswerList", mOptionAnswerList);
+//                    intent.putStringArrayListExtra(Constants.MusicAnswer, mSelectedQuestionList);
+                    intent.putStringArrayListExtra("mSelectedAnswerList", mSelectedAnswerList);
+                    LogUtil.i(mSelectedAnswerList + mOptionAnswerList.toString());
                     //留给下一级，省去查表的开销
                     intent.putStringArrayListExtra("mSortList", mSortList);
                     intent.putStringArrayListExtra("mQuestionIdList", mQuestionIdList);
@@ -191,7 +211,7 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
         mBottomDialog.dismiss();
         //TODO 保存所作题目和对应答案,暂不存入数据库，当所有题目答完，将ArrayList.toString存入数据库
         if (mSelectedQuestionList.contains(position)) {
-            mSelectedAnswerList.set(position - 1, ((int) (Math.random() * 5)) + "");
+            mSelectedAnswerList.set(position - 1, mFrgment.selectAnswer());
 
             SkipToQuestion(position);
 

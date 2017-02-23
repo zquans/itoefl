@@ -36,8 +36,6 @@ public class ResultTitleAdapter extends RecyclerView.Adapter<ResultTitleAdapter.
     @Override
     public void onBindViewHolder(ResultTitleAdapter.MyViewHolder holder, int position) {
         holder.mTitle.setText(mDataList.get(position).question_name);
-//        if (mDataList.get(position).question_state)
-//            holder.mImg.setBackgroundResource(R.mipmap.icon_answer_talk_right_full);
         if (!mDataList.get(position).question_is_select) {
             //未选中的
             holder.mTitle.setTextColor(Color.parseColor("#000000"));

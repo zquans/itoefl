@@ -58,6 +58,10 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     //传递而来的数组参数,省去查表的开销
     private ArrayList<String> mSortList;
     private ArrayList<String> mQuestionIdList;
+    //答案相关的数组
+    private ArrayList<String> mMusicAnswerList;
+    private ArrayList<String> mOptionAnswerList;
+    private ArrayList<String> mSelectedAnswerList;
 
     //路径
     private String local_paper_code, local_path, local_music_question;
@@ -126,6 +130,11 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         local_music_question = getIntent().getStringExtra(Constants.MusicQuestion);
         mSortList = getIntent().getStringArrayListExtra("mSortList");
         mQuestionIdList = getIntent().getStringArrayListExtra("mQuestionIdList");
+        //答案相关数组
+        mMusicAnswerList = getIntent().getStringArrayListExtra(Constants.MusicAnswer);
+        mOptionAnswerList = getIntent().getStringArrayListExtra("mOptionAnswerList");
+        mSelectedAnswerList = getIntent().getStringArrayListExtra("mSelectedAnswerList");
+
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(this);
         TextView mTxtHeadTitle = (TextView) findViewById(R.id.txt_header_title_item);
@@ -138,9 +147,8 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         mImageButton.setOnClickListener(this);
         mSeekBar.setOnSeekBarChangeListener(this);
 
-        //TODO 模拟数据换真实数据
+        //数据源
         for (int i = 0; i < mSortList.size(); i++) {
-            //数据源
             SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite", Constants.DATABASE_VERSION).getWritableDatabase();
             //查表Question
             String mContent = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Content, Constants.ID, mQuestionIdList.get(i));
@@ -150,12 +158,18 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             mDatabase.close();
             ListenResult result = new ListenResult();
             result.question_name = mSortList.get(i);
-            result.question_state = i % 2 == 0;
+            result.choice_right = mOptionAnswerList.get(i);
+            result.choice_user = mSelectedAnswerList.get(i);
+            if (result.choice_right.equals(result.choice_user)) {
+                result.question_state = true;
+            }
+            //如果i=0，默认选中
             result.question_is_select = i == 0;
             //传递给Fragment数据,可以增加参数
-            FragmentDoResult mFrgDoResult = FragmentDoResult.newInstance(result.question_name, mSortList.size() + "", mContent, mOptionList);
+            FragmentDoResult mFragmentDoResult = FragmentDoResult.newInstance(
+                    result.question_name, mSortList.size() + "", mContent, mOptionList, mSelectedAnswerList.get(i), mOptionAnswerList.get(i));
             mResultTitleList.add(result);
-            mResultContentList.add(mFrgDoResult);
+            mResultContentList.add(mFragmentDoResult);
         }
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_activity_do_result_question);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -210,6 +224,16 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
      * 切换题目时候的动画效果
      */
     private void changeQuestion(int position) {
+        //切换音频
+        mMediaPlayer.reset();
+        try {
+            mMediaPlayer.setDataSource(local_path + File.separator + mMusicAnswerList.get(position));
+            mMediaPlayer.prepare();
+            LogUtil.i("new path = " + local_path + File.separator + mMusicAnswerList.get(position));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         //修改选中项的数据
         for (int i = 0; i < mResultTitleList.size(); i++) {
             mResultTitleList.get(i).question_is_select = false;

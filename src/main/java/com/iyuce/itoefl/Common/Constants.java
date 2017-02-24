@@ -5,6 +5,9 @@ package com.iyuce.itoefl.Common;
  */
 public class Constants {
 
+    //权限
+    public static final int CODE_WRITE_EXTERNAL_STORAGE = 0x0002;
+
     public static final String URL_WEB_ONE_TO_ONE = "http://www.iyuce.com/m/appjxy.html";
 
     public static final String NONE = "none";

@@ -22,14 +22,8 @@ import com.iyuce.itoefl.UI.Listening.Adapter.QuestionAdapter;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQuestionItemClickListener,
@@ -125,6 +119,7 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         mTxtTotalQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
         mTxtQuestionContent = (TextView) view.findViewById(R.id.txt_fragment_do_result_title);
         mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_fragment_do_result_page);
+        //TODO 布局问题，会导致原生谷歌系统找不到view,造成空指针异常
         if (TextUtils.equals(mQuestionType, "SINGLE")) {
             mRelativeLayout.setVisibility(View.GONE);
         }
@@ -193,26 +188,26 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         isFinish = true;
 
         //TODO 额外尝试，读取本地json  ,IO流
-        String myjson = "";
-        File file = new File("/storage/emulated/0/ITOEFL_JSON/andoird.json");
-        try {
-            InputStreamReader isr = new InputStreamReader(new FileInputStream(file), "UTF-8");
-            BufferedReader br = new BufferedReader(isr);
-            String mimeTypeLine;
-            while ((mimeTypeLine = br.readLine()) != null) {
-                myjson = myjson + mimeTypeLine;
-            }
-//            myjson = myjson.substring(1);
-            JSONObject obj = new JSONObject(myjson);
-            if (obj.getString("code").equals("0")) {
-                JSONArray data = obj.getJSONArray("data");
-                obj = data.getJSONObject(0);
-                String mVersionURL = obj.getString("apkurl");
-                LogUtil.i("my local json = VersionURL = " + mVersionURL);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        String myjson = "";
+//        File file = new File("/storage/emulated/0/ITOEFL_JSON/andoird.json");
+//        try {
+//            InputStreamReader isr = new InputStreamReader(new FileInputStream(file), "UTF-8");
+//            BufferedReader br = new BufferedReader(isr);
+//            String mimeTypeLine;
+//            while ((mimeTypeLine = br.readLine()) != null) {
+//                myjson = myjson + mimeTypeLine;
+//            }
+////            myjson = myjson.substring(1);
+//            JSONObject obj = new JSONObject(myjson);
+//            if (obj.getString("code").equals("0")) {
+//                JSONArray data = obj.getJSONArray("data");
+//                obj = data.getJSONObject(0);
+//                String mVersionURL = obj.getString("apkurl");
+//                LogUtil.i("my local json = VersionURL = " + mVersionURL);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

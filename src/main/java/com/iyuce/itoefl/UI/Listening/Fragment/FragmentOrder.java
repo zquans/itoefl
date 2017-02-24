@@ -35,7 +35,7 @@ public class FragmentOrder extends Fragment {
     private void initView(View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_top_listenering_order);
         dataList.add("TPO 01-48");
-        mAdapter = new TopListeneringAdapter(getActivity(), dataList, 5);
+        mAdapter = new TopListeneringAdapter(getActivity(), dataList, 4);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);
     }

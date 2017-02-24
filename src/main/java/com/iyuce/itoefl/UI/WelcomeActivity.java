@@ -29,9 +29,14 @@ public class WelcomeActivity extends AppCompatActivity {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
-                WelcomeActivity.this.finish();
+                toMain();
             }
         }, 1000);
+    }
+
+    private void toMain() {
+        startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+        overridePendingTransition(R.anim.screen_zoom_in, R.anim.screen_zoom_out);
+        WelcomeActivity.this.finish();
     }
 }

@@ -20,6 +20,8 @@ import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.HttpUtil;
 import com.iyuce.itoefl.Utils.Interface.HttpInterface;
 import com.iyuce.itoefl.Utils.LogUtil;
+import com.iyuce.itoefl.Utils.NetUtil;
+import com.iyuce.itoefl.Utils.ToastUtil;
 import com.iyuce.itoefl.Utils.ZipUtil;
 
 import java.io.File;
@@ -103,6 +105,16 @@ public class TopListeneringPageActivity extends BaseActivity
 
         mTxtFinish.setText("已练习 ：１篇");
         mTxtTotal.setText("总共 :  " + mModuleList.size() + " 篇");
+
+        //网络已连接
+        if (NetUtil.isConnected(this)) {
+            //但不是WIFI
+            if (!NetUtil.isWifi(this)) {
+                ToastUtil.showMessage(this, "当前不在WIFI环境，下载将消耗较多流量");
+            }
+        } else {
+            ToastUtil.showMessage(this, "未连接网络");
+        }
     }
 
     /**

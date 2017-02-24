@@ -36,6 +36,7 @@ public class TopListeneringPageActivity extends BaseActivity
     //列表对象，包含两个库中查询的数据
     private ArrayList<UserOprate> mUserOprateList = new ArrayList<>();
     private ArrayList<String> mModuleList = new ArrayList<>();
+    private ArrayList<String> mUrlList = new ArrayList<>();
     private ArrayList<String> mLoadingList = new ArrayList<>();
     private ArrayList<String> mDownloadList = new ArrayList<>();
 
@@ -79,7 +80,9 @@ public class TopListeneringPageActivity extends BaseActivity
         root_path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + Constants.SQLITE_TPO;
         SQLiteDatabase mDatabase = DbUtil.getHelper(this, root_path, Constants.DATABASE_VERSION).getWritableDatabase();
         mModuleList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.RuleName, Constants.PaperCode, local_section);
+        mUrlList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.DownUrl, Constants.PaperCode, local_section);
         mDatabase.close();
+        LogUtil.i("Url = " + mUrlList.toString());
         //初始化用户操作数据库(打开或创建)
         CreateOrOpenDbTable();
 
@@ -136,8 +139,8 @@ public class TopListeneringPageActivity extends BaseActivity
     /**
      * 给定几个参数，position,Url,path
      */
-    private void doDownLoad(final int pos, final String path) {
-        HttpUtil.downLoad(pos, path, new HttpInterface() {
+    private void doDownLoad(final int pos, String url, final String path) {
+        HttpUtil.downLoad(url, path, new HttpInterface() {
             @Override
             public void onBefore() {
                 mRecyclerView.getChildAt(pos).setClickable(false);
@@ -220,13 +223,16 @@ public class TopListeneringPageActivity extends BaseActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.txt_header_title_menu:
+                String url;
+                String path;
                 for (int i = 0; i < mModuleList.size(); i++) {
                     //查对象属性,loading或者downloaded，则不下载
                     if (mUserOprateList.get(i).loading.equals("true") || mUserOprateList.get(i).download.equals("true")) {
                         continue;
                     }
-                    String path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + local_section + File.separator + mModuleList.get(i);
-                    doDownLoad(i, path);
+                    path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + local_section + File.separator + mModuleList.get(i);
+                    url = "http://xm.iyuce.com/app/" + local_section + "_" + mModuleList.get(i) + ".zip";
+                    doDownLoad(i, url, path);
                 }
                 break;
             case R.id.imgbtn_header_title:
@@ -251,7 +257,8 @@ public class TopListeneringPageActivity extends BaseActivity
         LogUtil.i(local_section + "_" + mModuleList.get(pos) + " isExist = " + isExist);
         if (isExist.equals(Constants.NONE)) {
             mDatabase.close();
-            doDownLoad(pos, local_path);
+            String url = "http://xm.iyuce.com/app/" + local_section + "_" + mModuleList.get(pos) + ".zip";
+            doDownLoad(pos, url, local_path);
             return;
         }
         mDatabase.close();

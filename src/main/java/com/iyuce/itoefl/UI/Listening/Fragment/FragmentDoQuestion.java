@@ -48,7 +48,7 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
 
     private MediaPlayer mMediaPlayer;
     //提供给Activity用于判断是否播放录音完毕
-    private boolean isFinish = true;
+    private boolean isFinish = false;
     //提供给Activity一个默认答案，如果为空则未答完，不让进入下一题
     private String answerDefault;
 

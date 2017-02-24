@@ -59,7 +59,6 @@ public class TopListeneringAdapter extends RecyclerView.Adapter<TopListeneringAd
         SQLiteDatabase mDatabase = DbUtil.getHelper(mContext, path, Constants.DATABASE_VERSION).getWritableDatabase();
         //从默认主表中查，是否有这张表，其实还应该放在Main中去做
         String isNone = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER);
-//        LogUtil.i("isNone = " + isNone);
         if (TextUtils.equals(isNone, Constants.NONE)) {
             ToastUtil.showMessage(mContext, "网络不佳，请重试");
             mDatabase.close();

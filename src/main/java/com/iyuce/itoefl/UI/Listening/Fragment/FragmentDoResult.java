@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class FragmentDoResult extends Fragment implements View.OnClickListener {
 
-    private TextView mTxtPageMiddle, mTxtPageRight, mTxtQuestion;
+    private TextView mTxtPageMiddle, mTxtPageRight, mTxtQuestion, mTxtTimeCount;
 
     private RecyclerView mRecyclerView;
     private ArrayList<ListenResultContent> mResultList = new ArrayList<>();
@@ -27,10 +27,10 @@ public class FragmentDoResult extends Fragment implements View.OnClickListener {
 
     private OnFragmentInteractionListener mListener;
 
-    private String page_current, page_total, page_question, answer_select, answer_option;
+    private String page_current, page_total, page_question, answer_select, answer_option, time_count;
 
     public static FragmentDoResult newInstance(String page_current, String page_total, String page_question,
-                                               ArrayList<String> option_list, String answer_select, String answer_option) {
+                                               ArrayList<String> option_list, String answer_select, String answer_option, String time_count) {
         FragmentDoResult fragment = new FragmentDoResult();
         Bundle bundle = new Bundle();
         bundle.putString("page_current", page_current);
@@ -39,6 +39,7 @@ public class FragmentDoResult extends Fragment implements View.OnClickListener {
         bundle.putStringArrayList("option_list", option_list);
         bundle.putString("answer_select", answer_select);
         bundle.putString("answer_option", answer_option);
+        bundle.putString("time_count", time_count);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -53,6 +54,7 @@ public class FragmentDoResult extends Fragment implements View.OnClickListener {
             mOptionList = getArguments().getStringArrayList("option_list");
             answer_select = getArguments().getString("answer_select");
             answer_option = getArguments().getString("answer_option");
+            time_count = getArguments().getString("time_count");
         }
     }
 
@@ -69,12 +71,15 @@ public class FragmentDoResult extends Fragment implements View.OnClickListener {
         mTxtPageMiddle = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
         mTxtPageRight = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
         mTxtQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_title);
+        mTxtTimeCount = (TextView) view.findViewById(R.id.txt_fragment_do_result_time_count);
 
         mTxtPageMiddle.setText(page_current);
         mTxtPageRight.setText(page_total);
         mTxtQuestion.setText(page_question);
+        mTxtTimeCount.setText("本题用时 " + time_count + " 秒");
         mTxtPageMiddle.setOnClickListener(this);
 
+        //TODO 用户的选择，正确答案，这两种设置应该更优雅
         ListenResultContent result;
         for (int i = 'A'; i < 'E'; i++) {
             result = new ListenResultContent();

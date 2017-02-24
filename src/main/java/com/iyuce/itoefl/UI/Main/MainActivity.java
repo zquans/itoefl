@@ -92,7 +92,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         File file = new File(filePath);
         LogUtil.i("sql exist = " + file.exists());
         if (!file.exists()) {
-//            doDownLoad(path);
+            doDownLoad(path);
         } else {
             LogUtil.i("sql exist = yes");
             SQLiteDatabase mDatabase = DbUtil.getHelper(this, filePath, Constants.DATABASE_VERSION).getWritableDatabase();

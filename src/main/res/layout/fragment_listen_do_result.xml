@@ -69,20 +69,20 @@
             android:padding="@dimen/all_padding" />
 
         <TextView
-            android:id="@+id/txt_fragment_do_result_bottom"
+            android:id="@+id/txt_fragment_do_result_time_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/recycler_fragment_do_result"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:gravity="center"
-            android:text="本题用时 13 秒" />
+            android:text="本题用时 5 秒" />
 
         <View
             android:id="@+id/line_fragment_do_result_bottom"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_below="@+id/txt_fragment_do_result_bottom"
+            android:layout_below="@+id/txt_fragment_do_result_time_count"
             android:layout_margin="@dimen/all_margin"
             android:background="#cccccc" />
 

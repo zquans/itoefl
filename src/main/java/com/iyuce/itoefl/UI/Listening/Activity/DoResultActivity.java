@@ -62,6 +62,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     private ArrayList<String> mMusicAnswerList;
     private ArrayList<String> mOptionAnswerList;
     private ArrayList<String> mSelectedAnswerList;
+    private ArrayList<String> mTimeCountList;
 
     //路径
     private String local_paper_code, local_path, local_music_question;
@@ -134,6 +135,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         mMusicAnswerList = getIntent().getStringArrayListExtra(Constants.MusicAnswer);
         mOptionAnswerList = getIntent().getStringArrayListExtra("mOptionAnswerList");
         mSelectedAnswerList = getIntent().getStringArrayListExtra("mSelectedAnswerList");
+        mTimeCountList = getIntent().getStringArrayListExtra("mTimeCountList");
 
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(this);
@@ -166,8 +168,8 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             //如果i=0，默认选中
             result.question_is_select = i == 0;
             //传递给Fragment数据,可以增加参数
-            FragmentDoResult mFragmentDoResult = FragmentDoResult.newInstance(
-                    result.question_name, mSortList.size() + "", mContent, mOptionList, mSelectedAnswerList.get(i), mOptionAnswerList.get(i));
+            FragmentDoResult mFragmentDoResult = FragmentDoResult.newInstance(result.question_name,
+                    mSortList.size() + "", mContent, mOptionList, mSelectedAnswerList.get(i), mOptionAnswerList.get(i), mTimeCountList.get(i));
             mResultTitleList.add(result);
             mResultContentList.add(mFragmentDoResult);
         }
@@ -229,7 +231,6 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         try {
             mMediaPlayer.setDataSource(local_path + File.separator + mMusicAnswerList.get(position));
             mMediaPlayer.prepare();
-            LogUtil.i("new path = " + local_path + File.separator + mMusicAnswerList.get(position));
         } catch (IOException e) {
             e.printStackTrace();
         }

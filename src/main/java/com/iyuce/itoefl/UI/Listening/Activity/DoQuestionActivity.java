@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,10 +27,13 @@ import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DoQuestionActivity extends BaseActivity implements View.OnClickListener,
         FragmentDoQuestion.OnFragmentInteractionListener, BottomDoQuestionAdapter.OnButtonItemClickListener {
 
+    private TextView mTxtTimer;
     private TextView mTxtReview;
     private TextView mTxtNext;
     private TextView mTxtCurrent;
@@ -60,9 +65,28 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
 
     private FragmentDoQuestion mFrgment;
 
+    //计时器
+    private Timer mTimer = new Timer();
+    private int TimeCount = 0;
+    private int lastTimeCount = 0;
+    private ArrayList<String> mTimeCountList = new ArrayList<>();
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            mTxtTimer.setText("答题用时 " + msg.arg1 + " 秒");
+        }
+    };
+
     @Override
     public void onBackPressed() {
         doBackPageReady();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mTimer.cancel();
     }
 
     @Override
@@ -78,10 +102,10 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
         local_path = getIntent().getStringExtra("local_path");
         local_music_question = getIntent().getStringExtra(Constants.MusicQuestion);
 
-        TextView mTxtTimer = (TextView) findViewById(R.id.txt_header_title_menu);
+        mTxtTimer = (TextView) findViewById(R.id.txt_header_title_menu);
         TextView mTxtHeadTitle = (TextView) findViewById(R.id.txt_header_title_item);
         mTxtHeadTitle.setText(local_paper_code);
-        mTxtTimer.setText("用时0:48");
+        mTxtTimer.setText("答题用时 0 秒");
         ImageButton mImgClose = (ImageButton) findViewById(R.id.imgbtn_header_title);
         mImgClose.setBackgroundResource(R.mipmap.icon_close);
         mImgClose.setOnClickListener(this);
@@ -118,6 +142,24 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
         mFrgment = FragmentDoQuestion.newInstance(
                 TOTAL_QUESTION_COUNT, mSortList.get(0), mMusicQuestionList.get(0), mQuestionIdList.get(0), local_path, local_paper_code);
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
+
+        //执行计时任务
+        toCountTime();
+    }
+
+    private void toCountTime() {
+        mTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                //判断是否在播放录音，是则暂停累加数字
+                if (mFrgment.finishMediaPlayer()) {
+                    TimeCount++;
+                    Message msg = Message.obtain();
+                    msg.arg1 = TimeCount;
+                    mHandler.sendMessage(msg);
+                }
+            }
+        }, 500, 1000);
     }
 
     private void initBottomSheet() {
@@ -160,6 +202,9 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
                     //保存答案
                     mSelectedQuestionList.add(mCurrentQuestion);
                     mSelectedAnswerList.add(mFrgment.selectAnswer());
+                    //保存答题时间,并标记上一次被存的时间，做减法
+                    mTimeCountList.add(String.valueOf(TimeCount - lastTimeCount));
+                    lastTimeCount = TimeCount;
                 }
                 LogUtil.i("all = " + mSelectedQuestionList.toString() + "||" + mSelectedAnswerList.toString());
                 //答完,进入下一个页面
@@ -171,16 +216,16 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
                     intent.putExtra(Constants.MusicQuestion, local_music_question);
                     //TODO 所以这次我传了这个，所有音频答案末位路径的数组
                     intent.putStringArrayListExtra(Constants.MusicAnswer, mMusicAnswerList);
-                    //TODO 以及这两个，正确答案的数组，我的选择结果的数组
+                    //TODO 以及这三个，正确答案的数组，我的选择的数组,答题用时数组
                     intent.putStringArrayListExtra("mOptionAnswerList", mOptionAnswerList);
 //                    intent.putStringArrayListExtra(Constants.MusicAnswer, mSelectedQuestionList);
                     intent.putStringArrayListExtra("mSelectedAnswerList", mSelectedAnswerList);
-                    LogUtil.i(mSelectedAnswerList + mOptionAnswerList.toString());
+                    intent.putStringArrayListExtra("mTimeCountList", mTimeCountList);
+                    LogUtil.i(mSelectedAnswerList + mOptionAnswerList.toString() + mTimeCountList);
                     //留给下一级，省去查表的开销
                     intent.putStringArrayListExtra("mSortList", mSortList);
                     intent.putStringArrayListExtra("mQuestionIdList", mQuestionIdList);
                     startActivity(intent);
-                    LogUtil.i("all done " + mSelectedQuestionList.toString() + "||" + mSelectedAnswerList.toString());
                     break;
                 }
                 //或者未答完，换下一题

@@ -244,9 +244,15 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     }
 
     //Spinner
+    private boolean isFirstSelect = true;
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         LogUtil.i("onItemSelected = " + position);
+        if (isFirstSelect) {
+            isFirstSelect = false;
+            return;
+        }
         switch (position) {
             case 0:
                 changeSpeed(1.0f);

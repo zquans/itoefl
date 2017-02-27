@@ -153,10 +153,12 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         for (int i = 0; i < mSortList.size(); i++) {
             SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite", Constants.DATABASE_VERSION).getWritableDatabase();
             //查表Question
+            String mQuestionType = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.QuestionType, Constants.ID, mQuestionIdList.get(i));
             String mContent = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Content, Constants.ID, mQuestionIdList.get(i));
             String mAnswer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Answer, Constants.ID, mQuestionIdList.get(i));
             //查表Option
-            ArrayList<String> mOptionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId, mQuestionIdList.get(i));
+            ArrayList<String> mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId, mQuestionIdList.get(i));
+            ArrayList<String> mOptionCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Code, Constants.QuestionId, mQuestionIdList.get(i));
             mDatabase.close();
             ListenResult result = new ListenResult();
             result.question_name = mSortList.get(i);
@@ -169,7 +171,8 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             result.question_is_select = i == 0;
             //传递给Fragment数据,可以增加参数
             FragmentDoResult mFragmentDoResult = FragmentDoResult.newInstance(result.question_name,
-                    mSortList.size() + "", mContent, mOptionList, mSelectedAnswerList.get(i), mOptionAnswerList.get(i), mTimeCountList.get(i));
+                    mSortList.size() + "", mContent, mOptionContentList, mOptionCodeList, mQuestionType,
+                    mSelectedAnswerList.get(i), mOptionAnswerList.get(i), mTimeCountList.get(i));
             mResultTitleList.add(result);
             mResultContentList.add(mFragmentDoResult);
         }

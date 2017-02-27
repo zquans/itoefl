@@ -241,7 +241,6 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
                 }
             }
             LogUtil.i("mAnswer = " + mAnswer + ",,and you choose " + answerDefault + mAdapter.returnSelectList());
-
         }
     }
 

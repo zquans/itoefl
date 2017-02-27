@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.R;
-import com.iyuce.itoefl.Utils.LogUtil;
 
 import java.util.ArrayList;
 

@@ -2,7 +2,10 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/all_margin"
+    android:layout_marginBottom="4dp"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="12dp"
     android:background="#ffffff"
     android:orientation="vertical">
 
@@ -10,7 +13,7 @@
         android:id="@+id/txt_item_fragment_do_question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/all_padding"
+        android:padding="8dp"
         android:text="A:this is a question" />
 
 </android.support.v7.widget.CardView>

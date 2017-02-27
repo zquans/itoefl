@@ -4,7 +4,6 @@ import android.Manifest;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -19,6 +18,7 @@ import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
+import com.iyuce.itoefl.Utils.SDCardUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 import com.iyuce.itoefl.Utils.ZipUtil;
 import com.lzy.okgo.OkGo;
@@ -98,7 +98,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private void decideDownload() {
         //查看根文件路径中是否已存在根sql库,否则下载
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE;
+        String path = SDCardUtil.getExercisePath();
         String filePath = path + File.separator + Constants.SQLITE_TPO;
         File file = new File(filePath);
         LogUtil.i("sql exist = " + file.exists());

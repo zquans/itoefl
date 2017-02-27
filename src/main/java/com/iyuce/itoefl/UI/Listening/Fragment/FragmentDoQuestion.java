@@ -21,6 +21,7 @@ import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.QuestionAdapter;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
+import com.iyuce.itoefl.Utils.ToastUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -119,9 +120,10 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         mTxtTotalQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
         mTxtQuestionContent = (TextView) view.findViewById(R.id.txt_fragment_do_result_title);
         mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_fragment_do_result_page);
-        //TODO 布局问题，会导致原生谷歌系统找不到view,造成空指针异常
         if (TextUtils.equals(mQuestionType, "SINGLE")) {
             mRelativeLayout.setVisibility(View.GONE);
+        } else {
+            ToastUtil.showMessage(getActivity(), "本题是多选题");
         }
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
 
@@ -138,7 +140,7 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         try {
             //路徑应该直接传递过来，从参数中直接获取
             String musicPath = local_path + File.separator + current_music;
-            LogUtil.i(current_question_id + "fragment get musicPath = " + musicPath);
+//            LogUtil.i(current_question_id + "fragment get musicPath = " + musicPath);
 
             mMediaPlayer.setDataSource(musicPath);
             mMediaPlayer.prepare();
@@ -182,7 +184,7 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
     @Override
     public void onCompletion(MediaPlayer mp) {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new QuestionAdapter(mOptionContentList, getActivity());
+        mAdapter = new QuestionAdapter(getActivity(), mOptionContentList, mQuestionType);
         mAdapter.setOnQuestionItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         isFinish = true;
@@ -224,13 +226,27 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
     //Adapter提供给Fragment的方法
     @Override
     public void onQuestionClick(int pos) {
-        resetItemSelectStyle(pos);
-        answerDefault = mOptionCodeList.get(pos);
-        LogUtil.i("mAnswer = " + mAnswer + ",,and you choose " + mOptionCodeList.get(pos));
+        if (TextUtils.equals(mQuestionType, "SINGLE")) {
+            //单选
+            answerDefault = mOptionCodeList.get(pos);
+            resetItemSelectStyle(pos);
+            LogUtil.i("mAnswer = " + mAnswer + ",,and you choose " + answerDefault);
+        } else {
+            //多选时
+            answerDefault = "";
+            ArrayList mList = mAdapter.returnSelectList();
+            for (int i = 0; i < mList.size(); i++) {
+                if ((boolean) mList.get(i)) {
+                    answerDefault = answerDefault + i;
+                }
+            }
+            LogUtil.i("mAnswer = " + mAnswer + ",,and you choose " + answerDefault + mAdapter.returnSelectList());
+
+        }
     }
 
     /**
-     * 重设选中的Item及全部的Item
+     * 单选题时重设选中的Item及全部的Item
      */
     private void resetItemSelectStyle(int pos) {
         TextView textView;

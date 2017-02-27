@@ -3,7 +3,6 @@ package com.iyuce.itoefl.UI.Listening.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Environment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -17,6 +16,7 @@ import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Activity.TopListeneringPageActivity;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.RecyclerItemClickListener;
+import com.iyuce.itoefl.Utils.SDCardUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 
 import java.io.File;
@@ -53,8 +53,7 @@ public class TopListeneringAdapter extends RecyclerView.Adapter<TopListeneringAd
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         //TODO 修改数据源，这里的数据源这么写是因为，我们没有一级目录,如："TPO31-40"
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE
-                + File.separator + Constants.SQLITE_TPO;
+        String path = SDCardUtil.getExercisePath() + File.separator + Constants.SQLITE_TPO;
 
         SQLiteDatabase mDatabase = DbUtil.getHelper(mContext, path, Constants.DATABASE_VERSION).getWritableDatabase();
         //从默认主表中查，是否有这张表，其实还应该放在Main中去做

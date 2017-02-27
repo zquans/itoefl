@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -21,6 +20,7 @@ import com.iyuce.itoefl.Utils.HttpUtil;
 import com.iyuce.itoefl.Utils.Interface.HttpInterface;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.NetUtil;
+import com.iyuce.itoefl.Utils.SDCardUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 import com.iyuce.itoefl.Utils.ZipUtil;
 
@@ -79,7 +79,7 @@ public class TopListeneringPageActivity extends BaseActivity
         mTxtTotal = (TextView) findViewById(R.id.txt_activity_top_listenering_total);
 
         //初始化列表数据,从主表中获取到的local_section读取PAPER_RULE表中的RuleName字段
-        root_path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + Constants.SQLITE_TPO;
+        root_path = SDCardUtil.getExercisePath() + File.separator + Constants.SQLITE_TPO;
         SQLiteDatabase mDatabase = DbUtil.getHelper(this, root_path, Constants.DATABASE_VERSION).getWritableDatabase();
         mModuleList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.RuleName, Constants.PaperCode, local_section);
         mUrlList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.DownUrl, Constants.PaperCode, local_section);
@@ -122,7 +122,7 @@ public class TopListeneringPageActivity extends BaseActivity
      */
     private void CreateOrOpenDbTable() {
         //打开或者创建我的本地数据库DOWNLOAD
-        downloaded_sql_path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + Constants.SQLITE_DOWNLOAD;
+        downloaded_sql_path = SDCardUtil.getExercisePath() + File.separator + Constants.SQLITE_DOWNLOAD;
         SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
         String create = "create table if not exists " + Constants.TABLE_ALREADY_DOWNLOAD + "("
                 + Constants.ID + " integer primary key autoincrement,"
@@ -242,7 +242,7 @@ public class TopListeneringPageActivity extends BaseActivity
                     if (mUserOprateList.get(i).loading.equals("true") || mUserOprateList.get(i).download.equals("true")) {
                         continue;
                     }
-                    path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + local_section + File.separator + mModuleList.get(i);
+                    path = SDCardUtil.getExercisePath() + File.separator + local_section + File.separator + mModuleList.get(i);
                     url = "http://xm.iyuce.com/app/" + local_section + "_" + mModuleList.get(i) + ".zip";
                     doDownLoad(i, url, path);
                 }
@@ -259,7 +259,7 @@ public class TopListeneringPageActivity extends BaseActivity
         mImgReward.setBackgroundResource(R.mipmap.icon_reward_finish);
 
         //这个路径用来存放下载的文件，或者传递给下一级
-        String local_path = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_EXERCISE + File.separator + local_section + File.separator + mModuleList.get(pos);
+        String local_path = SDCardUtil.getExercisePath() + File.separator + local_section + File.separator + mModuleList.get(pos);
 
         //查询download库中的下载表,判断是否下载到本地了，是则进入，否则下载
         SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:layout_marginTop="12dp">
+
+    <TextView
+        android:id="@+id/txt_item_fragment_do_question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="this ons is a true"
+        android:textSize="18sp" />
+
+    <RadioGroup
+        android:id="@+id/radio_group_item_fragment_do_question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_item_fragment_do_question"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radio_item_fragment_do_question_yes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:background="#ffffff"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="YES" />
+
+        <RadioButton
+            android:id="@+id/radio_item_fragment_do_question_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:background="#ffffff"
+            android:checked="true"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="NO" />
+    </RadioGroup>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/radio_group_item_fragment_do_question"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@color/Gray" />
+
+</RelativeLayout>

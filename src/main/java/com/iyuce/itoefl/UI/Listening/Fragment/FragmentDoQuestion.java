@@ -151,11 +151,25 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
 
         mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_fragment_do_result_page);
         //不同题型的标识
+        if (mQuestionType.equals("")) {
+            //TODO 这里模拟控制切换多选题和判断题或者其他题型
+            mQuestionType = "MU";
+        }
         if (TextUtils.equals(mQuestionType, "SINGLE")) {
+            //单选题
             mRelativeLayout.setVisibility(View.GONE);
-        } else {
-            isOnlyAudio = false;
+        } else if (TextUtils.equals(mQuestionType, "JUDGE")) {
+            //判断题
+            mRelativeLayout.setVisibility(View.GONE);
+            ToastUtil.showMessage(getActivity(), "本题是判断题");
+        } else if (TextUtils.equals(mQuestionType, "MULTI")) {
+            //多选题
+            mRelativeLayout.setVisibility(View.GONE);
             ToastUtil.showMessage(getActivity(), "本题是多选题");
+        } else {
+            //多音频题
+            isOnlyAudio = false;
+            ToastUtil.showMessage(getActivity(), "本题是多录音题");
         }
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
 
@@ -248,9 +262,12 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
             //单选
             answerDefault = mOptionCodeList.get(pos);
             resetItemSelectStyle(pos);
-            LogUtil.i("mAnswer = " + mAnswer + ",,and you choose " + answerDefault);
-        } else {
-            //多选时
+        } else if (TextUtils.equals(mQuestionType, "JUDGE")) {
+            //判断
+            //TODO 遍历成字符串？还是直接用这样([true,true...])的String
+            answerDefault = mAdapter.returnSelectList().toString();
+        } else if (TextUtils.equals(mQuestionType, "MULTI")) {
+            //多选
             answerDefault = "";
             ArrayList mList = mAdapter.returnSelectList();
             for (int i = 0; i < mList.size(); i++) {
@@ -258,8 +275,12 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
                     answerDefault = answerDefault + i;
                 }
             }
-            LogUtil.i("mAnswer = " + mAnswer + ",,and you choose " + answerDefault + mAdapter.returnSelectList());
+        } else {
+            //TODO留坑,可以删，给非以上题型默认为单选题
+            answerDefault = mOptionCodeList.get(pos);
+            resetItemSelectStyle(pos);
         }
+        LogUtil.i("mAnswer = " + mAnswer + ",,and you choose " + answerDefault);
     }
 
     /**

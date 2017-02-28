@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.MyView
     @Override
     public QuestionAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //判断题
-        if (TextUtils.equals(mQuestionType, "JUDGE")) {
+        if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_JUDGE)) {
             return new MyViewHolder(LayoutInflater.from(mContext)
                     .inflate(R.layout.recycler_item_do_question_judge, parent, false));
         }
@@ -57,7 +58,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.MyView
     public void onBindViewHolder(final QuestionAdapter.MyViewHolder holder, final int position) {
         holder.mTxtQuestion.setText(mDataList.get(position));
         //判断题
-        if (TextUtils.equals(mQuestionType, "JUDGE")) {
+        if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_JUDGE)) {
             holder.mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -76,7 +77,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.MyView
                 @Override
                 public void onClick(View v) {
                     //多选
-                    if (TextUtils.equals(mQuestionType, "MULTI")) {
+                    if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_MULTI)) {
                         //修改表现
                         if (mIsSelectedList.get(position)) {
                             holder.mTxtQuestion.setBackgroundColor(Color.parseColor("#ffffff"));
@@ -107,7 +108,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.MyView
             super(itemView);
             mTxtQuestion = (TextView) itemView.findViewById(R.id.txt_item_fragment_do_question);
             //判断题型
-            if (TextUtils.equals(mQuestionType, "JUDGE")) {
+            if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_JUDGE)) {
                 mRadioGroup = (RadioGroup) itemView.findViewById(R.id.radio_group_item_fragment_do_question);
             }
         }

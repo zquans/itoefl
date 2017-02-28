@@ -5,7 +5,11 @@ package com.iyuce.itoefl.Model.Exercise;
  */
 public class ListenResultContent {
 
+    //选择题用
     public String number;
     public String content;
     public String state;
+    //判断题用
+    public String judgeSelect;
+    public String judgeAnswer;
 }

@@ -28,15 +28,13 @@ import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.RecyclerItemClickListener;
 import com.iyuce.itoefl.Utils.TimeUtil;
-import com.iyuce.itoefl.Utils.ToastUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class DoResultActivity extends BaseActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener,
-        MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
-        ViewPager.OnPageChangeListener, FragmentDoResult.OnFragmentInteractionListener {
+        MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, ViewPager.OnPageChangeListener {
 
     private ImageButton mImageButton;
     private TextView mTxtCurrent, mTxtTotal;
@@ -354,12 +352,6 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     public boolean onError(MediaPlayer mp, int what, int extra) {
         mp.reset();
         return false;
-    }
-
-    //TODO 预留Fragment中的反馈接口
-    @Override
-    public void onFragmentInteraction(String string) {
-        ToastUtil.showMessage(this, string);
     }
 
     //ViewPager

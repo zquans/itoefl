@@ -153,16 +153,16 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         //不同题型的标识
         if (mQuestionType.equals("")) {
             //TODO 这里模拟控制切换多选题和判断题或者其他题型
-            mQuestionType = "MU";
+            mQuestionType = Constants.QUESTION_TYPE_JUDGE;
         }
-        if (TextUtils.equals(mQuestionType, "SINGLE")) {
+        if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_SINGEL)) {
             //单选题
             mRelativeLayout.setVisibility(View.GONE);
-        } else if (TextUtils.equals(mQuestionType, "JUDGE")) {
+        } else if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_JUDGE)) {
             //判断题
             mRelativeLayout.setVisibility(View.GONE);
             ToastUtil.showMessage(getActivity(), "本题是判断题");
-        } else if (TextUtils.equals(mQuestionType, "MULTI")) {
+        } else if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_MULTI)) {
             //多选题
             mRelativeLayout.setVisibility(View.GONE);
             ToastUtil.showMessage(getActivity(), "本题是多选题");
@@ -258,15 +258,15 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
     //Adapter提供给Fragment的方法
     @Override
     public void onQuestionClick(int pos) {
-        if (TextUtils.equals(mQuestionType, "SINGLE")) {
+        if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_SINGEL)) {
             //单选
             answerDefault = mOptionCodeList.get(pos);
             resetItemSelectStyle(pos);
-        } else if (TextUtils.equals(mQuestionType, "JUDGE")) {
+        } else if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_JUDGE)) {
             //判断
             //TODO 遍历成字符串？还是直接用这样([true,true...])的String
             answerDefault = mAdapter.returnSelectList().toString();
-        } else if (TextUtils.equals(mQuestionType, "MULTI")) {
+        } else if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_MULTI)) {
             //多选
             answerDefault = "";
             ArrayList mList = mAdapter.returnSelectList();

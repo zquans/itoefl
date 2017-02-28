@@ -1,6 +1,5 @@
 package com.iyuce.itoefl.UI.Listening.Fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,14 +11,16 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.Model.Exercise.ListenResultContent;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.ResultContentAdapter;
+import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.StringUtil;
 
 import java.util.ArrayList;
 
-public class FragmentDoResult extends Fragment implements View.OnClickListener {
+public class FragmentDoResult extends Fragment {
 
     private TextView mTxtPageMiddle, mTxtPageRight, mTxtQuestion, mTxtTimeCount;
     private WebView mWebExplain;
@@ -29,8 +30,6 @@ public class FragmentDoResult extends Fragment implements View.OnClickListener {
     private ArrayList<String> mOptionContentList;
     private ArrayList<String> mOptionCodeList;
     private ResultContentAdapter mAdapter;
-
-    private OnFragmentInteractionListener mListener;
 
     private String page_current, page_total, page_question, question_type, answer_select, answer_option, time_count;
 
@@ -68,7 +67,7 @@ public class FragmentDoResult extends Fragment implements View.OnClickListener {
             //将多选题的数字转换为字母ABCD
             answer_select = answer_select.replace("0", "A").replace("1", "B").replace("2", "C")
                     .replace("3", "D").replace("4", "E");
-//            LogUtil.i("answer_select replace = " + answer_select);
+            LogUtil.i("answer_select = " + answer_select);
         }
     }
 
@@ -100,65 +99,65 @@ public class FragmentDoResult extends Fragment implements View.OnClickListener {
         mTxtPageRight.setText(page_total);
         mTxtQuestion.setText(page_question);
         mTxtTimeCount.setText("本题用时 " + time_count + " 秒");
-        mTxtPageMiddle.setOnClickListener(this);
 
-        //把用户的选择、正确答案,这两个属性集合在一个对象中传给Adapter
-        ListenResultContent result;
-        for (int i = 0; i < mOptionCodeList.size(); i++) {
-            result = new ListenResultContent();
-            result.number = mOptionCodeList.get(i);
-            result.content = mOptionContentList.get(i);
-            mResultList.add(result);
-        }
+        initData();
 
-        //TODO 多选题模拟数据
-        if (TextUtils.isEmpty(answer_option))
-            answer_option = "BD";
-        //遍历做判断,answer_option或answer_select包含该题，则修改该题的图标
-        for (int i = 0; i < mOptionContentList.size(); i++) {
-            if (answer_option.contains(mResultList.get(i).number)) {
-                mResultList.get(i).state = "true";
-            } else if (answer_select.contains(mResultList.get(i).number)) {
-                mResultList.get(i).state = "false";
-            } else {
-                mResultList.get(i).state = "none";
-            }
-        }
-
+        //装载适配器
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new ResultContentAdapter(getActivity(), mResultList);
+        mAdapter = new ResultContentAdapter(getActivity(), mResultList, question_type);
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void doMything(String string) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(string);
+    private void initData() {
+        //TODO magic number， 自定义为判断题
+        if (question_type.equals("")) {
+            question_type = Constants.QUESTION_TYPE_JUDGE;
         }
-    }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (TextUtils.equals(question_type, Constants.QUESTION_TYPE_JUDGE)) {
+            //判断题，只需要这三个数据拼装 answer_select,answer_option,mOptionContentList
+            String[] judgeSelectList = answer_select.replace("[", " ").replace("]", " ").trim().split(",");
+            //TODO 判断题模拟数据
+            String[] judgeAnswerList = new String[]{"true", "false", "true", "false"};
+            //String[] judgeAnswerList = answer_option.replace("[", " ").replace("]", " ").trim().split(",");
+
+            ListenResultContent result;
+            for (int i = 0; i < judgeSelectList.length; i++) {
+                result = new ListenResultContent();
+                result.judgeSelect = judgeSelectList[i];
+                result.judgeAnswer = judgeAnswerList[i];
+                if (result.judgeSelect.trim().equals(result.judgeAnswer.trim())) {
+                    result.state = "true";
+                } else {
+                    result.state = "false";
+                }
+                result.content = mOptionContentList.get(i);
+                mResultList.add(result);
+            }
         } else {
-            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
+            //非判断题,把用户的选择、正确答案,这两个属性集合在一个对象中传给Adapter
+            ListenResultContent result;
+            for (int i = 0; i < mOptionCodeList.size(); i++) {
+                result = new ListenResultContent();
+                result.number = mOptionCodeList.get(i);
+                result.content = mOptionContentList.get(i);
+                mResultList.add(result);
+            }
+
+            //TODO 多选题模拟数据
+            if (TextUtils.isEmpty(answer_option))
+                answer_option = "BD";
+            //遍历做判断,answer_option或answer_select包含该题，则修改该题的图标
+            for (int i = 0; i < mOptionContentList.size(); i++) {
+                if (answer_option.contains(mResultList.get(i).number)) {
+                    mResultList.get(i).state = "true";
+                } else if (answer_select.contains(mResultList.get(i).number)) {
+                    mResultList.get(i).state = "false";
+                } else {
+                    mResultList.get(i).state = "none";
+                }
+            }
         }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
-    public void onClick(View v) {
-        doMything("a ha a ha");
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(String s);
-    }
 }

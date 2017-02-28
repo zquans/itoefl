@@ -1,11 +1,11 @@
 package com.iyuce.itoefl.UI.Listening.Fragment;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.QuestionAdapter;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
+import com.iyuce.itoefl.Utils.TimeUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 
 import java.io.File;
@@ -32,6 +34,8 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
 
     //题目序号、内容
     private TextView mTxtCurrentQuestion, mTxtTotalQuestion, mTxtQuestionContent;
+    private TextView mTxtProgressCurrent, mTxtProgressTotal;
+    private ProgressBar mProgressBar;
     //可选视图
     private RelativeLayout mRelativeLayout;
 
@@ -42,6 +46,12 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
     private QuestionAdapter mAdapter;
 
     private MediaPlayer mMediaPlayer;
+
+    //用于不止一段音频的题型
+    private boolean isOnlyAudio = true;
+    private int mEndPosition = 0;
+    private String mEndText;
+
     //提供给Activity用于判断是否播放录音完毕
     private boolean isFinish = false;
     //提供给Activity一个默认答案，如果为空则未答完，不让进入下一题
@@ -53,7 +63,24 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
     //查表所得的属性
     private String mQuestionType, mContent, mAnswer;
 
-    private OnFragmentInteractionListener mListener;
+    private Handler mMediaProgressHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Message message = Message.obtain();
+            message.what = Constants.FLAG_AUDIO_PLAY;
+            mMediaProgressHandler.sendMessageDelayed(message, 1000);
+            getCurrent();
+        }
+    };
+
+    public String selectAnswer() {
+        return answerDefault;
+    }
+
+    public boolean finishMediaPlayer() {
+        return isFinish;
+    }
 
     //获取到的参数  QuestionId(用于在Fragment中继续查表)    Sort题号     MusicQuestion音频
     public static FragmentDoQuestion newInstance(String total_question,
@@ -105,8 +132,7 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
 
     private void initView(View view) {
         //数据源
-        SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), local_path + "/" + local_paper_code + ".sqlite"
-                , Constants.DATABASE_VERSION).getWritableDatabase();
+        SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), local_path + "/" + local_paper_code + ".sqlite", Constants.DATABASE_VERSION).getWritableDatabase();
         //查表Question
         mContent = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Content, Constants.ID, current_question_id);
         mQuestionType = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.QuestionType, Constants.ID, current_question_id);
@@ -119,10 +145,16 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         mTxtCurrentQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
         mTxtTotalQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
         mTxtQuestionContent = (TextView) view.findViewById(R.id.txt_fragment_do_result_title);
+        mTxtProgressCurrent = (TextView) view.findViewById(R.id.txt_fragment_do_question_current);
+        mTxtProgressTotal = (TextView) view.findViewById(R.id.txt_fragment_do_question_total);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.bar_fragment_do_question_progress);
+
         mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_fragment_do_result_page);
+        //不同题型的标识
         if (TextUtils.equals(mQuestionType, "SINGLE")) {
             mRelativeLayout.setVisibility(View.GONE);
         } else {
+            isOnlyAudio = false;
             ToastUtil.showMessage(getActivity(), "本题是多选题");
         }
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
@@ -138,7 +170,7 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setOnCompletionListener(this);
         try {
-            //路徑应该直接传递过来，从参数中直接获取
+            //路徑直接传递过来，从参数中直接获取
             String musicPath = local_path + File.separator + current_music;
 //            LogUtil.i(current_question_id + "fragment get musicPath = " + musicPath);
 
@@ -149,67 +181,30 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         }
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public String selectAnswer() {
-        return answerDefault;
-    }
-
-    public boolean finishMediaPlayer() {
-        return isFinish;
-    }
-
     //MediaPlayer
     @Override
     public void onCompletion(MediaPlayer mp) {
+        if (!isOnlyAudio) {
+            isOnlyAudio = true;
+            //避免音频再次播放时，延迟1秒的handle持续更新进度条
+            mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
+            mProgressBar.setProgress(mEndPosition);
+            mTxtProgressCurrent.setText(mEndText);
+            mMediaPlayer.reset();
+            try {
+                String musicPath = local_path + File.separator + current_music;
+                mMediaPlayer.setDataSource(musicPath);
+                mMediaPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new QuestionAdapter(getActivity(), mOptionContentList, mQuestionType);
         mAdapter.setOnQuestionItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         isFinish = true;
-
-        //TODO 额外尝试，读取本地json  ,IO流
-//        String myjson = "";
-//        File file = new File("/storage/emulated/0/ITOEFL_JSON/andoird.json");
-//        try {
-//            InputStreamReader isr = new InputStreamReader(new FileInputStream(file), "UTF-8");
-//            BufferedReader br = new BufferedReader(isr);
-//            String mimeTypeLine;
-//            while ((mimeTypeLine = br.readLine()) != null) {
-//                myjson = myjson + mimeTypeLine;
-//            }
-////            myjson = myjson.substring(1);
-//            JSONObject obj = new JSONObject(myjson);
-//            if (obj.getString("code").equals("0")) {
-//                JSONArray data = obj.getJSONArray("data");
-//                obj = data.getJSONObject(0);
-//                String mVersionURL = obj.getString("apkurl");
-//                LogUtil.i("my local json = VersionURL = " + mVersionURL);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override
@@ -221,6 +216,29 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
     @Override
     public void onPrepared(MediaPlayer mp) {
         mMediaPlayer.start();
+        if (!isOnlyAudio) {
+            Message msg = Message.obtain();
+            msg.what = Constants.FLAG_AUDIO_PLAY;
+            mMediaProgressHandler.sendMessage(msg);
+            getDrution();
+        }
+    }
+
+    //音频进度
+    private void getCurrent() {
+        mProgressBar.setProgress(mMediaPlayer.getCurrentPosition());
+        int time = mMediaPlayer.getCurrentPosition() / 1000;
+        String timer = TimeUtil.toTimeShow(time);
+        mTxtProgressCurrent.setText(timer);
+    }
+
+    private void getDrution() {
+        mEndPosition = mMediaPlayer.getDuration();
+        mProgressBar.setMax(mEndPosition);
+        int time = mMediaPlayer.getDuration() / 1000;
+        String timer = TimeUtil.toTimeShow(time);
+        mTxtProgressTotal.setText(timer);
+        mEndText = timer;
     }
 
     //Adapter提供给Fragment的方法
@@ -258,10 +276,5 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
             textView = (TextView) mRecyclerView.getChildAt(i).findViewById(R.id.txt_item_fragment_do_question);
             textView.setBackgroundColor(Color.parseColor("#ffffff"));
         }
-    }
-
-    //提供给Activity反馈的监听方法，让Activity响应Fragment的动作
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }

@@ -9,17 +9,20 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.Model.Exercise.ListenResultContent;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.ResultContentAdapter;
+import com.iyuce.itoefl.Utils.StringUtil;
 
 import java.util.ArrayList;
 
 public class FragmentDoResult extends Fragment implements View.OnClickListener {
 
-    private TextView mTxtPageMiddle, mTxtPageRight, mTxtQuestion, mTxtTimeCount, mTxtExplain;
+    private TextView mTxtPageMiddle, mTxtPageRight, mTxtQuestion, mTxtTimeCount;
+    private WebView mWebExplain;
 
     private RecyclerView mRecyclerView;
     private ArrayList<ListenResultContent> mResultList = new ArrayList<>();
@@ -83,7 +86,15 @@ public class FragmentDoResult extends Fragment implements View.OnClickListener {
         mTxtPageRight = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
         mTxtQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_title);
         mTxtTimeCount = (TextView) view.findViewById(R.id.txt_fragment_do_result_time_count);
-        mTxtExplain = (TextView) view.findViewById(R.id.txt_fragment_do_result_explain_content);
+        mWebExplain = (WebView) view.findViewById(R.id.txt_fragment_do_result_web);
+        mWebExplain.loadData(StringUtil.ParaseToHtml("&lt;p&gt;\n" +
+                "\t&lt;span style=&quot;font-size:10.5pt;font-family:&amp;quot;&quot;&gt;I\n" +
+                "set an announcement for an event. And this morning I checked the events section\n" +
+                "of the university\\'s website. And nothing, there is no mention of it&lt;/span&gt;\n" +
+                "&lt;/p&gt;\n" +
+                "&lt;p&gt;\n" +
+                "\t&lt;span style=&quot;font-size:10.5pt;font-family:&amp;quot;&quot;&gt;选C。&lt;/span&gt;\n" +
+                "&lt;/p&gt;"), "text/html; charset=UTF-8", null);
 
         mTxtPageMiddle.setText(page_current);
         mTxtPageRight.setText(page_total);

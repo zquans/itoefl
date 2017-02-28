@@ -190,7 +190,6 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         mViewPager.setOnPageChangeListener(this);
 
         //MediaPlayer
-        //TODO 音频应该改为每题一小段
         String musicPath = local_path + File.separator + local_music_question;
         LogUtil.i("doResult musicPath = " + musicPath);
         mMediaPlayer = new MediaPlayer();

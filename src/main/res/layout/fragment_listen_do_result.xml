@@ -97,13 +97,11 @@
             android:text="题目解析"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/txt_fragment_do_result_explain_content"
+        <WebView
+            android:id="@+id/txt_fragment_do_result_web"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_fragment_do_result_explain_title"
-            android:layout_margin="@dimen/all_margin"
-            android:text="you need scroll down\n\n\n\n\n\n\n\n\n\n\n\n\n\n文章围绕内容答案回答了一切生命的本源然而并没有解释世界的起因"
-            android:textStyle="bold" />
+            android:layout_margin="@dimen/all_margin" />
     </RelativeLayout>
 </ScrollView>

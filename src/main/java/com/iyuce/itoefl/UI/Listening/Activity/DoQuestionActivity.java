@@ -30,8 +30,8 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class DoQuestionActivity extends BaseActivity implements View.OnClickListener,
-        FragmentDoQuestion.OnFragmentInteractionListener, BottomDoQuestionAdapter.OnButtonItemClickListener {
+public class DoQuestionActivity extends BaseActivity implements
+        View.OnClickListener, BottomDoQuestionAdapter.OnButtonItemClickListener {
 
     private TextView mTxtTimer;
     private TextView mTxtReview;
@@ -244,11 +244,6 @@ public class DoQuestionActivity extends BaseActivity implements View.OnClickList
                         startActivity(new Intent(DoQuestionActivity.this, PageReadyActivity.class));
                     }
                 }).setNegativeButton("取消", null).show();
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 
     @Override

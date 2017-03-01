@@ -27,6 +27,7 @@ import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoResult;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.RecyclerItemClickListener;
+import com.iyuce.itoefl.Utils.StringUtil;
 import com.iyuce.itoefl.Utils.TimeUtil;
 
 import java.io.File;
@@ -155,22 +156,36 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             String mContent = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Content, Constants.ID, mQuestionIdList.get(i));
             String mAnswer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Answer, Constants.ID, mQuestionIdList.get(i));
             //查表Option
-            ArrayList<String> mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId, mQuestionIdList.get(i));
-            ArrayList<String> mOptionCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Code, Constants.QuestionId, mQuestionIdList.get(i));
+            ArrayList<String> mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId + " =? ", mQuestionIdList.get(i));
+            ArrayList<String> mOptionCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Code, Constants.QuestionId + " =? ", mQuestionIdList.get(i));
             mDatabase.close();
             ListenResult result = new ListenResult();
             result.question_name = mSortList.get(i);
             result.choice_right = mOptionAnswerList.get(i);
+            //TODO 模拟正确答案数据,模拟正确答案题型,有真实数据时以下if内可以删除
+//            if (mQuestionType.equals("")) {
+////                result.choice_right = "[true,true,false,false]";
+//                mQuestionType = Constants.QUESTION_TYPE_SINGEL;
+//            }
             result.choice_user = mSelectedAnswerList.get(i);
-            if (result.choice_right.equals(result.choice_user)) {
-                result.question_state = true;
+            //判断ResultTitle是否该显示正确
+            if (mQuestionType.equals(Constants.QUESTION_TYPE_MULTI)) {
+                //多选题时的比较处理
+                if (StringUtil.transferAlpahToNumber(result.choice_right).equals(result.choice_user)) {
+                    result.question_state = true;
+                }
+            } else {
+                //非多选题时的比较处理(单选和判断题)
+                if (result.choice_right.equals(StringUtil.trimAll(result.choice_user))) {
+                    result.question_state = true;
+                }
             }
             //如果i=0，默认选中
             result.question_is_select = i == 0;
             //传递给Fragment数据,可以增加参数
             FragmentDoResult mFragmentDoResult = FragmentDoResult.newInstance(result.question_name,
                     mSortList.size() + "", mContent, mOptionContentList, mOptionCodeList, mQuestionType,
-                    mSelectedAnswerList.get(i), mOptionAnswerList.get(i), mTimeCountList.get(i));
+                    mSelectedAnswerList.get(i), result.choice_right, mTimeCountList.get(i));
             mResultTitleList.add(result);
             mResultContentList.add(mFragmentDoResult);
         }

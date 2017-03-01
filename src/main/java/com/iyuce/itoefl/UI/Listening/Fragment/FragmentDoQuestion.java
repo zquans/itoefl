@@ -53,7 +53,7 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
     private String mEndText;
 
     //提供给Activity用于判断是否播放录音完毕
-    private boolean isFinish = false;
+    private boolean isFinish = true;
     //提供给Activity一个默认答案，如果为空则未答完，不让进入下一题
     private String answerDefault;
 
@@ -138,8 +138,8 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         mQuestionType = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.QuestionType, Constants.ID, current_question_id);
         mAnswer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Answer, Constants.ID, current_question_id);
         //查表Option
-        mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId, current_question_id);
-        mOptionCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Code, Constants.QuestionId, current_question_id);
+        mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId + " =? ", current_question_id);
+        mOptionCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Code, Constants.QuestionId + " =? ", current_question_id);
         mDatabase.close();
 
         mTxtCurrentQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
@@ -150,11 +150,11 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         mProgressBar = (ProgressBar) view.findViewById(R.id.bar_fragment_do_question_progress);
 
         mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_fragment_do_result_page);
-        //不同题型的标识
-        if (mQuestionType.equals("")) {
-            //TODO 这里模拟控制切换多选题和判断题或者其他题型
-            mQuestionType = Constants.QUESTION_TYPE_JUDGE;
-        }
+//        //不同题型的标识
+//        if (mQuestionType.equals("")) {
+//            //TODO   这里模拟控制切换多选题和判断题或者其他题型
+//            mQuestionType = Constants.QUESTION_TYPE_SINGEL;
+//        }
         if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_SINGEL)) {
             //单选题
             mRelativeLayout.setVisibility(View.GONE);
@@ -177,6 +177,12 @@ public class FragmentDoQuestion extends Fragment implements QuestionAdapter.OnQu
         mTxtCurrentQuestion.setText(current_question);
         mTxtTotalQuestion.setText(total_question);
         mTxtQuestionContent.setText(mContent);
+
+        //TODO 没有录音，权宜之计，放在外面做,本来应该放在录音播放完毕时
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new QuestionAdapter(getActivity(), mOptionContentList, mQuestionType);
+        mAdapter.setOnQuestionItemClickListener(this);
+        mRecyclerView.setAdapter(mAdapter);
 
         //MediaPlayer
         mMediaPlayer = new MediaPlayer();

@@ -195,7 +195,7 @@ public class DbUtil {
 
     public static ArrayList<String> queryToArrayList(SQLiteDatabase database, String table, String column, String condition, String condition_value) {
         ArrayList<String> mList = new ArrayList<>();
-        Cursor cursor = database.query(table, new String[]{column}, condition + "=?", new String[]{condition_value}, null, null, null);
+        Cursor cursor = database.query(table, new String[]{column}, condition, new String[]{condition_value}, null, null, null);
         //开启事务批量操作
         database.beginTransaction();
         if (cursor != null) {

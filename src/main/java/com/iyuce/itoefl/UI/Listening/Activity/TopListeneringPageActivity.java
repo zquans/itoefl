@@ -81,8 +81,8 @@ public class TopListeneringPageActivity extends BaseActivity
         //初始化列表数据,从主表中获取到的local_section读取PAPER_RULE表中的RuleName字段
         root_path = SDCardUtil.getExercisePath() + File.separator + Constants.SQLITE_TPO;
         SQLiteDatabase mDatabase = DbUtil.getHelper(this, root_path, Constants.DATABASE_VERSION).getWritableDatabase();
-        mModuleList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.RuleName, Constants.PaperCode, local_section);
-        mUrlList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.DownUrl, Constants.PaperCode, local_section);
+        mModuleList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.RuleName, Constants.PaperCode + " =? ", local_section);
+        mUrlList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.DownUrl, Constants.PaperCode + " =? ", local_section);
         mDatabase.close();
         LogUtil.i("Url = " + mUrlList.toString());
         //初始化用户操作数据库(打开或创建)

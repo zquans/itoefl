@@ -21,6 +21,15 @@ public class StringUtil {
                 .replace("4", "E");
     }
 
+    public static String transferAlpahToNumber(String orginal) {
+        return orginal.replace(",", "")
+                .replace("A", "1")
+                .replace("B", "1")
+                .replace("C", "2")
+                .replace("D", "3")
+                .replace("E", "4");
+    }
+
     public static String trimAll(String orginal) {
         return orginal.replace(" ", "");
     }

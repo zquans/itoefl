@@ -48,9 +48,16 @@ public class ResultContentAdapter extends RecyclerView.Adapter<ResultContentAdap
         //判断题型
         if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_JUDGE)) {
             //是判断题，先判断状态
-            if (mDataList.get(position).state.equals("true")) {
-                //用户答对了，显示一个圈
+            if (mDataList.get(position).state.contains("true")) {
+                //用户答对了
                 if (mDataList.get(position).judgeSelect.contains("true")) {
+                    holder.mImgYes.setBackgroundResource(R.mipmap.icon_answer_cycle_right_full);
+                } else {
+                    holder.mImgNo.setBackgroundResource(R.mipmap.icon_answer_cycle_right_full);
+                }
+            } else if (mDataList.get(position).state.contains("null")) {
+                //用户没回答,只显示一个正确答案
+                if (mDataList.get(position).judgeAnswer.contains("true")) {
                     holder.mImgYes.setBackgroundResource(R.mipmap.icon_answer_cycle_right_full);
                 } else {
                     holder.mImgNo.setBackgroundResource(R.mipmap.icon_answer_cycle_right_full);

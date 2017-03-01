@@ -36,7 +36,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:background="#ffffff"
-            android:checked="true"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:text="NO" />

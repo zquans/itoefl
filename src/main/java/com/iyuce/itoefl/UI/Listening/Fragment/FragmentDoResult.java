@@ -65,9 +65,9 @@ public class FragmentDoResult extends Fragment {
             answer_option = getArguments().getString("answer_option");
             time_count = getArguments().getString("time_count");
             //将多选题的数字转换为字母ABCD
-            answer_select = answer_select.replace("0", "A").replace("1", "B").replace("2", "C")
-                    .replace("3", "D").replace("4", "E");
-            LogUtil.i("answer_select = " + answer_select);
+            answer_option = StringUtil.transferNumberToAlpha(answer_option);
+            answer_select = StringUtil.transferNumberToAlpha(answer_select);
+            LogUtil.i("answer_select = " + answer_select + ",answer_option = " + answer_option);
         }
     }
 
@@ -79,6 +79,7 @@ public class FragmentDoResult extends Fragment {
         return view;
     }
 
+    //TODO 不止一段录音的doResult
     private void initView(View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
         mTxtPageMiddle = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
@@ -109,25 +110,20 @@ public class FragmentDoResult extends Fragment {
     }
 
     private void initData() {
-        //TODO magic number， 自定义为判断题
-        if (question_type.equals("")) {
-            question_type = Constants.QUESTION_TYPE_JUDGE;
-        }
-
         if (TextUtils.equals(question_type, Constants.QUESTION_TYPE_JUDGE)) {
             //判断题，只需要这三个数据拼装 answer_select,answer_option,mOptionContentList
-            String[] judgeSelectList = answer_select.replace("[", " ").replace("]", " ").trim().split(",");
-            //TODO 判断题模拟数据
-            String[] judgeAnswerList = new String[]{"true", "false", "true", "false"};
-            //String[] judgeAnswerList = answer_option.replace("[", " ").replace("]", " ").trim().split(",");
+            String[] judgeSelectList = StringUtil.transferStringToArray(answer_select);
+            String[] judgeAnswerList = StringUtil.transferStringToArray(answer_option);
 
             ListenResultContent result;
             for (int i = 0; i < judgeSelectList.length; i++) {
                 result = new ListenResultContent();
-                result.judgeSelect = judgeSelectList[i];
-                result.judgeAnswer = judgeAnswerList[i];
+                result.judgeSelect = judgeSelectList[i].trim();
+                result.judgeAnswer = judgeAnswerList[i].trim();
                 if (result.judgeSelect.trim().equals(result.judgeAnswer.trim())) {
                     result.state = "true";
+                } else if (result.judgeSelect.contains("null")) {
+                    result.state = "null";
                 } else {
                     result.state = "false";
                 }
@@ -144,11 +140,8 @@ public class FragmentDoResult extends Fragment {
                 mResultList.add(result);
             }
 
-            //TODO 多选题模拟数据
-            if (TextUtils.isEmpty(answer_option))
-                answer_option = "BD";
-            //遍历做判断,answer_option或answer_select包含该题，则修改该题的图标
             for (int i = 0; i < mOptionContentList.size(); i++) {
+                //遍历做判断,answer_option或answer_select包含该题，则修改该题的图标,先判断正确，后判断错误
                 if (answer_option.contains(mResultList.get(i).number)) {
                     mResultList.get(i).state = "true";
                 } else if (answer_select.contains(mResultList.get(i).number)) {

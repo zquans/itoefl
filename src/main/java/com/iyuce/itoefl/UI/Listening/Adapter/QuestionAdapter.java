@@ -39,7 +39,13 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.MyView
         this.mQuestionType = mQuestionType;
         mIsSelectedList = new ArrayList<>();
         for (int i = 0; i < mDataList.size(); i++) {
-            mIsSelectedList.add(false);
+            if (mQuestionType.equals(Constants.QUESTION_TYPE_JUDGE)) {
+                //判断题用
+                mIsSelectedList.add(null);
+            } else {
+                //多选题用
+                mIsSelectedList.add(false);
+            }
         }
     }
 

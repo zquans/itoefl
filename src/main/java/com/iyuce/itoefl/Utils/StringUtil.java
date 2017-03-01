@@ -12,4 +12,23 @@ public class StringUtil {
                 .replace("&gt;", ">")
                 .replace("&nbsp;", "\r");
     }
+
+    public static String transferNumberToAlpha(String orginal) {
+        return orginal.replace("0", "A")
+                .replace("1", "B")
+                .replace("2", "C")
+                .replace("3", "D")
+                .replace("4", "E");
+    }
+
+    public static String trimAll(String orginal) {
+        return orginal.replace(" ", "");
+    }
+
+    public static String[] transferStringToArray(String orginal) {
+        return orginal.replace("[", " ")
+                .replace("]", " ")
+                .trim()
+                .split(",");
+    }
 }

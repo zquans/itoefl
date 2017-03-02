@@ -130,7 +130,6 @@ public class DoQuestionActivity extends BaseActivity implements
         mMusicAnswerList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_QUESTION, null, Constants.MusicAnswer);
         //查另一张表,正确答案的数组
         mOptionAnswerList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.Answer);
-        LogUtil.i(" now mOptionAnswerList = " + mOptionAnswerList);
         mDatabase.close();
 
         TOTAL_QUESTION_COUNT = String.valueOf(mSortList.size());

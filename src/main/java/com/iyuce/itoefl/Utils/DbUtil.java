@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
-import com.iyuce.itoefl.Common.Constants;
-
 import java.util.ArrayList;
 
 /**
@@ -19,75 +17,9 @@ public class DbUtil {
         return new DbHelper(context, path, version);
     }
 
-    public static void createTable(SQLiteDatabase database, String table, String column_1, String column_2) {
-        String create = "create table " + table + "(_id integer primary key autoincrement," + column_1 + " text," + column_2 + " text)";
-        database.execSQL(create);
-    }
-
-    public static void dropTable(SQLiteDatabase database) {
-        String drop = "DROP TABLE " + Constants.TABLE_OPTION;
-        database.execSQL(drop);
-    }
-
-    public static void insert(SQLiteDatabase database, String table, String colum_1, String column_2, String value_1, String value_2) {
-        String insert = "insert into " + table + "(" + colum_1 + "," + column_2 + ") values('" + value_1 + "','" + value_2 + "')";
-        database.execSQL(insert);
-    }
-
-    public static void delete(SQLiteDatabase database, String table, String column, String value) {
-        String delete = "delete from " + table + " where " + column + " = " + value;
-        database.execSQL(delete);
-    }
-
-    public static void update(SQLiteDatabase database, String table, String column, String value, String column_where, String value_where) {
-        String update = "update " + table + " set " + column + " = " + value
-                + " where " + column_where + " = " + value_where;
-        database.execSQL(update);
-    }
-
     //API方法,返回新增成功的 row ID,若发生错误返回-1
     public static long insert(SQLiteDatabase database, String table, ContentValues values) {
         return database.insert(table, null, values);
-    }
-
-    //API方法,返回删除成功的数量,null是子句
-    public static int delete(SQLiteDatabase database, String table, String column, String... where) {
-        return database.delete(table, column + "?", where);
-    }
-
-    //API方法,返回修改成功的数量,null是子句
-    public static int update(SQLiteDatabase database, String table, String column, String value, String where) {
-        ContentValues values = new ContentValues();
-        values.put(column, value);
-        return database.update(table, values, where, null);
-    }
-
-    //重载方法,会报错
-    public static String queryToString(SQLiteDatabase database, String table, int row, String column) {
-        String target = "";
-        Cursor cursor = database.query(table, null, null, null, null, null, null);
-        //判断游标是否为空
-        if (cursor != null && cursor.getCount() != 0) {
-            cursor.move(row);
-            target = cursor.getString(cursor.getColumnIndex(column));
-        }
-        LogUtil.i(row + "target = " + target);
-        return target;
-    }
-
-    public static String queryToString(SQLiteDatabase database, String table, String[] column, String condition, String[] condition_value) {
-        String target = "none";
-        Cursor cursor = database.query(table, column, condition, null, null, null, null);
-        //开启事务批量操作
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                if (TextUtils.isEmpty(cursor.getString(0))) {
-                    return target;
-                }
-                return cursor.getString(0);
-            }
-        }
-        return target;
     }
 
     public static String queryToString(SQLiteDatabase database, String table, String column, String condition, String condition_value) {
@@ -102,62 +34,7 @@ public class DbUtil {
         return target;
     }
 
-    public static String queryToString(SQLiteDatabase database, String table, int row, int column) {
-        String target = "";
-        Cursor cursor = database.query(table, null, null, null, null, null, null);
-        //判断游标是否为空
-        if (cursor != null) {
-            cursor.move(row);
-            target = cursor.getString(column);
-        }
-        return target;
-    }
-
-    public static boolean queryToboolean(SQLiteDatabase database, String table, String column, String target) {
-        Cursor cursor = database.query(table, null, null, null, null, null, null);
-        //判断游标是否为空
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                if (target.equals(cursor.getString(cursor.getColumnIndex(column)))) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    //找出某个column值所对应的_id,没找到则返回-1
-    public static int queryToID(SQLiteDatabase database, String table, String column_key, String column_value) {
-        int target = -1;
-        Cursor cursor = database.query(table, null, null, null, null, null, null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                if (cursor.getString(cursor.getColumnIndex(column_key)).equals(column_value)) {
-                    return cursor.getInt(0);
-                }
-            }
-        }
-        return target;
-    }
-
     //重载方法,还可以加group,order,having子句条件
-    public static ArrayList<String> queryToArrayList(SQLiteDatabase database, String table, String column, String arg, String where, String order_by) {
-        ArrayList<String> mList = new ArrayList<>();
-        Cursor cursor = database.query(table, new String[]{column}, arg, new String[]{"\"" + where + "\""}, null, null, order_by);
-        //开启事务批量操作
-        database.beginTransaction();
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String target = cursor.getString(0);
-                mList.add(target);
-            }
-        }
-        //批量操作成功,关闭事务
-        database.setTransactionSuccessful();
-        database.endTransaction();
-        return mList;
-    }
-
     public static ArrayList<String> queryToArrayList(SQLiteDatabase database, String table, String order_by, String column_name) {
         ArrayList<String> mList = new ArrayList<>();
         Cursor cursor = database.query(table, null, null, null, null, null, order_by);
@@ -175,15 +52,14 @@ public class DbUtil {
         return mList;
     }
 
-    //重载方法
-    public static ArrayList<String> queryToArrayList(SQLiteDatabase database, String table, String order_by, int column) {
+    public static ArrayList<String> queryToArrayList(SQLiteDatabase database, String table, String column, String condition, String value, String order_by) {
         ArrayList<String> mList = new ArrayList<>();
-        Cursor cursor = database.query(table, null, null, null, null, null, order_by);
+        Cursor cursor = database.query(table, new String[]{column}, condition, new String[]{"\"" + value + "\""}, null, null, order_by);
         //开启事务批量操作
         database.beginTransaction();
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                String target = cursor.getString(column);
+                String target = cursor.getString(0);
                 mList.add(target);
             }
         }

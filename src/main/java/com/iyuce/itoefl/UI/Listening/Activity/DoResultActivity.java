@@ -163,10 +163,11 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             result.question_name = mSortList.get(i);
             result.choice_right = mOptionAnswerList.get(i);
             //TODO 模拟正确答案数据,模拟正确答案题型,有真实数据时以下if内可以删除
-//            if (mQuestionType.equals("")) {
-////                result.choice_right = "[true,true,false,false]";
-//                mQuestionType = Constants.QUESTION_TYPE_SINGEL;
-//            }
+            if (mQuestionType.equals("")) {
+//                result.choice_right = "23";
+                result.choice_right = "[true,true,false,false]";
+                mQuestionType = Constants.QUESTION_TYPE_JUDGE;
+            }
             result.choice_user = mSelectedAnswerList.get(i);
             //判断ResultTitle是否该显示正确
             if (mQuestionType.equals(Constants.QUESTION_TYPE_MULTI)) {

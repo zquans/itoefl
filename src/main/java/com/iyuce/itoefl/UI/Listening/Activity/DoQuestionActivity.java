@@ -20,7 +20,9 @@ import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.BottomDoQuestionAdapter;
-import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestion;
+import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionDefault;
+import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionSingle;
+import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionSort;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
@@ -62,7 +64,7 @@ public class DoQuestionActivity extends BaseActivity implements
     //路径
     private String local_paper_code, local_path, local_music_question;
 
-    private FragmentDoQuestion mFrgment;
+    private FragmentDoQuestionDefault mFrgment;
 
     //计时器
     private Timer mTimer = new Timer();
@@ -138,7 +140,7 @@ public class DoQuestionActivity extends BaseActivity implements
             mDataBottomList.add(mSortList.get(i));
         }
         //应该传递给Fragment的参数  QuestionId(用于在Fragment中继续查表)、Sort题号、MusicQuestion音频,默认是pos=0的值
-        mFrgment = FragmentDoQuestion.newInstance(
+        mFrgment = FragmentDoQuestionSingle.newInstance(
                 TOTAL_QUESTION_COUNT, mSortList.get(0), mMusicQuestionList.get(0), mQuestionIdList.get(0), local_path, local_paper_code);
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
 
@@ -271,7 +273,7 @@ public class DoQuestionActivity extends BaseActivity implements
      */
     private void SkipToQuestion(int position) {
         mTxtCurrent.setText(mSortList.get(position - 1));
-        mFrgment = FragmentDoQuestion.newInstance(
+        mFrgment = FragmentDoQuestionSort.newInstance(
                 TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1), mQuestionIdList.get(position - 1),
                 local_path, local_paper_code);
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();

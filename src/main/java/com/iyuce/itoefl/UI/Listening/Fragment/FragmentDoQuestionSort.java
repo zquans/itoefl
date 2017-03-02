@@ -8,7 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,17 +18,16 @@ import android.widget.TextView;
 
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
-import com.iyuce.itoefl.UI.Listening.Adapter.QuestionAdapter;
+import com.iyuce.itoefl.UI.Listening.Adapter.QuestionSortAdapter;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.TimeUtil;
-import com.iyuce.itoefl.Utils.ToastUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class FragmentDoQuestion extends FragmentDoQuestionDefault implements QuestionAdapter.OnQuestionItemClickListener,
+public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
         MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
     //题目序号、内容
@@ -42,7 +41,7 @@ public class FragmentDoQuestion extends FragmentDoQuestionDefault implements Que
     private RecyclerView mRecyclerView;
     private ArrayList<String> mOptionContentList = new ArrayList<>();
     private ArrayList<String> mOptionCodeList = new ArrayList<>();
-    private QuestionAdapter mAdapter;
+    private QuestionSortAdapter mAdapter;
 
     private MediaPlayer mMediaPlayer;
 
@@ -82,9 +81,9 @@ public class FragmentDoQuestion extends FragmentDoQuestionDefault implements Que
     }
 
     //获取到的参数  QuestionId(用于在Fragment中继续查表)    Sort题号     MusicQuestion音频
-    public static FragmentDoQuestion newInstance(String total_question,
-                                                 String current_question, String current_music, String current_question_id, String local_path, String local_paper_code) {
-        FragmentDoQuestion fragment = new FragmentDoQuestion();
+    public static FragmentDoQuestionSort newInstance(String total_question,
+                                                     String current_question, String current_music, String current_question_id, String local_path, String local_paper_code) {
+        FragmentDoQuestionSort fragment = new FragmentDoQuestionSort();
         Bundle args = new Bundle();
         args.putString("total_question", total_question);
         args.putString("current_question", current_question);
@@ -149,39 +148,17 @@ public class FragmentDoQuestion extends FragmentDoQuestionDefault implements Que
         mProgressBar = (ProgressBar) view.findViewById(R.id.bar_fragment_do_question_progress);
 
         mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_fragment_do_result_page);
-        //不同题型的标识
-        if (mQuestionType.equals("")) {
-            //TODO   这里模拟控制切换多选题和判断题或者其他题型
-            mQuestionType = Constants.QUESTION_TYPE_JUDGE;
-        }
-        if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_SINGEL)) {
-            //单选题
-            mRelativeLayout.setVisibility(View.GONE);
-        } else if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_JUDGE)) {
-            //判断题
-            mRelativeLayout.setVisibility(View.GONE);
-            ToastUtil.showMessage(getActivity(), "本题是判断题");
-        } else if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_MULTI)) {
-            //多选题
-            mRelativeLayout.setVisibility(View.GONE);
-            ToastUtil.showMessage(getActivity(), "本题是多选题");
-        } else {
-            //多音频题
-            isOnlyAudio = false;
-            ToastUtil.showMessage(getActivity(), "本题是多录音题");
-        }
+        mRelativeLayout.setVisibility(View.GONE);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
+
+        //多音频题
+//        isOnlyAudio = false;
+//        ToastUtil.showMessage(getActivity(), "本题是多录音题");
 
         //布置参数到对应控件
         mTxtCurrentQuestion.setText(current_question);
         mTxtTotalQuestion.setText(total_question);
         mTxtQuestionContent.setText(mContent);
-
-        //TODO 没有录音，权宜之计，放在外面做,本来应该放在录音播放完毕时
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new QuestionAdapter(getActivity(), mOptionContentList, mQuestionType);
-        mAdapter.setOnQuestionItemClickListener(this);
-        mRecyclerView.setAdapter(mAdapter);
 
         //MediaPlayer
         mMediaPlayer = new MediaPlayer();
@@ -220,10 +197,58 @@ public class FragmentDoQuestion extends FragmentDoQuestionDefault implements Que
             return;
         }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new QuestionAdapter(getActivity(), mOptionContentList, mQuestionType);
-        mAdapter.setOnQuestionItemClickListener(this);
+        mAdapter = new QuestionSortAdapter(getActivity(), mOptionContentList);
         mRecyclerView.setAdapter(mAdapter);
         isFinish = true;
+        doSort();
+    }
+
+    private void doSort() {
+        ItemTouchHelper mTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+            @Override
+            public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+                if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+                    viewHolder.itemView.setBackgroundResource(R.drawable.view_bound_orange_stroke);
+                }
+                super.onSelectedChanged(viewHolder, actionState);
+            }
+
+            @Override
+            public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                super.clearView(recyclerView, viewHolder);
+                viewHolder.itemView.setBackgroundColor(Color.WHITE);
+            }
+
+            @Override
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                return makeMovementFlags(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0);
+            }
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                //TODO 排位序列
+                LogUtil.i("Sort mAnswer = " + mAnswer + ",,and you choose " + answerDefault);
+                int fromPosition = viewHolder.getAdapterPosition();
+                int toPosition = target.getAdapterPosition();
+                if (fromPosition < toPosition) {
+                    for (int i = fromPosition; i < toPosition; i++) {
+                        //各项加1
+                    }
+                } else {
+                    for (int i = fromPosition; i > toPosition; i--) {
+                        //各项减1
+                    }
+                }
+                mAdapter.notifyItemMoved(fromPosition, toPosition);
+                return true;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
+            }
+        });
+        mTouchHelper.attachToRecyclerView(mRecyclerView);
     }
 
     @Override
@@ -258,49 +283,5 @@ public class FragmentDoQuestion extends FragmentDoQuestionDefault implements Que
         String timer = TimeUtil.toTimeShow(time);
         mTxtProgressTotal.setText(timer);
         mEndText = timer;
-    }
-
-    //Adapter提供给Fragment的方法
-    @Override
-    public void onQuestionClick(int pos) {
-        if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_SINGEL)) {
-            //单选
-            answerDefault = mOptionCodeList.get(pos);
-            resetItemSelectStyle(pos);
-        } else if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_JUDGE)) {
-            //判断
-            //TODO 遍历成字符串？还是直接用这样([true,true...])的String
-            answerDefault = mAdapter.returnSelectList().toString();
-        } else if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_MULTI)) {
-            //多选
-            answerDefault = "";
-            ArrayList mList = mAdapter.returnSelectList();
-            for (int i = 0; i < mList.size(); i++) {
-                if ((boolean) mList.get(i)) {
-                    answerDefault = answerDefault + i;
-                }
-            }
-        } else {
-            //TODO留坑,可以删，给非以上题型默认为单选题
-            answerDefault = mOptionCodeList.get(pos);
-            resetItemSelectStyle(pos);
-        }
-        LogUtil.i("mAnswer = " + mAnswer + ",,and you choose " + answerDefault);
-    }
-
-    /**
-     * 单选题时重设选中的Item及全部的Item
-     */
-    private void resetItemSelectStyle(int pos) {
-        TextView textView;
-        for (int i = 0; i < mOptionContentList.size(); i++) {
-            if (pos == i) {
-                textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_item_fragment_do_question);
-                textView.setBackgroundResource(R.drawable.view_bound_orange_stroke);
-                continue;
-            }
-            textView = (TextView) mRecyclerView.getChildAt(i).findViewById(R.id.txt_item_fragment_do_question);
-            textView.setBackgroundColor(Color.parseColor("#ffffff"));
-        }
     }
 }

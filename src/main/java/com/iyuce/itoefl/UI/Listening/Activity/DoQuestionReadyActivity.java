@@ -48,7 +48,6 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
 
     private static final int BEGIN = 0;
 
-    //路径
     private String local_paper_code, local_path, local_music_question;
 
     private Handler mMediaProgressHandler = new Handler() {
@@ -105,8 +104,8 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     }
 
     private void initView() {
-        local_paper_code = getIntent().getStringExtra(Constants.PaperCode);
         local_path = getIntent().getStringExtra("local_path");
+        local_paper_code = getIntent().getStringExtra(Constants.PaperCode);
         local_music_question = getIntent().getStringExtra(Constants.MusicQuestion);
         TextView mTxtHeadTitle = (TextView) findViewById(R.id.txt_header_title_item);
         mTxtHeadTitle.setText(local_paper_code);
@@ -136,9 +135,7 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
         mSpinner.setAdapter(mSpinnerAdapter);
         mSpinner.setOnItemSelectedListener(this);
 
-        //TODO 拼接文件路径和数据库路径拿到主音频的路径
         String musicPath = local_path + File.separator + local_music_question;
-        LogUtil.i("get musicPath = " + musicPath);
 
         //音频准备
         mMediaPlayer = new MediaPlayer();
@@ -161,9 +158,8 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
                 break;
             case R.id.btn_activity_do_question_ready_begin:
                 Intent intent = new Intent(this, DoQuestionActivity.class);
-                intent.putExtra(Constants.PaperCode, local_paper_code);
                 intent.putExtra("local_path", local_path);
-                //TODO 这个路径不一定传，本意是留给doResult中音频的，但老大的音频解析有分段的
+                intent.putExtra(Constants.PaperCode, local_paper_code);
                 intent.putExtra(Constants.MusicQuestion, local_music_question);
                 startActivity(intent);
                 break;

@@ -36,15 +36,18 @@ public class TopListeneringPageActivity extends BaseActivity
     private RecyclerView mRecyclerView;
     private TopListeneringPageAdapter mAdapter;
     //列表对象，包含两个库中查询的数据
-    private ArrayList<UserOprate> mUserOprateList = new ArrayList<>();
     private ArrayList<String> mModuleList = new ArrayList<>();
+    private ArrayList<String> mDownTimeList = new ArrayList<>();
     private ArrayList<String> mUrlList = new ArrayList<>();
+    private ArrayList<String> mMusicQuestionList = new ArrayList<>();
     private ArrayList<String> mLoadingList = new ArrayList<>();
     private ArrayList<String> mDownloadList = new ArrayList<>();
+    private ArrayList<UserOprate> mUserOprateList = new ArrayList<>();
 
     private TextView mTxtFinish, mTxtTotal;
     private ImageView mImgReward;
 
+    //传递来的章节名称
     private String local_section;
 
     //保存根数据库的路径
@@ -81,10 +84,14 @@ public class TopListeneringPageActivity extends BaseActivity
         //初始化列表数据,从主表中获取到的local_section读取PAPER_RULE表中的RuleName字段
         root_path = SDCardUtil.getExercisePath() + File.separator + Constants.SQLITE_TPO;
         SQLiteDatabase mDatabase = DbUtil.getHelper(this, root_path).getWritableDatabase();
+        //其实可以在DbUtil中封装成一个类数组返回
         mModuleList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.RuleName, Constants.PaperCode + " =? ", local_section);
+        mDownTimeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.DownTime, Constants.PaperCode + " =? ", local_section);
         mUrlList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.DownUrl, Constants.PaperCode + " =? ", local_section);
+        mMusicQuestionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.MusicQuestion, Constants.PaperCode + " =? ", local_section);
         mDatabase.close();
-        LogUtil.i("Url = " + mUrlList.toString());
+        LogUtil.i("mMusicQuestionList = " + mMusicQuestionList.toString());
+
         //初始化用户操作数据库(打开或创建)
         CreateOrOpenDbTable();
 
@@ -103,6 +110,7 @@ public class TopListeneringPageActivity extends BaseActivity
         mAdapter.setOnPageItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
+        //TODO 已练习数量通过我自己的表查询
         mTxtFinish.setText("已练习 ：１篇");
         mTxtTotal.setText("总共 :  " + mModuleList.size() + " 篇");
 
@@ -137,15 +145,8 @@ public class TopListeneringPageActivity extends BaseActivity
             mDownloadList.add(DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{local_section, mModuleList.get(i)})));
             query = "select " + LOADING + " from " + Constants.TABLE_ALREADY_DOWNLOAD + " where " + SECTION + " = ? and " + MODULE + " = ?";
             mLoadingList.add(DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{local_section, mModuleList.get(i)})));
-//            mDownloadList.add(DbUtil.queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD
-//                    , new String[]{DOWNLOAD}, SECTION + " =? and " + MODULE + " =?", new String[]{local_section, mModuleList.get(i)}));
-//            mLoadingList.add(DbUtil.queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD
-//                    , new String[]{LOADING}, SECTION + " =? and " + MODULE + " =?", new String[]{local_section, mModuleList.get(i)}));
-//            mDownloadList.add(DbUtil.queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, DOWNLOAD, MODULE, mModuleList.get(i)));
-//            mLoadingList.add(DbUtil.queryToString(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, LOADING, MODULE, mModuleList.get(i)));
         }
         mDatabase.close();
-        LogUtil.i(mDownloadList.toString() + "////" + mLoadingList.toString());
     }
 
     /**
@@ -165,17 +166,15 @@ public class TopListeneringPageActivity extends BaseActivity
 
             @Override
             public void inProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
-                if (pos != -1) {
-                    mUserOprateList.get(pos).loading = "true";
+                mUserOprateList.get(pos).loading = "true";
 
-                    ImageView imgDownload = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
-                    ImageView imgReady = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download_ready);
-                    imgDownload.setVisibility(View.VISIBLE);
-                    imgReady.setVisibility(View.INVISIBLE);
-                    TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
-                    textView.setVisibility(View.VISIBLE);
-                    textView.setText(((int) (progress * 100) + "%"));
-                }
+                ImageView imgDownload = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
+                ImageView imgReady = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download_ready);
+                imgDownload.setVisibility(View.VISIBLE);
+                imgReady.setVisibility(View.INVISIBLE);
+                TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
+                textView.setVisibility(View.VISIBLE);
+                textView.setText(((int) (progress * 100) + "%"));
             }
 
             @Override
@@ -190,7 +189,7 @@ public class TopListeneringPageActivity extends BaseActivity
                 mValues.put(DOWNLOAD, "true");
                 mValues.put(LOADING, "false");
                 DbUtil.insert(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, mValues);
-                //用户操作表中，SECTION = local_section 作为筛选条件
+                //TODO 以下两行好像可以删掉 --->用户操作表中，SECTION = local_section 作为筛选条件
                 String sql_query = "select " + MODULE + " from " + Constants.TABLE_ALREADY_DOWNLOAD + " where " + SECTION + " = ?";
                 LogUtil.i(DbUtil.cursorToArrayList(mDatabase.rawQuery(sql_query, new String[]{local_section})).toString());
                 mDatabase.close();
@@ -198,21 +197,19 @@ public class TopListeneringPageActivity extends BaseActivity
                 //解压文件夹
                 unZipFile(file, path);
 
-                if (pos != -1) {
-                    //下载箭头、文字设为不可见
-                    ImageView imgDownload = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
-                    ImageView imgProgress = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_progress);
-                    if (pos == 0) {
-                        imgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_first);
-                    } else if (pos == mDownloadList.size() - 1) {
-                        imgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_last);
-                    } else {
-                        imgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_center);
-                    }
-                    imgDownload.setVisibility(View.INVISIBLE);
-                    TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
-                    textView.setVisibility(View.INVISIBLE);
+                //下载箭头、文字设为不可见
+                ImageView imgDownload = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
+                ImageView imgProgress = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_progress);
+                if (pos == 0) {
+                    imgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_first);
+                } else if (pos == mDownloadList.size() - 1) {
+                    imgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_last);
+                } else {
+                    imgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_center);
                 }
+                imgDownload.setVisibility(View.INVISIBLE);
+                TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
+                textView.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -266,26 +263,20 @@ public class TopListeneringPageActivity extends BaseActivity
         String sql_query = "select " + Constants.ID + " from " + Constants.TABLE_ALREADY_DOWNLOAD
                 + " where " + SECTION + " = ? and " + MODULE + " = ? ";
         String isExist = DbUtil.cursorToString(mDatabase.rawQuery(sql_query, new String[]{local_section, mModuleList.get(pos)}));
+        mDatabase.close();
         LogUtil.i(local_section + "_" + mModuleList.get(pos) + " isExist = " + isExist);
         if (isExist.equals(Constants.NONE)) {
-            mDatabase.close();
             String url = "http://xm.iyuce.com/app/" + local_section + "_" + mModuleList.get(pos) + ".zip";
             doDownLoad(pos, url, local_path);
             return;
         }
-        mDatabase.close();
-
-        //给intent的参数,根据用户所选项，获得PaperRuleName对应的PaperRuleId，以便查找下一张表用
-        SQLiteDatabase mDatabase1 = DbUtil.getHelper(this, root_path).getWritableDatabase();
-        String local_paper_rule_id = DbUtil.queryToString(mDatabase1, Constants.TABLE_PAPER_RULE, Constants.ID, Constants.RuleName, mModuleList.get(pos));
-        mDatabase1.close();
 
         Intent intent = new Intent(this, PageReadyActivity.class);
         intent.putExtra("local_path", local_path);
-        intent.putExtra("local_paper_rule_id", local_paper_rule_id);
         //留给子数据库拼装末位路径
         intent.putExtra("local_section", local_section);
         intent.putExtra("local_module", mModuleList.get(pos));
+        intent.putExtra("local_music_question", mMusicQuestionList.get(pos));
         startActivity(intent);
     }
 }

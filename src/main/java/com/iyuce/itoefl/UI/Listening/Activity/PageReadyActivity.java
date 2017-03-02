@@ -1,7 +1,6 @@
 package com.iyuce.itoefl.UI.Listening.Activity;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -10,11 +9,6 @@ import android.widget.TextView;
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
-import com.iyuce.itoefl.Utils.DbUtil;
-import com.iyuce.itoefl.Utils.ZipUtil;
-
-import java.io.File;
-import java.util.List;
 
 /**
  * Created by LeBang on 2017/1/24
@@ -22,7 +16,7 @@ import java.util.List;
 public class PageReadyActivity extends BaseActivity {
 
     private TextView mTxtHeadTitle, mTxtEnglish, mTxtChinese, mTxtCategory, mTxtLevel;
-    private String local_paper_rule_id, local_paper_code, local_path, local_music_question, local_sqlite_path;
+    private String local_paper_code, local_path, local_music_question;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,13 +28,10 @@ public class PageReadyActivity extends BaseActivity {
 
     private void initView() {
         local_path = getIntent().getStringExtra("local_path");
-        //遍历文件夹获取sqlite文件名,这个local_sqlite_path其实没用//TODO 除非数据库命名的方式不是用local_section + _ + local_module拼接的
-//        local_sqlite_path = unZipFile(new File(local_path + "/TPO18L1.zip"));
-
-        //通过这个根库的PaperRule表中的Id值，查子库的PaperRule表的字段
-        local_paper_rule_id = getIntent().getStringExtra("local_paper_rule_id");
-        //不从表中查，直接拼装上一级的section和module //TODO 用作标题，及数据库名的命名方式, 注意和第60行的TODO是有关系的
+        //不从表中查，直接拼装上一级的section和module
         local_paper_code = getIntent().getStringExtra("local_section") + "_" + getIntent().getStringExtra("local_module");
+        //主音频名称
+        local_music_question = getIntent().getStringExtra("local_music_question");
 
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(new View.OnClickListener() {
@@ -56,42 +47,13 @@ public class PageReadyActivity extends BaseActivity {
         mTxtCategory = (TextView) findViewById(R.id.txt_activity_page_ready_title_category);
         mTxtLevel = (TextView) findViewById(R.id.txt_activity_page_ready_title_level);
 
-        //TODO 动态打开指定数据库，这里应该是翔哥还没同步除L1外的数据造成错误
-        SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
-        local_music_question = DbUtil.queryToString(mDatabase, Constants.TABLE_PAPER_RULE, Constants.MusicQuestion, Constants.ID, local_paper_rule_id);
-        mDatabase.close();
-
         mTxtHeadTitle.setText(local_paper_code);
-    }
-
-    /**
-     * UnZip解压文件夹
-     */
-    private String unZipFile(File file) {
-        String mSQLitePath = null;
-        List<File> mList;
-        try {
-            mList = ZipUtil.GetFileList(file.getAbsolutePath(), true, true);
-            for (int i = 0; i < mList.size(); i++) {
-                if (mList.get(i).getName().contains("sqlite")) {
-                    //拿出数据库文件的路径
-                    mSQLitePath = local_path + "/" + mList.get(i).getName();
-                }
-//                LogUtil.i("mList = " + mList.get(i).getName());
-            }
-            //解压zip文件到对应路径
-            ZipUtil.UnZipFolder(file.getAbsolutePath(), local_path);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return mSQLitePath;
     }
 
     public void beginPractice(View view) {
         Intent intent = new Intent(this, DoQuestionReadyActivity.class);
-        intent.putExtra(Constants.PaperCode, local_paper_code);
         intent.putExtra("local_path", local_path);
-        //TODO 这个路径不一定传，本意是留给doResult中音频的，但老大的音频解析有分段的
+        intent.putExtra(Constants.PaperCode, local_paper_code);
         intent.putExtra(Constants.MusicQuestion, local_music_question);
         startActivity(intent);
     }

@@ -48,6 +48,7 @@ public class Constants {
     public static final String PaperId = "PaperId";
     public static final String PaperCode = "PaperCode";
     public static final String DownUrl = "DownUrl";
+    public static final String DownTime = "DownTime";
     public static final String QuestionType = "QuestionType";
     public static final String RuleName = "RuleName";
     public static final String QuestionCount = "QuestionCount";

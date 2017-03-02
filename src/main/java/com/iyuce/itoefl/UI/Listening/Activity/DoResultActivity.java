@@ -25,7 +25,6 @@ import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.ResultTitleAdapter;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoResult;
 import com.iyuce.itoefl.Utils.DbUtil;
-import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.RecyclerItemClickListener;
 import com.iyuce.itoefl.Utils.StringUtil;
 import com.iyuce.itoefl.Utils.TimeUtil;
@@ -59,7 +58,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     private ArrayList<String> mQuestionIdList;
     //答案相关的数组
     private ArrayList<String> mMusicAnswerList;
-    private ArrayList<String> mOptionAnswerList;
+    private ArrayList<String> mAnswerList;
     private ArrayList<String> mSelectedAnswerList;
     private ArrayList<String> mTimeCountList;
 
@@ -97,7 +96,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onBackPressed() {
-        doBackPageReady();
+        backPageReady();
     }
 
     @Override
@@ -125,14 +124,14 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void initView() {
-        local_paper_code = getIntent().getStringExtra(Constants.PaperCode);
         local_path = getIntent().getStringExtra("local_path");
+        local_paper_code = getIntent().getStringExtra(Constants.PaperCode);
         local_music_question = getIntent().getStringExtra(Constants.MusicQuestion);
         mSortList = getIntent().getStringArrayListExtra("mSortList");
         mQuestionIdList = getIntent().getStringArrayListExtra("mQuestionIdList");
         //答案相关数组
         mMusicAnswerList = getIntent().getStringArrayListExtra(Constants.MusicAnswer);
-        mOptionAnswerList = getIntent().getStringArrayListExtra("mOptionAnswerList");
+        mAnswerList = getIntent().getStringArrayListExtra("mAnswerList");
         mSelectedAnswerList = getIntent().getStringArrayListExtra("mSelectedAnswerList");
         mTimeCountList = getIntent().getStringArrayListExtra("mTimeCountList");
 
@@ -154,14 +153,13 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             //查表Question
             String mQuestionType = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.QuestionType, Constants.ID, mQuestionIdList.get(i));
             String mContent = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Content, Constants.ID, mQuestionIdList.get(i));
-            String mAnswer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Answer, Constants.ID, mQuestionIdList.get(i));
             //查表Option
             ArrayList<String> mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId + " =? ", mQuestionIdList.get(i));
             ArrayList<String> mOptionCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Code, Constants.QuestionId + " =? ", mQuestionIdList.get(i));
             mDatabase.close();
             ListenResult result = new ListenResult();
             result.question_name = mSortList.get(i);
-            result.choice_right = mOptionAnswerList.get(i);
+            result.choice_right = mAnswerList.get(i);
             //TODO 模拟正确答案数据,模拟正确答案题型,有真实数据时以下if内可以删除
             if (mQuestionType.equals("")) {
 //                result.choice_right = "23";
@@ -205,7 +203,6 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
 
         //MediaPlayer
         String musicPath = local_path + File.separator + local_music_question;
-        LogUtil.i("doResult musicPath = " + musicPath);
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnErrorListener(this);
@@ -306,7 +303,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imgbtn_header_title:
-                doBackPageReady();
+                backPageReady();
                 break;
             case R.id.imgbtn_activity_do_result_play:
                 Message msg = Message.obtain();
@@ -325,7 +322,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private void doBackPageReady() {
+    private void backPageReady() {
         startActivity(new Intent(this, PageReadyActivity.class));
     }
 

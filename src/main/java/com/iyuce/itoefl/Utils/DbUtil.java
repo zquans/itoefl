@@ -13,8 +13,8 @@ import java.util.ArrayList;
  */
 public class DbUtil {
 
-    public static DbHelper getHelper(Context context, String path, int version) {
-        return new DbHelper(context, path, version);
+    public static DbHelper getHelper(Context context, String path) {
+        return new DbHelper(context, path);
     }
 
     //API方法,返回新增成功的 row ID,若发生错误返回-1

@@ -50,16 +50,11 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
     private int mEndPosition = 0;
     private String mEndText;
 
-    //提供给Activity用于判断是否播放录音完毕
-    private boolean isFinish = true;
-    //提供给Activity一个默认答案，如果为空则未答完，不让进入下一题
-    private String answerDefault;
-
     //接收参数
     private String total_question, current_question, current_music, current_question_id, local_path, local_paper_code;
 
     //查表所得的属性
-    private String mQuestionType, mContent, mAnswer;
+    private String mContent, mAnswer;
 
     private Handler mMediaProgressHandler = new Handler() {
         @Override
@@ -81,9 +76,11 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
     }
 
     //获取到的参数  QuestionId(用于在Fragment中继续查表)    Sort题号     MusicQuestion音频
-    public static FragmentDoQuestionSort newInstance(String total_question,
-                                                     String current_question, String current_music, String current_question_id, String local_path, String local_paper_code) {
+    public static FragmentDoQuestionSort newInstance(String total_question, String current_question,
+                                                     String current_music, String current_question_id,
+                                                     String local_path, String local_paper_code) {
         FragmentDoQuestionSort fragment = new FragmentDoQuestionSort();
+
         Bundle args = new Bundle();
         args.putString("total_question", total_question);
         args.putString("current_question", current_question);
@@ -130,10 +127,9 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
 
     private void initView(View view) {
         //数据源
-        SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), local_path + "/" + local_paper_code + ".sqlite", Constants.DATABASE_VERSION).getWritableDatabase();
+        SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
         //查表Question
         mContent = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Content, Constants.ID, current_question_id);
-        mQuestionType = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.QuestionType, Constants.ID, current_question_id);
         mAnswer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Answer, Constants.ID, current_question_id);
         //查表Option
         mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId + " =? ", current_question_id);
@@ -147,9 +143,9 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
         mTxtProgressTotal = (TextView) view.findViewById(R.id.txt_fragment_do_question_total);
         mProgressBar = (ProgressBar) view.findViewById(R.id.bar_fragment_do_question_progress);
 
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
         mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_fragment_do_result_page);
         mRelativeLayout.setVisibility(View.GONE);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
 
         //多音频题
 //        isOnlyAudio = false;
@@ -168,8 +164,6 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
         try {
             //路徑直接传递过来，从参数中直接获取
             String musicPath = local_path + File.separator + current_music;
-//            LogUtil.i(current_question_id + "fragment get musicPath = " + musicPath);
-
             mMediaPlayer.setDataSource(musicPath);
             mMediaPlayer.prepare();
         } catch (IOException e) {

@@ -57,8 +57,7 @@ public class PageReadyActivity extends BaseActivity {
         mTxtLevel = (TextView) findViewById(R.id.txt_activity_page_ready_title_level);
 
         //TODO 动态打开指定数据库，这里应该是翔哥还没同步除L1外的数据造成错误
-        SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite",
-                Constants.DATABASE_VERSION).getWritableDatabase();
+        SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
         local_music_question = DbUtil.queryToString(mDatabase, Constants.TABLE_PAPER_RULE, Constants.MusicQuestion, Constants.ID, local_paper_rule_id);
         mDatabase.close();
 

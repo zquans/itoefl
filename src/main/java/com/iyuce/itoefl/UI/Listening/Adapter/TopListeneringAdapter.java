@@ -55,11 +55,11 @@ public class TopListeneringAdapter extends RecyclerView.Adapter<TopListeneringAd
         //TODO 修改数据源，这里的数据源这么写是因为，我们没有一级目录,如："TPO31-40"
         String path = SDCardUtil.getExercisePath() + File.separator + Constants.SQLITE_TPO;
 
-        SQLiteDatabase mDatabase = DbUtil.getHelper(mContext, path, Constants.DATABASE_VERSION).getWritableDatabase();
+        SQLiteDatabase mDatabase = DbUtil.getHelper(mContext, path).getWritableDatabase();
         //从默认主表中查，是否有这张表，其实还应该放在Main中去做
         String isNone = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER);
         if (TextUtils.equals(isNone, Constants.NONE)) {
-            ToastUtil.showMessage(mContext, "网络不佳，请重试");
+            ToastUtil.showMessage(mContext, "网络不佳，未获取到数据,请重试");
             mDatabase.close();
             return;
         }
@@ -69,7 +69,7 @@ public class TopListeneringAdapter extends RecyclerView.Adapter<TopListeneringAd
         holder.mItemTxtTitle.setText(mList.get(position));
         holder.mItemRecyclerView.setLayoutManager(new GridLayoutManager(mContext, mItemCount));
         holder.mItemRecyclerView.setAdapter(new TopListeneringModuleAdapter(mContext, dataList));
-        //如此出发可能会引发问题,重复打开界面
+        //如此触发可能会引发问题,重复打开界面
         holder.mItemRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(mContext, holder.mItemRecyclerView,
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override

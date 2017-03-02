@@ -49,9 +49,9 @@ public class TopListeneringActivity extends BaseActivity {
         mTab = (TabLayout) findViewById(R.id.tab_activity_top_listenering);
         mTabList.add("顺序");
         mTabList.add("分类");
-        mAdapter = new TabTopListeneringAdapter(getSupportFragmentManager());
         mFragmentList.add(new FragmentOrder());
         mFragmentList.add(new FragmentClassify());
+        mAdapter = new TabTopListeneringAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
         mTab.setTabMode(TabLayout.MODE_FIXED);
         mTab.setupWithViewPager(mViewPager);

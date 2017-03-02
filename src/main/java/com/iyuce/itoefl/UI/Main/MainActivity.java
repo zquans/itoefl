@@ -106,7 +106,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             doDownLoad(path);
         } else {
             LogUtil.i("sql exist = yes");
-            SQLiteDatabase mDatabase = DbUtil.getHelper(this, filePath, Constants.DATABASE_VERSION).getWritableDatabase();
+            SQLiteDatabase mDatabase = DbUtil.getHelper(this, filePath).getWritableDatabase();
             String isNone = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER);
             mDatabase.close();
             if (TextUtils.equals(isNone, Constants.NONE)) {

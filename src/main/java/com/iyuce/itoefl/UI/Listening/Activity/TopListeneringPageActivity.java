@@ -80,7 +80,7 @@ public class TopListeneringPageActivity extends BaseActivity
 
         //初始化列表数据,从主表中获取到的local_section读取PAPER_RULE表中的RuleName字段
         root_path = SDCardUtil.getExercisePath() + File.separator + Constants.SQLITE_TPO;
-        SQLiteDatabase mDatabase = DbUtil.getHelper(this, root_path, Constants.DATABASE_VERSION).getWritableDatabase();
+        SQLiteDatabase mDatabase = DbUtil.getHelper(this, root_path).getWritableDatabase();
         mModuleList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.RuleName, Constants.PaperCode + " =? ", local_section);
         mUrlList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.DownUrl, Constants.PaperCode + " =? ", local_section);
         mDatabase.close();
@@ -123,7 +123,7 @@ public class TopListeneringPageActivity extends BaseActivity
     private void CreateOrOpenDbTable() {
         //打开或者创建我的本地数据库DOWNLOAD
         downloaded_sql_path = SDCardUtil.getExercisePath() + File.separator + Constants.SQLITE_DOWNLOAD;
-        SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
+        SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path).getWritableDatabase();
         String create = "create table if not exists " + Constants.TABLE_ALREADY_DOWNLOAD + "("
                 + Constants.ID + " integer primary key autoincrement,"
                 + SECTION + " text,"
@@ -183,7 +183,7 @@ public class TopListeneringPageActivity extends BaseActivity
                 mUserOprateList.get(pos).loading = "false";
                 mUserOprateList.get(pos).download = "true";
 
-                SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
+                SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path).getWritableDatabase();
                 ContentValues mValues = new ContentValues();
                 mValues.put(SECTION, local_section);
                 mValues.put(MODULE, mModuleList.get(pos));
@@ -262,7 +262,7 @@ public class TopListeneringPageActivity extends BaseActivity
         String local_path = SDCardUtil.getExercisePath() + File.separator + local_section + File.separator + mModuleList.get(pos);
 
         //查询download库中的下载表,判断是否下载到本地了，是则进入，否则下载
-        SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path, Constants.DATABASE_VERSION).getWritableDatabase();
+        SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path).getWritableDatabase();
         String sql_query = "select " + Constants.ID + " from " + Constants.TABLE_ALREADY_DOWNLOAD
                 + " where " + SECTION + " = ? and " + MODULE + " = ? ";
         String isExist = DbUtil.cursorToString(mDatabase.rawQuery(sql_query, new String[]{local_section, mModuleList.get(pos)}));
@@ -276,7 +276,7 @@ public class TopListeneringPageActivity extends BaseActivity
         mDatabase.close();
 
         //给intent的参数,根据用户所选项，获得PaperRuleName对应的PaperRuleId，以便查找下一张表用
-        SQLiteDatabase mDatabase1 = DbUtil.getHelper(this, root_path, Constants.DATABASE_VERSION).getWritableDatabase();
+        SQLiteDatabase mDatabase1 = DbUtil.getHelper(this, root_path).getWritableDatabase();
         String local_paper_rule_id = DbUtil.queryToString(mDatabase1, Constants.TABLE_PAPER_RULE, Constants.ID, Constants.RuleName, mModuleList.get(pos));
         mDatabase1.close();
 

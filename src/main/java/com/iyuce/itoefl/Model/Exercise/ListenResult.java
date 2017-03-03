@@ -8,6 +8,6 @@ public class ListenResult {
     public String question_name;
     public boolean question_state;
     public boolean question_is_select;
-    public String choice_right;
-    public String choice_user;
+    public String real_answer;
+    public String select_answer;
 }

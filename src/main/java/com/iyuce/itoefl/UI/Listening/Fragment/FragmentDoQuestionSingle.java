@@ -70,6 +70,10 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
         return answerDefault;
     }
 
+    public String realAnswer() {
+        return mAnswer;
+    }
+
     public boolean finishMediaPlayer() {
         return isFinish;
     }
@@ -127,9 +131,9 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
     private void initView(View view) {
         //数据源
         SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
-        //TODO 直接传递来就好，不用再重复查表Question
+        //查表Question
         mAnswer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Answer, Constants.ID, current_question_id);
-        //查表Option  //TODO 判断MasterId是否为null，不为null则需要查表Child
+        //查表Option
         mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId + " =? ", current_question_id);
         mOptionCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Code, Constants.QuestionId + " =? ", current_question_id);
         mDatabase.close();

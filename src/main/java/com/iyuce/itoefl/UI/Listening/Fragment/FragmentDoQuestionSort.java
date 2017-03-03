@@ -54,8 +54,6 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
     //接收参数
     private String total_question, current_question, current_music, current_question_id, question_content, local_path, local_paper_code;
 
-    //查表所得的属性
-    private String mAnswer;
 
     private Handler mMediaProgressHandler = new Handler() {
         @Override
@@ -67,6 +65,12 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
             getCurrent();
         }
     };
+
+    private String mAnswer;
+
+    public String realAnswer() {
+        return mAnswer;
+    }
 
     public String selectAnswer() {
         return answerDefault;
@@ -131,13 +135,16 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
     private void initView(View view) {
         //数据源
         SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
+        //查表Question
         mAnswer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Answer, Constants.ID, current_question_id);
+        //查表Option
         mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId + " =? ", current_question_id);
         mDatabase.close();
         //用于保存用户所选的答案，初始默认为从0开始的顺序数字
         for (int i = 0; i < mOptionContentList.size(); i++) {
             mOptionSortList.add(String.valueOf(i));
         }
+        answerDefault = mOptionSortList.toString();
 
         mTxtCurrentQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
         mTxtTotalQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
@@ -159,12 +166,13 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
         mTxtCurrentQuestion.setText(current_question);
         mTxtTotalQuestion.setText(total_question);
         mTxtQuestionContent.setText(question_content);
-        mTxtQuestionType.setText("本题是判断题");
+        mTxtQuestionType.setText("本题是排序题");
         mTxtQuestionType.setVisibility(View.VISIBLE);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new QuestionSortAdapter(getActivity(), mOptionContentList);
         mRecyclerView.setAdapter(mAdapter);
+        doSort();
         LogUtil.i("isFinsh = " + isFinish);
 
         //MediaPlayer

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,11 +30,11 @@ public class FragmentDoResult extends Fragment {
     private ArrayList<String> mOptionCodeList;
     private ResultContentAdapter mAdapter;
 
-    private String page_current, page_total, page_question, question_type, answer_select, answer_option, time_count;
+    private String page_current, page_total, page_question, question_type, answer_select, answer_real, time_count;
 
     public static FragmentDoResult newInstance(String page_current, String page_total, String page_question,
                                                ArrayList<String> option_content_list, ArrayList<String> option_code_list,
-                                               String question_type, String answer_select, String answer_option, String time_count) {
+                                               String question_type, String answer_select, String answer_real, String time_count) {
         FragmentDoResult fragment = new FragmentDoResult();
         Bundle bundle = new Bundle();
         bundle.putString("page_current", page_current);
@@ -45,7 +44,7 @@ public class FragmentDoResult extends Fragment {
         bundle.putStringArrayList("option_code_list", option_code_list);
         bundle.putString("question_type", question_type);
         bundle.putString("answer_select", answer_select);
-        bundle.putString("answer_option", answer_option);
+        bundle.putString("answer_real", answer_real);
         bundle.putString("time_count", time_count);
         fragment.setArguments(bundle);
         return fragment;
@@ -62,12 +61,8 @@ public class FragmentDoResult extends Fragment {
             mOptionCodeList = getArguments().getStringArrayList("option_code_list");
             question_type = getArguments().getString("question_type");
             answer_select = getArguments().getString("answer_select");
-            answer_option = getArguments().getString("answer_option");
+            answer_real = getArguments().getString("answer_real");
             time_count = getArguments().getString("time_count");
-            //将多选题的数字转换为字母ABCD
-            answer_option = StringUtil.transferNumberToAlpha(answer_option);
-            answer_select = StringUtil.transferNumberToAlpha(answer_select);
-            LogUtil.i("answer_select = " + answer_select + ",answer_option = " + answer_option);
         }
     }
 
@@ -110,46 +105,73 @@ public class FragmentDoResult extends Fragment {
     }
 
     private void initData() {
-        if (TextUtils.equals(question_type, Constants.QUESTION_TYPE_JUDGE)) {
-            //判断题，只需要这三个数据拼装 answer_select,answer_option,mOptionContentList
-            String[] judgeSelectList = StringUtil.transferStringToArray(answer_select);
-            String[] judgeAnswerList = StringUtil.transferStringToArray(answer_option);
+        LogUtil.i("question_type = " + question_type + "answer_select = " + answer_select + ",answer_option = " + answer_real);
 
-            ListenResultContent result;
-            for (int i = 0; i < judgeSelectList.length; i++) {
-                result = new ListenResultContent();
-                result.judgeSelect = judgeSelectList[i].trim();
-                result.judgeAnswer = judgeAnswerList[i].trim();
-                if (result.judgeSelect.trim().equals(result.judgeAnswer.trim())) {
-                    result.state = "true";
-                } else if (result.judgeSelect.contains("null")) {
-                    result.state = "null";
-                } else {
-                    result.state = "false";
-                }
-                result.content = mOptionContentList.get(i);
-                mResultList.add(result);
-            }
-        } else {
-            //非判断题,把用户的选择、正确答案,这两个属性集合在一个对象中传给Adapter
-            ListenResultContent result;
-            for (int i = 0; i < mOptionCodeList.size(); i++) {
-                result = new ListenResultContent();
-                result.number = mOptionCodeList.get(i);
-                result.content = mOptionContentList.get(i);
-                mResultList.add(result);
-            }
+        ListenResultContent result;
+        switch (question_type) {
+            case Constants.QUESTION_TYPE_JUDGE:
+                //判断题
+                String[] judgeSelectList = StringUtil.transferStringToArray(answer_select);
+                String[] judgeAnswerList = StringUtil.transferStringToArray(answer_real);
 
-            for (int i = 0; i < mOptionContentList.size(); i++) {
-                //遍历做判断,answer_option或answer_select包含该题，则修改该题的图标,先判断正确，后判断错误
-                if (answer_option.contains(mResultList.get(i).number)) {
-                    mResultList.get(i).state = "true";
-                } else if (answer_select.contains(mResultList.get(i).number)) {
-                    mResultList.get(i).state = "false";
-                } else {
-                    mResultList.get(i).state = "none";
+                for (int i = 0; i < judgeSelectList.length; i++) {
+                    result = new ListenResultContent();
+                    result.judgeSelect = judgeSelectList[i].trim();
+                    result.judgeAnswer = judgeAnswerList[i].trim();
+                    if (result.judgeSelect.trim().contains(result.judgeAnswer.trim())) {
+                        result.state = "true";
+                    } else if (result.judgeSelect.contains("null")) {
+                        result.state = "null";
+                    } else {
+                        result.state = "false";
+                    }
+                    result.content = mOptionContentList.get(i);
+                    mResultList.add(result);
                 }
-            }
+                break;
+            case Constants.QUESTION_TYPE_SORT:
+                //排序
+                String[] sortSelectList = StringUtil.transferStringToArray(answer_select);
+                String[] sortAnswerList = StringUtil.transferStringToArray(answer_real);
+
+                //TODO 内容重新排序或许可以用Collections的相关方法
+                for (int i = 0; i < sortSelectList.length; i++) {
+                    result = new ListenResultContent();
+                    result.judgeSelect = sortSelectList[i].trim();
+                    result.judgeAnswer = sortAnswerList[i].trim();
+                    if (result.judgeSelect.contains(result.judgeAnswer.trim())) {
+                        result.state = "true";
+                    } else {
+                        result.state = "false";
+                    }
+                    result.number = sortAnswerList[i];
+                    result.content = mOptionContentList.get(i);
+                    mResultList.add(result);
+                }
+                break;
+            default:
+                //单选和多选
+                answer_real = StringUtil.transferNumberToAlpha(answer_real);
+                answer_select = StringUtil.transferNumberToAlpha(answer_select);
+
+                for (int i = 0; i < mOptionCodeList.size(); i++) {
+                    result = new ListenResultContent();
+                    result.number = mOptionCodeList.get(i);
+                    result.content = mOptionContentList.get(i);
+                    mResultList.add(result);
+                }
+
+                for (int i = 0; i < mOptionContentList.size(); i++) {
+                    //遍历做判断,answer_option或answer_select包含该题，则修改该题的图标,先判断正确，后判断错误
+                    if (answer_real.contains(mResultList.get(i).number)) {
+                        mResultList.get(i).state = "true";
+                    } else if (answer_select.contains(mResultList.get(i).number)) {
+                        mResultList.get(i).state = "false";
+                    } else {
+                        mResultList.get(i).state = "none";
+                    }
+                }
+                break;
         }
     }
 

@@ -34,6 +34,13 @@ public class StringUtil {
         return orginal.replace(" ", "");
     }
 
+    public static String transferStringListToString(String orginla) {
+        return orginla.replace(",", "")
+                .replace("[", "")
+                .replace("]", "")
+                .replace(" ", "");
+    }
+
     public static String[] transferStringToArray(String orginal) {
         return orginal.replace("[", " ")
                 .replace("]", " ")

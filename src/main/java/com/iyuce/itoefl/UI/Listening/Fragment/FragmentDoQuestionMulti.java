@@ -49,10 +49,10 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
     private String mEndText;
 
     //接收参数
-    private String total_question, current_question, current_music, current_question_id, local_path, local_paper_code;
+    private String total_question, current_question, current_music, current_question_id, question_content, local_path, local_paper_code;
 
     //查表所得的属性
-    private String mQuestionType, mContent, mAnswer;
+    private String mAnswer;
 
     private Handler mMediaProgressHandler = new Handler() {
         @Override
@@ -69,19 +69,25 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
         return answerDefault;
     }
 
+    public String realAnswer() {
+        return mAnswer;
+    }
+
     public boolean finishMediaPlayer() {
         return isFinish;
     }
 
     //获取到的参数  QuestionId(用于在Fragment中继续查表)    Sort题号     MusicQuestion音频
-    public static FragmentDoQuestionMulti newInstance(String total_question,
-                                                      String current_question, String current_music, String current_question_id, String local_path, String local_paper_code) {
+    public static FragmentDoQuestionMulti newInstance(String total_question, String current_question,
+                                                      String current_music, String current_question_id, String question_content,
+                                                      String local_path, String local_paper_code) {
         FragmentDoQuestionMulti fragment = new FragmentDoQuestionMulti();
         Bundle args = new Bundle();
         args.putString("total_question", total_question);
         args.putString("current_question", current_question);
         args.putString("current_music", current_music);
         args.putString("current_question_id", current_question_id);
+        args.putString("question_content", question_content);
         args.putString("local_path", local_path);
         args.putString("local_paper_code", local_paper_code);
         fragment.setArguments(args);
@@ -96,6 +102,7 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
             current_question = getArguments().getString("current_question");
             current_music = getArguments().getString("current_music");
             current_question_id = getArguments().getString("current_question_id");
+            question_content = getArguments().getString("question_content");
             local_path = getArguments().getString("local_path");
             local_paper_code = getArguments().getString("local_paper_code");
         }
@@ -125,8 +132,6 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
         //数据源
         SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
         //查表Question
-        mContent = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Content, Constants.ID, current_question_id);
-        mQuestionType = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.QuestionType, Constants.ID, current_question_id);
         mAnswer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Answer, Constants.ID, current_question_id);
         //查表Option
         mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId + " =? ", current_question_id);
@@ -152,7 +157,7 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
         //布置参数到对应控件
         mTxtCurrentQuestion.setText(current_question);
         mTxtTotalQuestion.setText(total_question);
-        mTxtQuestionContent.setText(mContent);
+        mTxtQuestionContent.setText(question_content);
         mTxtQuestionType.setText("本题是多选题");
         mTxtQuestionType.setVisibility(View.VISIBLE);
 

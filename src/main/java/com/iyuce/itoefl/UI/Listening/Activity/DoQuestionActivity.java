@@ -51,8 +51,7 @@ public class DoQuestionActivity extends BaseActivity implements
     private ArrayList<String> mQuestionIdList;
     private ArrayList<String> mMasterIdList;
     private ArrayList<String> mQuestionTypeList;
-    private ArrayList<String> mContentList;
-    private ArrayList<String> mAnswerList;
+    private ArrayList<String> mQuestionContentList;
     private ArrayList<String> mSortList;
     private ArrayList<String> mMusicQuestionList;
     private ArrayList<String> mMusicAnswerList;
@@ -66,6 +65,7 @@ public class DoQuestionActivity extends BaseActivity implements
     private ArrayList<Integer> mSelectedQuestionList = new ArrayList<>();
     //保存所选的答案，传入下一级
     private ArrayList<String> mSelectedAnswerList = new ArrayList<>();
+    private ArrayList<String> mAnswerList = new ArrayList<>();
 
     //路径
     private String local_paper_code, local_path, local_music_question;
@@ -133,12 +133,11 @@ public class DoQuestionActivity extends BaseActivity implements
         mQuestionIdList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.ID);
         mMasterIdList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.MasterId);
         mQuestionTypeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.QuestionType);
-        mContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.Content);
+        mQuestionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.Content);
         mSortList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.Sort);
         mMusicQuestionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.MusicQuestion);
         //这个直接传给DoResult就好
         mMusicAnswerList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.MusicAnswer);
-        mAnswerList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.Answer);
         mDatabase.close();
 
         TOTAL_QUESTION_COUNT = String.valueOf(mSortList.size());
@@ -203,15 +202,17 @@ public class DoQuestionActivity extends BaseActivity implements
                 if (mSelectedQuestionList.contains(mCurrentQuestion)) {
                     //替换答案
                     mSelectedAnswerList.set(mCurrentQuestion - 1, mFrgment.selectAnswer());
+                    mAnswerList.set(mCurrentQuestion - 1, mFrgment.realAnswer());
                 } else {
                     //保存答案
                     mSelectedQuestionList.add(mCurrentQuestion);
                     mSelectedAnswerList.add(mFrgment.selectAnswer());
+                    mAnswerList.add(mFrgment.realAnswer());
                     //保存答题时间,并标记上一次被存的时间，做减法
                     mTimeCountList.add(String.valueOf(TimeCount - lastTimeCount));
                     lastTimeCount = TimeCount;
                 }
-                LogUtil.i("all = " + mSelectedQuestionList.toString() + "||" + mSelectedAnswerList.toString());
+                LogUtil.i("when click = " + mSelectedQuestionList.toString() + mSelectedAnswerList.toString() + mAnswerList);
                 //答完,进入下一个页面
                 if (mSelectedQuestionList.size() == mSortList.size()) {
                     Intent intent = new Intent(this, DoResultActivity.class);
@@ -227,6 +228,8 @@ public class DoQuestionActivity extends BaseActivity implements
                     //留给下一级，省去查表的开销
                     intent.putStringArrayListExtra("mSortList", mSortList);
                     intent.putStringArrayListExtra("mQuestionIdList", mQuestionIdList);
+                    intent.putStringArrayListExtra("mQuestionTypeList", mQuestionTypeList);
+                    intent.putStringArrayListExtra("mQuestionContentList", mQuestionContentList);
                     startActivity(intent);
                     break;
                 }
@@ -254,6 +257,7 @@ public class DoQuestionActivity extends BaseActivity implements
         // 保存所作题目和对应答案,暂不存入数据库，当所有题目答完，将ArrayList.toString存入数据库
         if (mSelectedQuestionList.contains(position)) {
             mSelectedAnswerList.set(position - 1, mFrgment.selectAnswer());
+            mAnswerList.set(position - 1, mFrgment.realAnswer());
 
             //切换当前Fragment
             SkipToQuestion(position);
@@ -289,35 +293,35 @@ public class DoQuestionActivity extends BaseActivity implements
             case Constants.QUESTION_TYPE_MULTI:
                 mFrgment = FragmentDoQuestionMulti.newInstance(
                         TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
-                        mQuestionIdList.get(position - 1),
+                        mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
                         local_path, local_paper_code);
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
                 break;
             case Constants.QUESTION_TYPE_JUDGE:
                 mFrgment = FragmentDoQuestionJudge.newInstance(
                         TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
-                        mQuestionIdList.get(position - 1),
+                        mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
                         local_path, local_paper_code);
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
                 break;
             case Constants.QUESTION_TYPE_SINGEL:
                 mFrgment = FragmentDoQuestionSingle.newInstance(
                         TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
-                        mQuestionIdList.get(position - 1), mContentList.get(position - 1),
+                        mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
                         local_path, local_paper_code);
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
                 break;
             case Constants.QUESTION_TYPE_SORT:
                 mFrgment = FragmentDoQuestionSort.newInstance(
                         TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
-                        mQuestionIdList.get(position - 1), mContentList.get(position - 1),
+                        mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
                         local_path, local_paper_code);
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
                 break;
             default:
-                mFrgment = FragmentDoQuestionMulti.newInstance(
+                mFrgment = FragmentDoQuestionSort.newInstance(
                         TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
-                        mQuestionIdList.get(position - 1),
+                        mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
                         local_path, local_paper_code);
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
                 break;

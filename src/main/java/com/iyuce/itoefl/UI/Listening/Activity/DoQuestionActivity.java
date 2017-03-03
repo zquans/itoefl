@@ -21,7 +21,10 @@ import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.BottomDoQuestionAdapter;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionDefault;
+import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionJudge;
+import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionMulti;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionSingle;
+import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionSort;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
@@ -143,12 +146,8 @@ public class DoQuestionActivity extends BaseActivity implements
         for (int i = 0; i < mSortList.size(); i++) {
             mDataBottomList.add(mSortList.get(i));
         }
-        //应该传递给Fragment的参数  QuestionId(用于在Fragment中继续查表)、Sort题号、MusicQuestion音频,默认是pos=0的值
-        //TODO 这里就应该开始区分类型 switch,单选则实例化单选
-        mFrgment = FragmentDoQuestionSingle.newInstance(
-                TOTAL_QUESTION_COUNT, mSortList.get(0), mMusicQuestionList.get(0), mQuestionIdList.get(0), local_path, local_paper_code);
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
-
+        //根据当前题型进行不同Fragment的数据装载,初始为1是因为要获取mQuestionTypeList数组的第一项
+        toSwitch(1);
         //执行计时任务
         toCountTime();
     }
@@ -266,7 +265,7 @@ public class DoQuestionActivity extends BaseActivity implements
                 ToastUtil.showMessage(this, "本题未答完，无法查看后面的题");
             } else {
                 //TODO ????当前题？ 如果是，则不应该跳转
-                SkipToQuestion(position);
+//                SkipToQuestion(position);
             }
         }
         LogUtil.i("all = " + mSelectedQuestionList.toString() + "||" + mSelectedAnswerList.toString());
@@ -277,9 +276,51 @@ public class DoQuestionActivity extends BaseActivity implements
      */
     private void SkipToQuestion(int position) {
         mTxtCurrent.setText(mSortList.get(position - 1));
-        mFrgment = FragmentDoQuestionSingle.newInstance(
-                TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1), mQuestionIdList.get(position - 1),
-                local_path, local_paper_code);
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
+
+        //根据当前题型进行不同Fragment的数据装载
+        toSwitch(position);
+    }
+
+    /**
+     * 根据当前题型进行不同Fragment的数据装载
+     */
+    private void toSwitch(int position) {
+        switch (mQuestionTypeList.get(position - 1)) {
+            case Constants.QUESTION_TYPE_MULTI:
+                mFrgment = FragmentDoQuestionMulti.newInstance(
+                        TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
+                        mQuestionIdList.get(position - 1),
+                        local_path, local_paper_code);
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
+                break;
+            case Constants.QUESTION_TYPE_JUDGE:
+                mFrgment = FragmentDoQuestionJudge.newInstance(
+                        TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
+                        mQuestionIdList.get(position - 1),
+                        local_path, local_paper_code);
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
+                break;
+            case Constants.QUESTION_TYPE_SINGEL:
+                mFrgment = FragmentDoQuestionSingle.newInstance(
+                        TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
+                        mQuestionIdList.get(position - 1), mContentList.get(position - 1),
+                        local_path, local_paper_code);
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
+                break;
+            case Constants.QUESTION_TYPE_SORT:
+                mFrgment = FragmentDoQuestionSort.newInstance(
+                        TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
+                        mQuestionIdList.get(position - 1), mContentList.get(position - 1),
+                        local_path, local_paper_code);
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
+                break;
+            default:
+                mFrgment = FragmentDoQuestionMulti.newInstance(
+                        TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
+                        mQuestionIdList.get(position - 1),
+                        local_path, local_paper_code);
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
+                break;
+        }
     }
 }

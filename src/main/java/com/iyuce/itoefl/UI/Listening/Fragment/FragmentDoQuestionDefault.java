@@ -1,14 +1,8 @@
 package com.iyuce.itoefl.UI.Listening.Fragment;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.iyuce.itoefl.UI.Listening.Adapter.QuestionAdapter;
-
-public class FragmentDoQuestionDefault extends Fragment implements QuestionAdapter.OnQuestionItemClickListener {
+public class FragmentDoQuestionDefault extends Fragment {
 
     //提供给Activity用于判断是否播放录音完毕
     public boolean isFinish = true;
@@ -22,29 +16,5 @@ public class FragmentDoQuestionDefault extends Fragment implements QuestionAdapt
 
     public boolean finishMediaPlayer() {
         return isFinish;
-    }
-
-    //获取到的参数
-    public static FragmentDoQuestionDefault newInstance(String total_question, String current_question,
-                                                        String current_music, String current_question_id,
-                                                        String local_path, String local_paper_code) {
-        FragmentDoQuestionDefault fragment = new FragmentDoQuestionDefault();
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        return null;
-    }
-
-    //Adapter提供给Fragment的方法
-    @Override
-    public void onQuestionClick(int pos) {
     }
 }

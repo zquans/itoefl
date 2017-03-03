@@ -29,7 +29,7 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
         MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
     //题目序号、内容
-    private TextView mTxtCurrentQuestion, mTxtTotalQuestion, mTxtQuestionContent;
+    private TextView mTxtCurrentQuestion, mTxtTotalQuestion, mTxtQuestionContent, mTxtQuestionType;
     private TextView mTxtProgressCurrent, mTxtProgressTotal;
     private ProgressBar mProgressBar;
     //可选视图
@@ -47,11 +47,6 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
     private boolean isOnlyAudio = true;
     private int mEndPosition = 0;
     private String mEndText;
-
-    //提供给Activity用于判断是否播放录音完毕
-    private boolean isFinish = true;
-    //提供给Activity一个默认答案，如果为空则未答完，不让进入下一题
-    private String answerDefault;
 
     //接收参数
     private String total_question, current_question, current_music, current_question_id, local_path, local_paper_code;
@@ -141,14 +136,14 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
         mTxtCurrentQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
         mTxtTotalQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
         mTxtQuestionContent = (TextView) view.findViewById(R.id.txt_fragment_do_result_title);
+        mTxtQuestionType = (TextView) view.findViewById(R.id.txt_fragment_do_result_question_type);
         mTxtProgressCurrent = (TextView) view.findViewById(R.id.txt_fragment_do_question_current);
         mTxtProgressTotal = (TextView) view.findViewById(R.id.txt_fragment_do_question_total);
         mProgressBar = (ProgressBar) view.findViewById(R.id.bar_fragment_do_question_progress);
 
-        mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_fragment_do_result_page);
-
-        mRelativeLayout.setVisibility(View.GONE);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
+        mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_fragment_do_result_page);
+        mRelativeLayout.setVisibility(View.GONE);
 
         //多音频题
 //        isOnlyAudio = false;
@@ -158,6 +153,13 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
         mTxtCurrentQuestion.setText(current_question);
         mTxtTotalQuestion.setText(total_question);
         mTxtQuestionContent.setText(mContent);
+        mTxtQuestionType.setText("本题是多选题");
+        mTxtQuestionType.setVisibility(View.VISIBLE);
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new QuestionMultiAdapter(getActivity(), mOptionContentList);
+        mAdapter.setOnQuestionItemClickListener(this);
+        mRecyclerView.setAdapter(mAdapter);
 
         //MediaPlayer
         mMediaPlayer = new MediaPlayer();

@@ -20,7 +20,6 @@ import com.iyuce.itoefl.UI.Listening.Adapter.QuestionJudgeAdapter;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.TimeUtil;
-import com.iyuce.itoefl.Utils.ToastUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +29,7 @@ public class FragmentDoQuestionJudge extends FragmentDoQuestionDefault implement
         MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
     //题目序号、内容
-    private TextView mTxtCurrentQuestion, mTxtTotalQuestion, mTxtQuestionContent;
+    private TextView mTxtCurrentQuestion, mTxtTotalQuestion, mTxtQuestionContent, mTxtQuestionType;
     private TextView mTxtProgressCurrent, mTxtProgressTotal;
     private ProgressBar mProgressBar;
     //可选视图
@@ -38,8 +37,8 @@ public class FragmentDoQuestionJudge extends FragmentDoQuestionDefault implement
 
     //答题选项
     private RecyclerView mRecyclerView;
-    private ArrayList<String> mOptionContentList = new ArrayList<>();
-    private ArrayList<String> mOptionCodeList = new ArrayList<>();
+    private ArrayList<String> mJudgeContentList = new ArrayList<>();
+    private ArrayList<String> mJudgeAnswerList = new ArrayList<>();
     private QuestionJudgeAdapter mAdapter;
 
     private MediaPlayer mMediaPlayer;
@@ -49,16 +48,11 @@ public class FragmentDoQuestionJudge extends FragmentDoQuestionDefault implement
     private int mEndPosition = 0;
     private String mEndText;
 
-    //提供给Activity用于判断是否播放录音完毕
-    private boolean isFinish = true;
-    //提供给Activity一个默认答案，如果为空则未答完，不让进入下一题
-    private String answerDefault;
-
     //接收参数
     private String total_question, current_question, current_music, current_question_id, local_path, local_paper_code;
 
     //查表所得的属性
-    private String mQuestionType, mContent, mAnswer;
+    private String mContent;
 
     private Handler mMediaProgressHandler = new Handler() {
         @Override
@@ -79,9 +73,9 @@ public class FragmentDoQuestionJudge extends FragmentDoQuestionDefault implement
         return isFinish;
     }
 
-    //获取到的参数  QuestionId(用于在Fragment中继续查表)    Sort题号     MusicQuestion音频
-    public static FragmentDoQuestionJudge newInstance(String total_question,
-                                                      String current_question, String current_music, String current_question_id, String local_path, String local_paper_code) {
+    public static FragmentDoQuestionJudge newInstance(String total_question, String current_question,
+                                                      String current_music, String current_question_id,
+                                                      String local_path, String local_paper_code) {
         FragmentDoQuestionJudge fragment = new FragmentDoQuestionJudge();
         Bundle args = new Bundle();
         args.putString("total_question", total_question);
@@ -132,26 +126,23 @@ public class FragmentDoQuestionJudge extends FragmentDoQuestionDefault implement
         SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
         //查表Question
         mContent = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Content, Constants.ID, current_question_id);
-        mQuestionType = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.QuestionType, Constants.ID, current_question_id);
-        mAnswer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Answer, Constants.ID, current_question_id);
-        //查表Option
-        mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId + " =? ", current_question_id);
-        mOptionCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Code, Constants.QuestionId + " =? ", current_question_id);
+        //查表Child
+        mJudgeContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION_CHILD, Constants.Content, Constants.MasterId + " =? ", current_question_id);
+        mJudgeAnswerList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION_CHILD, Constants.Answer, Constants.MasterId + " =? ", current_question_id);
         mDatabase.close();
+        LogUtil.i(mJudgeContentList.toString() + mJudgeAnswerList.toString());
 
         mTxtCurrentQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
         mTxtTotalQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
         mTxtQuestionContent = (TextView) view.findViewById(R.id.txt_fragment_do_result_title);
+        mTxtQuestionType = (TextView) view.findViewById(R.id.txt_fragment_do_result_question_type);
         mTxtProgressCurrent = (TextView) view.findViewById(R.id.txt_fragment_do_question_current);
         mTxtProgressTotal = (TextView) view.findViewById(R.id.txt_fragment_do_question_total);
         mProgressBar = (ProgressBar) view.findViewById(R.id.bar_fragment_do_question_progress);
 
-        mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_fragment_do_result_page);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
-
-        //判断题
+        mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_fragment_do_result_page);
         mRelativeLayout.setVisibility(View.GONE);
-        ToastUtil.showMessage(getActivity(), "本题是判断题");
 
         //多音频题
 //        isOnlyAudio = false;
@@ -161,6 +152,13 @@ public class FragmentDoQuestionJudge extends FragmentDoQuestionDefault implement
         mTxtCurrentQuestion.setText(current_question);
         mTxtTotalQuestion.setText(total_question);
         mTxtQuestionContent.setText(mContent);
+        mTxtQuestionType.setText("本题是判断题");
+        mTxtQuestionType.setVisibility(View.VISIBLE);
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new QuestionJudgeAdapter(getActivity(), mJudgeContentList);
+        mAdapter.setOnQuestionItemClickListener(this);
+        mRecyclerView.setAdapter(mAdapter);
 
         //MediaPlayer
         mMediaPlayer = new MediaPlayer();
@@ -168,10 +166,7 @@ public class FragmentDoQuestionJudge extends FragmentDoQuestionDefault implement
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setOnCompletionListener(this);
         try {
-            //路徑直接传递过来，从参数中直接获取
             String musicPath = local_path + File.separator + current_music;
-//            LogUtil.i(current_question_id + "fragment get musicPath = " + musicPath);
-
             mMediaPlayer.setDataSource(musicPath);
             mMediaPlayer.prepare();
         } catch (IOException e) {
@@ -199,7 +194,7 @@ public class FragmentDoQuestionJudge extends FragmentDoQuestionDefault implement
             return;
         }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new QuestionJudgeAdapter(getActivity(), mOptionContentList);
+        mAdapter = new QuestionJudgeAdapter(getActivity(), mJudgeContentList);
         mAdapter.setOnQuestionItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         isFinish = true;
@@ -244,6 +239,6 @@ public class FragmentDoQuestionJudge extends FragmentDoQuestionDefault implement
     public void onQuestionClick(int pos) {
         //判断
         answerDefault = mAdapter.returnSelectList().toString();
-        LogUtil.i("Judge mAnswer = " + mAnswer + ",and you choose " + answerDefault);
+        LogUtil.i("Judge mAnswer = " + mJudgeAnswerList.toString() + ",and you choose " + answerDefault);
     }
 }

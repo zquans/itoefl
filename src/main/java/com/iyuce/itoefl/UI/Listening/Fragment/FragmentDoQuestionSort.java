@@ -26,12 +26,13 @@ import com.iyuce.itoefl.Utils.TimeUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
         MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
     //题目序号、内容
-    private TextView mTxtCurrentQuestion, mTxtTotalQuestion, mTxtQuestionContent;
+    private TextView mTxtCurrentQuestion, mTxtTotalQuestion, mTxtQuestionContent, mTxtQuestionType;
     private TextView mTxtProgressCurrent, mTxtProgressTotal;
     private ProgressBar mProgressBar;
     //可选视图
@@ -40,7 +41,7 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
     //答题选项
     private RecyclerView mRecyclerView;
     private ArrayList<String> mOptionContentList = new ArrayList<>();
-    private ArrayList<String> mOptionCodeList = new ArrayList<>();
+    private ArrayList<String> mOptionSortList = new ArrayList<>();
     private QuestionSortAdapter mAdapter;
 
     private MediaPlayer mMediaPlayer;
@@ -51,10 +52,10 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
     private String mEndText;
 
     //接收参数
-    private String total_question, current_question, current_music, current_question_id, local_path, local_paper_code;
+    private String total_question, current_question, current_music, current_question_id, question_content, local_path, local_paper_code;
 
     //查表所得的属性
-    private String mContent, mAnswer;
+    private String mAnswer;
 
     private Handler mMediaProgressHandler = new Handler() {
         @Override
@@ -77,7 +78,7 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
 
     //获取到的参数  QuestionId(用于在Fragment中继续查表)    Sort题号     MusicQuestion音频
     public static FragmentDoQuestionSort newInstance(String total_question, String current_question,
-                                                     String current_music, String current_question_id,
+                                                     String current_music, String current_question_id, String question_content,
                                                      String local_path, String local_paper_code) {
         FragmentDoQuestionSort fragment = new FragmentDoQuestionSort();
 
@@ -86,6 +87,7 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
         args.putString("current_question", current_question);
         args.putString("current_music", current_music);
         args.putString("current_question_id", current_question_id);
+        args.putString("question_content", question_content);
         args.putString("local_path", local_path);
         args.putString("local_paper_code", local_paper_code);
         fragment.setArguments(args);
@@ -100,6 +102,7 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
             current_question = getArguments().getString("current_question");
             current_music = getArguments().getString("current_music");
             current_question_id = getArguments().getString("current_question_id");
+            question_content = getArguments().getString("question_content");
             local_path = getArguments().getString("local_path");
             local_paper_code = getArguments().getString("local_paper_code");
         }
@@ -128,17 +131,18 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
     private void initView(View view) {
         //数据源
         SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
-        //查表Question
-        mContent = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Content, Constants.ID, current_question_id);
         mAnswer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Answer, Constants.ID, current_question_id);
-        //查表Option
         mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId + " =? ", current_question_id);
-        mOptionCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Code, Constants.QuestionId + " =? ", current_question_id);
         mDatabase.close();
+        //用于保存用户所选的答案，初始默认为从0开始的顺序数字
+        for (int i = 0; i < mOptionContentList.size(); i++) {
+            mOptionSortList.add(String.valueOf(i));
+        }
 
         mTxtCurrentQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
         mTxtTotalQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
         mTxtQuestionContent = (TextView) view.findViewById(R.id.txt_fragment_do_result_title);
+        mTxtQuestionType = (TextView) view.findViewById(R.id.txt_fragment_do_result_question_type);
         mTxtProgressCurrent = (TextView) view.findViewById(R.id.txt_fragment_do_question_current);
         mTxtProgressTotal = (TextView) view.findViewById(R.id.txt_fragment_do_question_total);
         mProgressBar = (ProgressBar) view.findViewById(R.id.bar_fragment_do_question_progress);
@@ -154,7 +158,14 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
         //布置参数到对应控件
         mTxtCurrentQuestion.setText(current_question);
         mTxtTotalQuestion.setText(total_question);
-        mTxtQuestionContent.setText(mContent);
+        mTxtQuestionContent.setText(question_content);
+        mTxtQuestionType.setText("本题是判断题");
+        mTxtQuestionType.setVisibility(View.VISIBLE);
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new QuestionSortAdapter(getActivity(), mOptionContentList);
+        mRecyclerView.setAdapter(mAdapter);
+        LogUtil.i("isFinsh = " + isFinish);
 
         //MediaPlayer
         mMediaPlayer = new MediaPlayer();
@@ -220,20 +231,22 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
 
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                //TODO 排位序列
-                LogUtil.i("Sort mAnswer = " + mAnswer + ",,and you choose " + answerDefault);
                 int fromPosition = viewHolder.getAdapterPosition();
                 int toPosition = target.getAdapterPosition();
                 if (fromPosition < toPosition) {
                     for (int i = fromPosition; i < toPosition; i++) {
+                        Collections.swap(mOptionSortList, i, i + 1);
                         //各项加1
                     }
                 } else {
                     for (int i = fromPosition; i > toPosition; i--) {
+                        Collections.swap(mOptionSortList, i, i - 1);
                         //各项减1
                     }
                 }
+                answerDefault = mOptionSortList.toString();
                 mAdapter.notifyItemMoved(fromPosition, toPosition);
+                LogUtil.i("Sort mAnswer = " + mAnswer + ",and you choose " + answerDefault);
                 return true;
             }
 

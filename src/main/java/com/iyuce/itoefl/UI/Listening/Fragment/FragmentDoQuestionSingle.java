@@ -49,16 +49,11 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
     private int mEndPosition = 0;
     private String mEndText;
 
-    //提供给Activity用于判断是否播放录音完毕
-    private boolean isFinish = false;
-    //提供给Activity一个默认答案，如果为空则未答完，不让进入下一题
-    private String answerDefault;
-
     //接收参数
-    private String total_question, current_question, current_music, current_question_id, local_path, local_paper_code;
+    private String total_question, current_question, current_music, current_question_id, question_content, local_path, local_paper_code;
 
     //查表所得的属性
-    private String mQuestionType, mContent, mAnswer;
+    private String mAnswer;
 
     private Handler mMediaProgressHandler = new Handler() {
         @Override
@@ -79,15 +74,16 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
         return isFinish;
     }
 
-    //获取到的参数  QuestionId(用于在Fragment中继续查表)    Sort题号     MusicQuestion音频
-    public static FragmentDoQuestionSingle newInstance(String total_question,
-                                                       String current_question, String current_music, String current_question_id, String local_path, String local_paper_code) {
+    public static FragmentDoQuestionSingle newInstance(String total_question, String current_question,
+                                                       String current_music, String current_question_id, String question_content,
+                                                       String local_path, String local_paper_code) {
         FragmentDoQuestionSingle fragment = new FragmentDoQuestionSingle();
         Bundle args = new Bundle();
         args.putString("total_question", total_question);
         args.putString("current_question", current_question);
         args.putString("current_music", current_music);
         args.putString("current_question_id", current_question_id);
+        args.putString("question_content", question_content);
         args.putString("local_path", local_path);
         args.putString("local_paper_code", local_paper_code);
         fragment.setArguments(args);
@@ -102,6 +98,7 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
             current_question = getArguments().getString("current_question");
             current_music = getArguments().getString("current_music");
             current_question_id = getArguments().getString("current_question_id");
+            question_content = getArguments().getString("question_content");
             local_path = getArguments().getString("local_path");
             local_paper_code = getArguments().getString("local_paper_code");
         }
@@ -130,11 +127,9 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
     private void initView(View view) {
         //数据源
         SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
-        //查表Question
-        mContent = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Content, Constants.ID, current_question_id);
-        mQuestionType = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.QuestionType, Constants.ID, current_question_id);
+        //TODO 直接传递来就好，不用再重复查表Question
         mAnswer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Answer, Constants.ID, current_question_id);
-        //查表Option
+        //查表Option  //TODO 判断MasterId是否为null，不为null则需要查表Child
         mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId + " =? ", current_question_id);
         mOptionCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Code, Constants.QuestionId + " =? ", current_question_id);
         mDatabase.close();
@@ -157,7 +152,7 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
         //布置参数到对应控件
         mTxtCurrentQuestion.setText(current_question);
         mTxtTotalQuestion.setText(total_question);
-        mTxtQuestionContent.setText(mContent);
+        mTxtQuestionContent.setText(question_content);
 
         //MediaPlayer
         mMediaPlayer = new MediaPlayer();
@@ -167,8 +162,6 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
         try {
             //路徑直接传递过来，从参数中直接获取
             String musicPath = local_path + File.separator + current_music;
-//            LogUtil.i(current_question_id + "fragment get musicPath = " + musicPath);
-
             mMediaPlayer.setDataSource(musicPath);
             mMediaPlayer.prepare();
         } catch (IOException e) {

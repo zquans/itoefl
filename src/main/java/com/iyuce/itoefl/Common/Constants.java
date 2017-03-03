@@ -16,6 +16,7 @@ public class Constants {
     public static final String QUESTION_TYPE_SINGEL = "SINGLE";
     public static final String QUESTION_TYPE_MULTI = "MULTI";
     public static final String QUESTION_TYPE_JUDGE = "JUDGE";
+    public static final String QUESTION_TYPE_SORT = "SORT";
 
     //音频状态
     public static final int FLAG_AUDIO_PLAY = 0;
@@ -36,9 +37,9 @@ public class Constants {
     public static final String TABLE_SQLITE_MASTER = "sqlite_master";   //sql系统表
     public static final String TABLE_PAPER = "Iup_TpoPaper";
     public static final String TABLE_PAPER_RULE = "Iup_TpoPaperRule";
-    public static final String TABLE_PAPER_QUESTION = "Iup_TpoPaperQuestion";
     public static final String TABLE_QUESTION = "Iup_TpoQuestion";
     public static final String TABLE_OPTION = "Iup_TpoOption";
+    public static final String TABLE_QUESTION_CHILD = "Iup_TpoQuestion_Child";
 
     //Exercise 相关表中的字段column
     public static final String TABLE_NAME = "tbl_name";  //sql系统表中的字段
@@ -54,15 +55,12 @@ public class Constants {
     public static final String QuestionCount = "QuestionCount";
     public static final String Sort = "Sort";
     public static final String MusicQuestion = "MusicQuestion";
-
     public static final String QuestionId = "QuestionId";
     public static final String PaperRuleId = "PaperRuleId";
     public static final String MusicAnswer = "MusicAnswer";
-
     public static final String MasterId = "MasterId";
     public static final String Content = "Content";
     public static final String Answer = "Answer";
     public static final String Detial = "Detial";
-
     public static final String Code = "Code";
 }

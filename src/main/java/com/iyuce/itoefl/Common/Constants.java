@@ -63,4 +63,14 @@ public class Constants {
     public static final String Answer = "Answer";
     public static final String Detial = "Detial";
     public static final String Code = "Code";
+
+    //自建的表中的column字段
+    public static final String SECTION = "Section";
+    public static final String MODULE = "Module";
+    public static final String DOWNLOAD = "Download";
+    public static final String LOADING = "Loading";
+    public static final String Practiced = "Practiced";
+    public static final String UserSelect = "UserSelect";
+    public static final String Bingo = "Bingo";
+    public static final String TimeCount = "TimeCount";
 }

@@ -34,7 +34,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:paddingRight="@dimen/activity_horizontal_padding"
-            android:text="14:56" />
+            android:text="00:00" />
 
         <TextView
             android:id="@+id/txt_activity_do_result_placehold"
@@ -51,7 +51,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/txt_activity_do_result_placehold"
             android:paddingLeft="@dimen/activity_horizontal_padding"
-            android:text="14:56"
+            android:text="00:00"
             android:textColor="@color/Blue" />
 
         <SeekBar

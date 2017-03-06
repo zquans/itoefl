@@ -42,16 +42,17 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
     public void onBindViewHolder(PageViewHolder holder, final int position) {
         holder.mTxtContent.setText(mDataList.get(position).module);
 
-        //TODO 已经下载过，则隐藏下载相关图标
-        if (mDataList.get(position).download.equals("true")) {
-            holder.mImgDownloadReady.setVisibility(View.INVISIBLE);
+        //TODO 已经练习过，则显示相关文字，并修改前面的进度图标为亮，隐藏下载相关图标
+        if (mDataList.get(position).practiced.equals("true")) {
             holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_center);
             holder.mTxtContentState.setText("精听次数 1");
         }
-        //TODO 已经练习过，则显示相关文字，并修改前面的进度图标为亮，隐藏下载相关图标
-        if (position == 2) {
-//            holder.mTxtPracticed.setText("5/6");
+
+        //TODO 已经下载过，则隐藏下载相关图标
+        if (mDataList.get(position).download.equals("true")) {
+            holder.mImgDownloadReady.setVisibility(View.INVISIBLE);
         }
+
         if (position == 0) {
             holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_first);
             holder.mTxtContentState.setText("未下载");

@@ -25,7 +25,6 @@ import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.ResultTitleAdapter;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoResult;
 import com.iyuce.itoefl.Utils.DbUtil;
-import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.RecyclerItemClickListener;
 import com.iyuce.itoefl.Utils.StringUtil;
 import com.iyuce.itoefl.Utils.TimeUtil;
@@ -155,12 +154,19 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
 
         //数据源
         for (int i = 0; i < mSortList.size(); i++) {
-            SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
             String mQuestionType = mQuestionTypeList.get(i);
             String mQuestionContent = mQuestionContentList.get(i);
-            //查表Option   //TODO 传递参数question_Id去Fragment，让Fragment自己查Option或者Chiid
-            ArrayList<String> mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId + " =? ", mQuestionIdList.get(i));
-            ArrayList<String> mOptionCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Code, Constants.QuestionId + " =? ", mQuestionIdList.get(i));
+            SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
+            //根据不同题型查不同表
+            ArrayList<String> mOptionContentList;
+            ArrayList<String> mOptionCodeList;
+            if (mQuestionType.equals(Constants.QUESTION_TYPE_JUDGE)) {
+                mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION_CHILD, Constants.Content, Constants.MasterId + " =? ", mQuestionIdList.get(i));
+                mOptionCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION_CHILD, Constants.Sort, Constants.MasterId + " =? ", mQuestionIdList.get(i));
+            } else {
+                mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId + " =? ", mQuestionIdList.get(i));
+                mOptionCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Code, Constants.QuestionId + " =? ", mQuestionIdList.get(i));
+            }
             mDatabase.close();
             ListenResult result = new ListenResult();
             result.question_name = mSortList.get(i);
@@ -169,13 +175,20 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             //用户是否在查看该题,默认选中第1题
             result.question_is_select = i == 0;
             //TODO 模拟正确答案数据,模拟正确答案题型,有真实数据时以下if内可以删除
-            if (mQuestionType.equals("")) {
-                result.real_answer = "0,1,2,3";// result.choice_right = "[true,true,false,false]";
+            if (i == 5) {
+                result.real_answer = "1,0,2,3";// result.real_answer = "[true,true,false,false]";
                 mQuestionType = Constants.QUESTION_TYPE_SORT;
             }
+            if (i == 2) {
+                result.real_answer = "13";
+                mQuestionType = Constants.QUESTION_TYPE_MULTI;
+            }
+//            if (i == 1) {
+//                result.real_answer = "[true,true,false,false]";
+//                mQuestionType = Constants.QUESTION_TYPE_JUDGE;
+//            }
             //获取得到result.question_state(用户是否答对)
             getQuestionState(mQuestionType, result);
-            LogUtil.i("do result = " + mQuestionType);
             mResultTitleList.add(result);
             //传递给Fragment数据,可以增加参数
             FragmentDoResult mFragmentDoResult = FragmentDoResult.newInstance(result.question_name,
@@ -262,13 +275,15 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
      * 切换题目时候的动画效果
      */
     private void changeQuestion(int position) {
-        //切换音频
-        mMediaPlayer.reset();
-        try {
-            mMediaPlayer.setDataSource(local_path + File.separator + mMusicAnswerList.get(position));
-            mMediaPlayer.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (mMusicAnswerList != null) {
+            //切换音频
+            mMediaPlayer.reset();
+            try {
+                mMediaPlayer.setDataSource(local_path + File.separator + mMusicAnswerList.get(position));
+                mMediaPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         //修改选中项的数据

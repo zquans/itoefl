@@ -53,13 +53,17 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/txt_activity_page_ready_review"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_weight="1"
-        android:paddingLeft="@dimen/activity_horizontal_padding"
-        android:paddingRight="@dimen/activity_horizontal_padding"
-        android:paddingTop="@dimen/activity_vertical_padding"
-        android:text="icon 精听次数: X0\n\nicon 精听次数: X0\n\nicon 精听次数: X0\n\nicon 精听次数: X0\n\nicon 精听次数: X0\n\nicon 精听次数: X0\n\n" />
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:onClick="showResult"
+        android:padding="@dimen/all_padding"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
 
     <View
         android:layout_width="match_parent"

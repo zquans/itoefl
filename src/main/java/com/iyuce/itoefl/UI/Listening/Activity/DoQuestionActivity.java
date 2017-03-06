@@ -1,5 +1,6 @@
 package com.iyuce.itoefl.UI.Listening.Activity;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -27,8 +28,10 @@ import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionSingle;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionSort;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
+import com.iyuce.itoefl.Utils.SDCardUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -213,30 +216,95 @@ public class DoQuestionActivity extends BaseActivity implements
                     lastTimeCount = TimeCount;
                 }
                 LogUtil.i("when click = " + mSelectedQuestionList.toString() + mSelectedAnswerList.toString() + mAnswerList);
-                //答完,进入下一个页面
-                if (mSelectedQuestionList.size() == mSortList.size()) {
-                    Intent intent = new Intent(this, DoResultActivity.class);
-                    intent.putExtra("local_path", local_path);
-                    intent.putExtra(Constants.PaperCode, local_paper_code);
-                    intent.putExtra(Constants.MusicQuestion, local_music_question);
-                    //分段录音
-                    intent.putStringArrayListExtra(Constants.MusicAnswer, mMusicAnswerList);
-                    intent.putStringArrayListExtra("mAnswerList", mAnswerList);
-                    intent.putStringArrayListExtra("mSelectedAnswerList", mSelectedAnswerList);
-                    intent.putStringArrayListExtra("mTimeCountList", mTimeCountList);
-                    LogUtil.i(mSelectedAnswerList + mAnswerList.toString() + mTimeCountList);
-                    //留给下一级，省去查表的开销
-                    intent.putStringArrayListExtra("mSortList", mSortList);
-                    intent.putStringArrayListExtra("mQuestionIdList", mQuestionIdList);
-                    intent.putStringArrayListExtra("mQuestionTypeList", mQuestionTypeList);
-                    intent.putStringArrayListExtra("mQuestionContentList", mQuestionContentList);
-                    startActivity(intent);
+
+                //未答完，换下一题
+                if (mSelectedQuestionList.size() != mSortList.size()) {
+                    mCurrentQuestion++;
+                    SkipToQuestion(mCurrentQuestion);
+                    LogUtil.i("当前第" + mCurrentQuestion + "题");
                     break;
                 }
-                //或者未答完，换下一题
-                mCurrentQuestion++;
-                SkipToQuestion(mCurrentQuestion);
-                LogUtil.i("当前第" + mCurrentQuestion + "题");
+                //或者答完,建用户练习表，保存用户的做题记录,进入下一个页面
+                String downloaded_sql_path = SDCardUtil.getExercisePath() + File.separator + Constants.SQLITE_DOWNLOAD;
+                SQLiteDatabase mDatabase = DbUtil.getHelper(this, downloaded_sql_path).getWritableDatabase();
+                String create = "create table if not exists " + Constants.TABLE_ALREADY_PRACTICED + "("
+                        + Constants.Sort + " integer primary key,"
+                        + Constants.PaperCode + " text,"
+                        + Constants.RuleName + " text,"
+                        + Constants.QuestionType + " text,"
+                        + Constants.QuestionId + " text,"
+                        + Constants.Content + " text,"
+                        + Constants.UserSelect + " text,"
+                        + Constants.Answer + " text,"
+                        + Constants.Bingo + " text,"
+                        + Constants.TimeCount + " text)";
+                mDatabase.execSQL(create);
+                mDatabase.beginTransaction();
+                for (int i = 0; i < mSortList.size(); i++) {
+                    //判断是否存在，不存在则插入，存在则更新
+                    String sql_replace = "replace into " + Constants.TABLE_ALREADY_PRACTICED + " ("
+                            + Constants.Sort + ","
+                            + Constants.PaperCode + ","
+                            + Constants.RuleName + ","
+                            + Constants.QuestionType + ","
+                            + Constants.QuestionId + ","
+                            + Constants.Content + ","
+                            + Constants.UserSelect + ","
+                            + Constants.Answer + ","
+                            + Constants.Bingo + ","
+                            + Constants.TimeCount + ")values(\""
+                            + mSortList.get(i) + "\",\""
+                            + local_paper_code + "\",\""
+                            + local_paper_code + "\",\""
+                            + mQuestionTypeList.get(i) + "\",\""
+                            + mQuestionIdList.get(i) + "\",\""
+                            + mQuestionContentList.get(i) + "\",\""
+                            + mSelectedAnswerList.get(i) + "\",\""
+                            + mAnswerList.get(i) + "\",\""
+                            + false + "\",\""
+                            + mTimeCountList.get(i) + "\" )";
+                    mDatabase.execSQL(sql_replace);
+                }
+                mDatabase.setTransactionSuccessful();
+                mDatabase.endTransaction();
+                String sql_query = "select " + Constants.UserSelect + " from " + Constants.TABLE_ALREADY_PRACTICED + " where " + Constants.Sort + " = ?";
+                LogUtil.i("a ?? = " + DbUtil.cursorToArrayList(mDatabase.rawQuery(sql_query, new String[]{"3"})).toString());
+
+                //TODO 往下载表中存入字段,标明已经练习过
+                ContentValues mValues = new ContentValues();
+                mValues.put(Constants.Practiced, "true");
+                mDatabase.update(Constants.TABLE_ALREADY_DOWNLOAD, mValues, Constants.SECTION + " =? and " + Constants.MODULE + " =? ",
+                        new String[]{local_paper_code.substring(0, 5), local_paper_code.substring(6)});
+                mValues.clear();
+                mDatabase.close();
+                LogUtil.i("subString = " + local_paper_code.substring(0, 5) + ",," + local_paper_code.substring(6));
+
+                Intent intent = new Intent(this, DoResultActivity.class);
+                intent.putExtra("local_path", local_path);
+                intent.putExtra(Constants.PaperCode, local_paper_code);
+                intent.putExtra(Constants.MusicQuestion, local_music_question);
+                //分段录音
+                intent.putStringArrayListExtra(Constants.MusicAnswer, mMusicAnswerList);
+                //TODO 比较两个答案是否相同，直接传递是否正确的结果给下一级
+                ArrayList<String> mBingoList = new ArrayList();
+                for (int i = 0; i < mSelectedAnswerList.size(); i++) {
+                    if (TextUtils.equals(mSelectedAnswerList.get(i), mAnswerList.get(i))) {
+                        mBingoList.add("true");
+                    } else {
+                        mBingoList.add("false");
+                    }
+                }
+                intent.putStringArrayListExtra("mBingoList", mBingoList);
+                intent.putStringArrayListExtra("mAnswerList", mAnswerList);
+                intent.putStringArrayListExtra("mSelectedAnswerList", mSelectedAnswerList);
+                intent.putStringArrayListExtra("mTimeCountList", mTimeCountList);
+                LogUtil.i(mSelectedAnswerList + mAnswerList.toString() + mTimeCountList);
+                //留给下一级，省去查表的开销
+                intent.putStringArrayListExtra("mSortList", mSortList);
+                intent.putStringArrayListExtra("mQuestionIdList", mQuestionIdList);
+                intent.putStringArrayListExtra("mQuestionTypeList", mQuestionTypeList);
+                intent.putStringArrayListExtra("mQuestionContentList", mQuestionContentList);
+                startActivity(intent);
                 break;
         }
     }
@@ -289,6 +357,30 @@ public class DoQuestionActivity extends BaseActivity implements
      * 根据当前题型进行不同Fragment的数据装载
      */
     private void toSwitch(int position) {
+        if (position == 6) {
+            mFrgment = FragmentDoQuestionSort.newInstance(
+                    TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
+                    mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
+                    local_path, local_paper_code);
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
+            return;
+        }
+        if (position == 3) {
+            mFrgment = FragmentDoQuestionMulti.newInstance(
+                    TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
+                    mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
+                    local_path, local_paper_code);
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
+            return;
+        }
+//        if (position == 2) {
+//            mFrgment = FragmentDoQuestionJudge.newInstance(
+//                    TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
+//                    mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
+//                    local_path, local_paper_code);
+//            getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
+//            return;
+//        }
         switch (mQuestionTypeList.get(position - 1)) {
             case Constants.QUESTION_TYPE_MULTI:
                 mFrgment = FragmentDoQuestionMulti.newInstance(
@@ -319,7 +411,7 @@ public class DoQuestionActivity extends BaseActivity implements
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
                 break;
             default:
-                mFrgment = FragmentDoQuestionSort.newInstance(
+                mFrgment = FragmentDoQuestionSingle.newInstance(
                         TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
                         mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
                         local_path, local_paper_code);

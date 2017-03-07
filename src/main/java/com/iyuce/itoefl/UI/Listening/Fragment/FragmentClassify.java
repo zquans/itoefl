@@ -3,14 +3,12 @@ package com.iyuce.itoefl.UI.Listening.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.iyuce.itoefl.R;
-import com.iyuce.itoefl.UI.Listening.Adapter.TopListeneringAdapter;
 
 import java.util.ArrayList;
 
@@ -22,7 +20,7 @@ public class FragmentClassify extends Fragment {
 
     private RecyclerView mRecyclerView;
     private ArrayList<String> dataList = new ArrayList<>();
-    private TopListeneringAdapter mAdapter;
+//    private TopListeneringAdapter mAdapter;
 
     @Nullable
     @Override
@@ -33,14 +31,14 @@ public class FragmentClassify extends Fragment {
     }
 
     private void initView(View view) {
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_top_listenering_order);
-        dataList.add("课程作业");
-        dataList.add("研究项目");
-        dataList.add("住宿与餐饮");
-        dataList.add("人类学");
-        dataList.add("哲学");
-        mAdapter = new TopListeneringAdapter(getActivity(), dataList, 2);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(mAdapter);
+//        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_top_listenering_order);
+//        dataList.add("课程作业");
+//        dataList.add("研究项目");
+//        dataList.add("住宿与餐饮");
+//        dataList.add("人类学");
+//        dataList.add("哲学");
+//        mAdapter = new TopListeneringAdapter(getActivity(), dataList, 2);
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        mRecyclerView.setAdapter(mAdapter);
     }
 }

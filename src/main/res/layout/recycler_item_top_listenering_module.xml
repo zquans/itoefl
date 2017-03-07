@@ -25,6 +25,7 @@
         android:layout_gravity="bottom"
         android:max="60"
         android:progress="40"
-        android:secondaryProgress="60" />
+        android:secondaryProgress="60"
+        android:visibility="invisible" />
 
 </android.support.v7.widget.CardView>

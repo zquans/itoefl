@@ -45,6 +45,12 @@ public class PageReadyActivity extends BaseActivity {
         initView();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
+    }
+
     private void initView() {
         local_path = getIntent().getStringExtra("local_path");
         //不从表中查，直接拼装上一级的section和module
@@ -67,7 +73,6 @@ public class PageReadyActivity extends BaseActivity {
         mTxtReview = (TextView) findViewById(R.id.txt_activity_page_ready_review);
 
         mTxtHeadTitle.setText(local_paper_code);
-        initData();
     }
 
     /**
@@ -94,6 +99,12 @@ public class PageReadyActivity extends BaseActivity {
         mTimeCountList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_ALREADY_PRACTICED, Constants.TimeCount, Constants.RuleName + " =? ", local_paper_code);
         mDatabase.close();
         LogUtil.i("mUserSelecttList" + mUserSelectList);
+
+        if (mBingoList.size() == 0) {
+            mTxtReview.setText("您还没有练习过哦，赶紧开始吧!");
+            mTxtReview.setClickable(false);
+            return;
+        }
 
         //装载上次做题记录
         int total = 0;

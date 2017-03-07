@@ -114,6 +114,7 @@ public class PageReadyActivity extends BaseActivity {
             }
         }
         String result_review = "上次做题结果 : " + total + "/" + mBingoList.size();
+        mTxtReview.setClickable(true);
         mTxtReview.setText(result_review);
     }
 

@@ -63,6 +63,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     private ArrayList<String> mMusicAnswerList;
     private ArrayList<String> mAnswerList;
     private ArrayList<String> mSelectedAnswerList;
+    private ArrayList<String> mBingoList;
     private ArrayList<String> mTimeCountList;
 
     //路径
@@ -138,6 +139,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         mMusicAnswerList = getIntent().getStringArrayListExtra(Constants.MusicAnswer);
         mSelectedAnswerList = getIntent().getStringArrayListExtra("mSelectedAnswerList");
         mAnswerList = getIntent().getStringArrayListExtra("mAnswerList");
+        mBingoList = getIntent().getStringArrayListExtra("mBingoList");
         mTimeCountList = getIntent().getStringArrayListExtra("mTimeCountList");
 
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
@@ -172,6 +174,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             result.question_name = mSortList.get(i);
             result.real_answer = mAnswerList.get(i);
             result.select_answer = mSelectedAnswerList.get(i);
+            result.question_state = Boolean.parseBoolean(mBingoList.get(i));
             //用户是否在查看该题,默认选中第1题
             result.question_is_select = i == 0;
             //TODO 模拟正确答案数据,模拟正确答案题型,有真实数据时以下if内可以删除
@@ -188,12 +191,12 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
 //                mQuestionType = Constants.QUESTION_TYPE_JUDGE;
 //            }
             //获取得到result.question_state(用户是否答对)
-            getQuestionState(mQuestionType, result);
+//            getQuestionState(mQuestionType, result);
             mResultTitleList.add(result);
             //传递给Fragment数据,可以增加参数
             FragmentDoResult mFragmentDoResult = FragmentDoResult.newInstance(result.question_name,
                     mQuestionIdList.size() + "", mQuestionContent, mOptionContentList, mOptionCodeList, mQuestionType,
-                    mSelectedAnswerList.get(i), result.real_answer, mTimeCountList.get(i));
+                    mSelectedAnswerList.get(i), mAnswerList.get(i), mTimeCountList.get(i));
             mResultContentList.add(mFragmentDoResult);
         }
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_activity_do_result_question);

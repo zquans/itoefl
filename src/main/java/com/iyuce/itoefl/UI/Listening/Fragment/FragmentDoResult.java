@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.ResultContentAdapter;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.StringUtil;
+import com.iyuce.itoefl.Utils.ToastUtil;
 
 import java.util.ArrayList;
 
@@ -105,7 +107,10 @@ public class FragmentDoResult extends Fragment {
     }
 
     private void initData() {
-        LogUtil.i("question_type = " + question_type + "answer_select = " + answer_select + ",answer_option = " + answer_real);
+        LogUtil.i("question_type = " + question_type + ", answer_select = " + answer_select + ",answer_real = " + answer_real);
+        if (TextUtils.isEmpty(answer_select) || TextUtils.isEmpty(answer_real)) {
+            return;
+        }
 
         ListenResultContent result;
         switch (question_type) {
@@ -134,7 +139,18 @@ public class FragmentDoResult extends Fragment {
                 String[] sortSelectList = StringUtil.transferStringToArray(answer_select);
                 String[] sortAnswerList = StringUtil.transferStringToArray(answer_real);
 
-                //TODO 内容重新排序或许可以用Collections的相关方法
+                //TODO  内容重新排序，借助新建一个help数组暂存出正确排序结果
+                ArrayList<String> helpList = new ArrayList<>();
+                for (int i = 0; i < mOptionContentList.size(); i++) {
+                    for (int j = 0; j < sortSelectList.length; j++) {
+                        if (sortSelectList[j].contains(String.valueOf(i))) {
+                            helpList.add(mOptionContentList.get(j));
+                        }
+                    }
+                }
+                //出错的原因应该是String[]是无序的
+                LogUtil.i("select sort = " + helpList.toString());
+
                 for (int i = 0; i < sortSelectList.length; i++) {
                     result = new ListenResultContent();
                     result.judgeSelect = sortSelectList[i].trim();
@@ -144,9 +160,10 @@ public class FragmentDoResult extends Fragment {
                     } else {
                         result.state = "false";
                     }
-                    result.number = sortAnswerList[i];
-                    result.content = mOptionContentList.get(i);
+//                    result.number = StringUtil.transferNumberToAlpha(sortAnswerList[i]);
+                    result.content = helpList.get(i);
                     mResultList.add(result);
+                    ToastUtil.showMessage(getActivity(), "正确顺序是" + StringUtil.transferNumberToAlpha(answer_real));
                 }
                 break;
             default:

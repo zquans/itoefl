@@ -198,9 +198,11 @@ public class TopListeneringPageActivity extends BaseActivity
 
                 //下载箭头、文字设为不可见
                 ImageView imgDownload = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
-                TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
+                TextView textDownload = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
+                TextView textState = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_state);
                 imgDownload.setVisibility(View.INVISIBLE);
-                textView.setVisibility(View.INVISIBLE);
+                textDownload.setVisibility(View.INVISIBLE);
+                textState.setVisibility(View.INVISIBLE);
             }
         });
     }

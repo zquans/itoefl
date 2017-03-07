@@ -169,11 +169,11 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
         mTxtQuestionType.setText("本题是排序题");
         mTxtQuestionType.setVisibility(View.VISIBLE);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new QuestionSortAdapter(getActivity(), mOptionContentList);
-        mRecyclerView.setAdapter(mAdapter);
-        doSort();
-        LogUtil.i("isFinsh = " + isFinish);
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        mAdapter = new QuestionSortAdapter(getActivity(), mOptionContentList);
+//        mRecyclerView.setAdapter(mAdapter);
+//        doSort();
+//        LogUtil.i("isFinsh = " + isFinish);
 
         //MediaPlayer
         mMediaPlayer = new MediaPlayer();

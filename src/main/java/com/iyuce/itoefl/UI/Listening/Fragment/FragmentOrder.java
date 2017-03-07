@@ -41,22 +41,45 @@ public class FragmentOrder extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mModuleeList.clear();
+        initData();
+        mAdapter.notifyDataSetChanged();
+    }
+
     private void initView(View view) {
+        if (initData()) return;
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_top_listenering_order);
+
+        mAdapter = new TopListeneringModuleAdapter(getActivity(), mModuleeList);
+        GridLayoutManager mGridLayoutManager = new GridLayoutManager(getActivity(), 4);
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    /**
+     * 装载数据
+     */
+    private boolean initData() {
         String path = SDCardUtil.getExercisePath();
         String tpo_path = path + File.separator + Constants.SQLITE_TPO;
 
         SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), tpo_path).getWritableDatabase();
-        //从默认主表中查，是否有这张表，其实还应该放在Main中去做
+        //从默认主表中查，是否有这张表
         String isNone_Paper = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER);
         if (TextUtils.equals(isNone_Paper, Constants.NONE)) {
             ToastUtil.showMessage(getActivity(), "网络不佳，未获取到数据,请重试");
 
             mDatabase.close();
-            return;
+            return true;
         }
         ArrayList<String> nameList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER, null, Constants.PaperName);
         mDatabase.close();
 
+        //提供module 和 progress
         ListenModule mListenModule;
         for (int i = 0; i < nameList.size(); i++) {
             mListenModule = new ListenModule();
@@ -66,25 +89,24 @@ public class FragmentOrder extends Fragment {
             SQLiteDatabase mDatabaseDownload = DbUtil.getHelper(getActivity(), practiced_path).getWritableDatabase();
             String isNone_Download = DbUtil.queryToString(mDatabaseDownload, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_ALREADY_DOWNLOAD);
             if (!TextUtils.equals(isNone_Download, Constants.NONE)) {
-                String practiced_count_sql = "SELECT COUNT(Module) FROM downloaded_table WHERE Section =? and Practiced =?";
-                String total_count_sql = "SELECT COUNT(Module) FROM downloaded_table WHERE Section =? ";
-                String practiced_count = DbUtil.cursorToString(mDatabaseDownload.rawQuery(practiced_count_sql, new String[]{"TPO18", "true"}));
-                String total_count = DbUtil.cursorToString(mDatabaseDownload.rawQuery(total_count_sql, new String[]{"TPO18"}));
-
-                mListenModule.practiced_count = practiced_count;
-                mListenModule.total_count = total_count;
-                LogUtil.i("count = " + practiced_count + "/" + total_count);
+                String practiced_count_sql = "SELECT COUNT(*) FROM downloaded_table WHERE Section =? and Practiced =?";
+                String practiced_count = DbUtil.cursorToString(mDatabaseDownload.rawQuery(practiced_count_sql, new String[]{nameList.get(i), "true"}));
+                mListenModule.practiced_count = practiced_count;//拿练习过的数据数量
+                LogUtil.i("practiced_count = " + practiced_count);
             }
             mDatabaseDownload.close();
 
+            SQLiteDatabase mDatabaseTpo = DbUtil.getHelper(getActivity(), tpo_path).getWritableDatabase();
+            String isNone_Tpo = DbUtil.queryToString(mDatabaseTpo, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER_RULE);
+            if (!TextUtils.equals(isNone_Tpo, Constants.NONE)) {
+                String total_count_sql = "SELECT COUNT(*) FROM " + Constants.TABLE_PAPER_RULE + " WHERE PaperCode =? ";
+                String total_count = DbUtil.cursorToString(mDatabaseTpo.rawQuery(total_count_sql, new String[]{nameList.get(i)}));
+                mListenModule.total_count = total_count;//拿所有的module的数据数量
+                LogUtil.i("total_count = " + total_count);
+            }
+            mDatabaseTpo.close();
             mModuleeList.add(mListenModule);
         }
-
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_top_listenering_order);
-
-        mAdapter = new TopListeneringModuleAdapter(getActivity(), mModuleeList);
-        GridLayoutManager mGridLayoutManager = new GridLayoutManager(getActivity(), 4);
-        mRecyclerView.setLayoutManager(mGridLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+        return false;
     }
 }

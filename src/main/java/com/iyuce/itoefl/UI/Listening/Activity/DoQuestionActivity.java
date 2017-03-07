@@ -224,6 +224,15 @@ public class DoQuestionActivity extends BaseActivity implements
                     LogUtil.i("当前第" + mCurrentQuestion + "题");
                     break;
                 }
+                //TODO 比较两个答案是否相同，直接传递是否正确的结果给下一级
+                ArrayList<String> mBingoList = new ArrayList();
+                for (int i = 0; i < mSelectedAnswerList.size(); i++) {
+                    if (TextUtils.equals(mSelectedAnswerList.get(i), mAnswerList.get(i))) {
+                        mBingoList.add("true");
+                    } else {
+                        mBingoList.add("false");
+                    }
+                }
                 //或者答完,建用户练习表，保存用户的做题记录,进入下一个页面
                 String downloaded_sql_path = SDCardUtil.getExercisePath() + File.separator + Constants.SQLITE_DOWNLOAD;
                 SQLiteDatabase mDatabase = DbUtil.getHelper(this, downloaded_sql_path).getWritableDatabase();
@@ -261,7 +270,7 @@ public class DoQuestionActivity extends BaseActivity implements
                             + mQuestionContentList.get(i) + "\",\""
                             + mSelectedAnswerList.get(i) + "\",\""
                             + mAnswerList.get(i) + "\",\""
-                            + false + "\",\""
+                            + mBingoList.get(i) + "\",\""
                             + mTimeCountList.get(i) + "\" )";
                     mDatabase.execSQL(sql_replace);
                 }
@@ -285,15 +294,6 @@ public class DoQuestionActivity extends BaseActivity implements
                 intent.putExtra(Constants.MusicQuestion, local_music_question);
                 //分段录音
                 intent.putStringArrayListExtra(Constants.MusicAnswer, mMusicAnswerList);
-                //TODO 比较两个答案是否相同，直接传递是否正确的结果给下一级
-                ArrayList<String> mBingoList = new ArrayList();
-                for (int i = 0; i < mSelectedAnswerList.size(); i++) {
-                    if (TextUtils.equals(mSelectedAnswerList.get(i), mAnswerList.get(i))) {
-                        mBingoList.add("true");
-                    } else {
-                        mBingoList.add("false");
-                    }
-                }
                 intent.putStringArrayListExtra("mBingoList", mBingoList);
                 intent.putStringArrayListExtra("mAnswerList", mAnswerList);
                 intent.putStringArrayListExtra("mSelectedAnswerList", mSelectedAnswerList);

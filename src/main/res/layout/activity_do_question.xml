@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/GrayThin"
+    android:background="@mipmap/img_bg_golden_gate_bridge"
     android:orientation="vertical">
 
     <include layout="@layout/header_title_bar" />
@@ -16,7 +16,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_width_48"
-        android:layout_gravity="bottom">
+        android:layout_gravity="bottom"
+        android:background="@color/Transparent_SixtyFive">
 
         <TextView
             android:id="@+id/txt_activity_do_question_review"
@@ -28,7 +29,7 @@
             android:paddingLeft="@dimen/activity_horizontal_double_padding"
             android:paddingRight="@dimen/activity_horizontal_double_padding"
             android:text="Review"
-            android:textColor="#f8a540"
+            android:textColor="@color/TxtPink"
             android:textSize="@dimen/txt_size_eighteen"
             android:textStyle="bold" />
 
@@ -43,7 +44,7 @@
             android:paddingLeft="@dimen/activity_horizontal_double_padding"
             android:paddingRight="@dimen/activity_horizontal_double_padding"
             android:text="Next"
-            android:textColor="#f8a540"
+            android:textColor="@color/TxtPink"
             android:textSize="@dimen/txt_size_eighteen"
             android:textStyle="bold" />
 
@@ -62,7 +63,7 @@
             android:layout_toLeftOf="@+id/txt_activity_do_question_placeholder"
             android:gravity="center"
             android:text="1"
-            android:textColor="@color/Blue" />
+            android:textColor="@color/TxtPink" />
 
         <TextView
             android:id="@+id/txt_activity_do_question_total"

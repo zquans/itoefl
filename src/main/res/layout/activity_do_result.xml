@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/GrayThin"
+    android:background="@mipmap/img_bg_golden_gate_bridge"
     android:orientation="vertical">
 
     <include layout="@layout/header_title_bar" />
@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/all_padding"
         android:text="Hello World\n哈喽沃德"
+        android:textColor="@color/TxtWhite"
         android:textSize="@dimen/txt_size_eighteen"
         android:textStyle="bold" />
 
@@ -34,7 +35,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:paddingRight="@dimen/activity_horizontal_padding"
-            android:text="00:00" />
+            android:text="00:00"
+            android:textColor="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/txt_activity_do_result_placehold"
@@ -52,7 +54,7 @@
             android:layout_toLeftOf="@+id/txt_activity_do_result_placehold"
             android:paddingLeft="@dimen/activity_horizontal_padding"
             android:text="00:00"
-            android:textColor="@color/Blue" />
+            android:textColor="@color/TxtWhite" />
 
         <SeekBar
             android:id="@+id/bar_activity_do_result_progress"
@@ -78,6 +80,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/all_margin"
-        android:background="@color/White" />
+        android:background="@color/Transparent_Thirty" />
 
 </LinearLayout>

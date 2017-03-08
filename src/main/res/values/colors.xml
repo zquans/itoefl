@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#F7941D</color>
-    <color name="colorPrimaryDark">#F7941D</color>
-    <color name="colorAccent">#F7941D</color>
+    <color name="colorPrimary">#32324C</color>
+    <color name="colorPrimaryDark">#32324C</color>
+    <color name="colorAccent">#FF3370</color>
 
     <color name="GrayThin">#FAFAFA</color>
     <color name="Gray">#BBBBBB</color>
@@ -11,5 +11,18 @@
     <color name="DeepGreen">#3DACB7</color>
     <color name="Red">#F2523E</color>
     <color name="Blue">#059CD4</color>
+    <color name="Pink">#FF3370</color>
+    <color name="Orange">#F7941D</color>
+    <color name="Ripple">#FF8DFF</color>
+
+
+    <color name="Transparent">#00000000</color>
+    <color name="Transparent_Twenty">#20000000</color>
+    <color name="Transparent_Thirty">#30000000</color>
+    <color name="Transparent_SixtyFive">#65000000</color>
+
+    <color name="TxtBlack">#1B1D1F</color>
+    <color name="TxtWhite">#FCFCFC</color>
+    <color name="TxtPink">#FF3370</color>
 
 </resources>

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="88dp"
+    android:background="@color/colorPrimary"
     android:orientation="horizontal"
     android:paddingLeft="@dimen/activity_horizontal_double_padding"
     android:paddingRight="@dimen/activity_horizontal_double_padding">
@@ -20,7 +21,7 @@
             android:id="@+id/img_activity_main_practice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@mipmap/ic_launcher"
+            android:background="@mipmap/icon_main_tab_exercise"
             android:clickable="false" />
 
         <TextView
@@ -29,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="练习"
-            android:textColor="#707070"
+            android:textColor="@color/TxtWhite"
             android:textSize="14sp" />
     </LinearLayout>
 
@@ -47,7 +48,7 @@
             android:id="@+id/img_activity_main_lecture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@mipmap/ic_launcher"
+            android:background="@mipmap/icon_main_tab_mine"
             android:clickable="false" />
 
         <TextView
@@ -56,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="课程"
-            android:textColor="#707070"
+            android:textColor="@color/TxtWhite"
             android:textSize="14sp" />
     </LinearLayout>
 
@@ -74,7 +75,7 @@
             android:id="@+id/img_activity_main_mine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@mipmap/ic_launcher"
+            android:background="@mipmap/icon_main_tab_exercise"
             android:clickable="false" />
 
         <TextView
@@ -83,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="我的"
-            android:textColor="#707070"
+            android:textColor="@color/TxtWhite"
             android:textSize="14sp" />
     </LinearLayout>
 

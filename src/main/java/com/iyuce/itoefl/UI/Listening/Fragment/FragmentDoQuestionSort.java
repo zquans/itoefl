@@ -221,7 +221,7 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
             @Override
             public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
                 if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-                    viewHolder.itemView.setBackgroundResource(R.drawable.view_bound_orange_stroke);
+                    viewHolder.itemView.setBackgroundResource(R.drawable.view_bound_pink_stroke_five);
                 }
                 super.onSelectedChanged(viewHolder, actionState);
             }
@@ -229,7 +229,7 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
             @Override
             public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                 super.clearView(recyclerView, viewHolder);
-                viewHolder.itemView.setBackgroundColor(Color.WHITE);
+                viewHolder.itemView.setBackgroundColor(Color.TRANSPARENT);
             }
 
             @Override

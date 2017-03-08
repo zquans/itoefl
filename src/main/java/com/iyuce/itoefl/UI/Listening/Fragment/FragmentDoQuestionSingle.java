@@ -1,7 +1,6 @@
 package com.iyuce.itoefl.UI.Listening.Fragment;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -250,11 +249,11 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
         for (int i = 0; i < mOptionContentList.size(); i++) {
             if (pos == i) {
                 textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_item_fragment_do_question);
-                textView.setBackgroundResource(R.drawable.view_bound_orange_stroke);
+                textView.setBackgroundResource(R.drawable.view_bound_pink_stroke_five);
                 continue;
             }
             textView = (TextView) mRecyclerView.getChildAt(i).findViewById(R.id.txt_item_fragment_do_question);
-            textView.setBackgroundColor(Color.parseColor("#ffffff"));
+            textView.setBackgroundResource(R.color.Transparent_SixtyFive);
         }
     }
 }

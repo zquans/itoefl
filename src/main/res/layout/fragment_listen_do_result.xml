@@ -15,7 +15,8 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:gravity="center"
-            android:text="Question" />
+            android:text="Question"
+            android:textColor="@color/TxtWhite" />
 
         <TextView
             android:id="@+id/txt_fragment_do_result_page_middle"
@@ -27,7 +28,7 @@
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
             android:text="1"
-            android:textColor="@color/Blue" />
+            android:textColor="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/txt_fragment_do_result_page_middle_"
@@ -36,7 +37,8 @@
             android:layout_alignBaseline="@+id/txt_fragment_do_result_page_middle"
             android:layout_toRightOf="@+id/txt_fragment_do_result_page_middle"
             android:gravity="center"
-            android:text="of" />
+            android:text="of"
+            android:textColor="@color/TxtWhite" />
 
         <TextView
             android:id="@+id/txt_fragment_do_result_page_right"
@@ -49,7 +51,8 @@
             android:layout_toRightOf="@+id/txt_fragment_do_result_page_middle_"
             android:gravity="center"
             android:paddingLeft="4dp"
-            android:text="x" />
+            android:text="x"
+            android:textColor="@color/TxtWhite" />
 
         <TextView
             android:id="@+id/txt_fragment_do_result_title"
@@ -59,6 +62,7 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:text="what is the class on "
+            android:textColor="@color/TxtWhite"
             android:textStyle="bold" />
 
         <android.support.v7.widget.RecyclerView
@@ -91,7 +95,8 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="4dp"
             android:gravity="center"
-            android:text="本题用时 5 秒" />
+            android:text="本题用时 5 秒"
+            android:textColor="@color/TxtWhite" />
 
         <View
             android:id="@+id/line_fragment_do_result_bottom"
@@ -110,6 +115,7 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:gravity="center"
             android:text="题目解析"
+            android:textColor="@color/TxtWhite"
             android:textStyle="bold" />
 
         <WebView
@@ -117,6 +123,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_fragment_do_result_explain_title"
-            android:layout_margin="@dimen/all_margin" />
+            android:layout_margin="@dimen/all_margin"
+            android:background="@color/Transparent_Twenty" />
     </RelativeLayout>
 </ScrollView>

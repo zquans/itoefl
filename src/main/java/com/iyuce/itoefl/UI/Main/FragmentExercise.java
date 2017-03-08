@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Activity.TopListeneringActivity;
 
@@ -35,7 +34,6 @@ public class FragmentExercise extends Fragment {
     private void initView(View view) {
 
 
-
         TextView mTxt = (TextView) view.findViewById(R.id.txt_do_click);
         mTxt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,9 +43,11 @@ public class FragmentExercise extends Fragment {
         });
 
         mCollapLayout = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar_layout);
-        mImg = (ImageView) view.findViewById(R.id.img_fragment_exercise_header);
-        Glide.with(getActivity()).load(R.raw.gif_header_exercise).into(mImg);
-        mCollapLayout.setExpandedTitleColor(Color.parseColor("#ffffff"));
-//        mCollapLayout.setCollapsedTitleTextColor(Color.parseColor("#006699"));
+        //加载Gif图
+//        mImg = (ImageView) view.findViewById(R.id.img_fragment_exercise_header);
+//        Glide.with(getActivity()).load(R.raw.gif_header_exercise).into(mImg);
+        //改变字体颜色
+        mCollapLayout.setExpandedTitleColor(Color.parseColor("#FCFCFC"));
+        mCollapLayout.setCollapsedTitleTextColor(Color.parseColor("#FF3370"));
     }
 }

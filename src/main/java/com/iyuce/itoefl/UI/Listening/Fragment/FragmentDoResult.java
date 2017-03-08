@@ -84,6 +84,8 @@ public class FragmentDoResult extends Fragment {
         mTxtAnswerHint = (TextView) view.findViewById(R.id.txt_fragment_do_result_answer_hint);
         mTxtTimeCount = (TextView) view.findViewById(R.id.txt_fragment_do_result_time_count);
         mWebExplain = (WebView) view.findViewById(R.id.txt_fragment_do_result_web);
+        mWebExplain.setBackgroundColor(0); // 设置背景色
+        mWebExplain.getBackground().setAlpha(0);
         mWebExplain.loadData(StringUtil.ParaseToHtml("&lt;p&gt;\n" +
                 "\t&lt;span style=&quot;font-size:10.5pt;font-family:&amp;quot;&quot;&gt;I\n" +
                 "set an announcement for an event. And this morning I checked the events section\n" +

@@ -1,7 +1,6 @@
 package com.iyuce.itoefl.UI.Listening.Adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,9 +51,9 @@ public class QuestionMultiAdapter extends RecyclerView.Adapter<QuestionMultiAdap
             @Override
             public void onClick(View v) {
                 if (mIsSelectedList.get(position)) {
-                    holder.mTxtQuestion.setBackgroundColor(Color.parseColor("#ffffff"));
+                    holder.mTxtQuestion.setBackgroundResource(R.color.Transparent);
                 } else {
-                    holder.mTxtQuestion.setBackgroundResource(R.drawable.view_bound_orange_stroke);
+                    holder.mTxtQuestion.setBackgroundResource(R.drawable.view_bound_pink_stroke_five);
                 }
                 //反转boolean状态
                 mIsSelectedList.set(position, !mIsSelectedList.get(position));

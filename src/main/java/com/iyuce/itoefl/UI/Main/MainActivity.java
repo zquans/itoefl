@@ -179,18 +179,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
      */
     private void resetTab(int pos) {
         mViewPager.setCurrentItem(pos);
-        mTxtPractice.setTextColor(Color.parseColor("#cccccc"));
-        mTxtLecture.setTextColor(Color.parseColor("#cccccc"));
-        mTxtMine.setTextColor(Color.parseColor("#cccccc"));
+        mTxtPractice.setTextColor(Color.parseColor("#FCFCFC"));
+        mTxtLecture.setTextColor(Color.parseColor("#FCFCFC"));
+        mTxtMine.setTextColor(Color.parseColor("#FCFCFC"));
         switch (pos) {
             case 0:
-                mTxtPractice.setTextColor(Color.parseColor("#f7941d"));
+                mTxtPractice.setTextColor(Color.parseColor("#FF3370"));
                 break;
             case 1:
-                mTxtLecture.setTextColor(Color.parseColor("#f7941d"));
+                mTxtLecture.setTextColor(Color.parseColor("#FF3370"));
                 break;
             case 2:
-                mTxtMine.setTextColor(Color.parseColor("#f7941d"));
+                mTxtMine.setTextColor(Color.parseColor("#FF3370"));
                 break;
         }
     }

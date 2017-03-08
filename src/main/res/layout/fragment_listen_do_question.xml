@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/GrayThin">
+    android:background="@color/Transparent">
 
     <TextView
         android:id="@+id/txt_fragment_do_result_page_left"
@@ -11,7 +11,8 @@
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:gravity="center"
-        android:text="Question" />
+        android:text="Question"
+        android:textColor="@color/TxtWhite" />
 
     <TextView
         android:id="@+id/txt_fragment_do_result_page_middle"
@@ -24,7 +25,7 @@
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
         android:text="1"
-        android:textColor="@color/Blue" />
+        android:textColor="@color/TxtPink" />
 
     <TextView
         android:id="@+id/txt_fragment_do_result_page_middle_"
@@ -33,7 +34,8 @@
         android:layout_alignBaseline="@+id/txt_fragment_do_result_page_middle"
         android:layout_toRightOf="@+id/txt_fragment_do_result_page_middle"
         android:gravity="center"
-        android:text="of" />
+        android:text="of"
+        android:textColor="@color/TxtWhite" />
 
     <TextView
         android:id="@+id/txt_fragment_do_result_page_right"
@@ -46,7 +48,8 @@
         android:layout_toRightOf="@+id/txt_fragment_do_result_page_middle_"
         android:gravity="center"
         android:paddingLeft="4dp"
-        android:text="x" />
+        android:text="x"
+        android:textColor="@color/TxtWhite" />
 
     <RelativeLayout
         android:id="@+id/relative_fragment_do_result_page"
@@ -75,7 +78,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="64dp"
             android:text="00:56"
-            android:textColor="@color/Blue" />
+            android:textColor="@color/TxtPink" />
 
         <TextView
             android:id="@+id/txt_fragment_do_question_total"
@@ -84,7 +87,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:paddingRight="@dimen/activity_horizontal_padding"
-            android:text="14:56" />
+            android:text="14:56"
+            android:textColor="@color/TxtWhite" />
 
         <ProgressBar
             android:id="@+id/bar_fragment_do_question_progress"
@@ -111,6 +115,7 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_padding"
         android:text="Why does the professor interrupt the student is the class on "
+        android:textColor="@color/TxtWhite"
         android:textStyle="bold" />
 
     <TextView
@@ -122,6 +127,8 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:paddingTop="4dp"
         android:text="judge type of question"
+        android:textColor="@color/TxtPink"
+        android:textSize="12sp"
         android:visibility="gone" />
 
     <android.support.v7.widget.RecyclerView
@@ -129,6 +136,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_fragment_do_result_question_type"
-        android:padding="@dimen/all_padding" />
+        android:layout_margin="@dimen/all_padding"
+        android:background="@drawable/view_background_transparent_thirty" />
 
 </RelativeLayout>

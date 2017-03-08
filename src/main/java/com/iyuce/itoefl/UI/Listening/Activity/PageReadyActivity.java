@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseActivity;
@@ -23,7 +24,8 @@ import java.util.ArrayList;
  */
 public class PageReadyActivity extends BaseActivity {
 
-    private TextView mTxtHeadTitle, mTxtEnglish, mTxtChinese, mTxtCategory, mTxtLevel, mTxtReview;
+    private TextView mTxtHeadTitle, mTxtEnglish, mTxtChinese, mTxtCategory, mTxtReview;
+    private ImageView mImgLevel;
     private String local_paper_code, local_path, local_music_question;
 
     private ArrayList<String> mSortList;
@@ -69,8 +71,8 @@ public class PageReadyActivity extends BaseActivity {
         mTxtEnglish = (TextView) findViewById(R.id.txt_activity_page_ready_title_english);
         mTxtChinese = (TextView) findViewById(R.id.txt_activity_page_ready_title_chinese);
         mTxtCategory = (TextView) findViewById(R.id.txt_activity_page_ready_title_category);
-        mTxtLevel = (TextView) findViewById(R.id.txt_activity_page_ready_title_level);
         mTxtReview = (TextView) findViewById(R.id.txt_activity_page_ready_review);
+        mImgLevel = (ImageView) findViewById(R.id.img_activity_page_ready_title_level);
 
         mTxtHeadTitle.setText(local_paper_code);
     }

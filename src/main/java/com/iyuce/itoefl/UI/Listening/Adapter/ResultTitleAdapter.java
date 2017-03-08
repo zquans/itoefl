@@ -1,7 +1,6 @@
 package com.iyuce.itoefl.UI.Listening.Adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +37,7 @@ public class ResultTitleAdapter extends RecyclerView.Adapter<ResultTitleAdapter.
         holder.mTitle.setText(mDataList.get(position).question_name);
         if (!mDataList.get(position).question_is_select) {
             //未选中的
-            holder.mTitle.setTextColor(Color.parseColor("#000000"));
+//            holder.mTitle.setTextColor(Color.parseColor("#000000"));
             if (mDataList.get(position).question_state) {
                 //正确的
                 holder.mImg.setBackgroundResource(R.mipmap.icon_answer_cycle_right_stroke);
@@ -48,7 +47,7 @@ public class ResultTitleAdapter extends RecyclerView.Adapter<ResultTitleAdapter.
             }
         } else {
             //选中的
-            holder.mTitle.setTextColor(Color.parseColor("#ffffff"));
+//            holder.mTitle.setTextColor(Color.parseColor("#ffffff"));
             if (mDataList.get(position).question_state) {
                 //正确的
                 holder.mImg.setBackgroundResource(R.mipmap.icon_answer_talk_right_full);

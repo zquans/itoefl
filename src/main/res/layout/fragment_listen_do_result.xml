@@ -69,12 +69,27 @@
             android:padding="@dimen/all_padding" />
 
         <TextView
-            android:id="@+id/txt_fragment_do_result_time_count"
+            android:id="@+id/txt_fragment_do_result_answer_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/recycler_fragment_do_result"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:gravity="center"
+            android:text="正确排序是"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/txt_fragment_do_result_time_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_fragment_do_result_answer_hint"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="4dp"
             android:gravity="center"
             android:text="本题用时 5 秒" />
 

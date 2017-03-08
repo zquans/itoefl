@@ -17,13 +17,12 @@ import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.ResultContentAdapter;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.StringUtil;
-import com.iyuce.itoefl.Utils.ToastUtil;
 
 import java.util.ArrayList;
 
 public class FragmentDoResult extends Fragment {
 
-    private TextView mTxtPageMiddle, mTxtPageRight, mTxtQuestion, mTxtTimeCount;
+    private TextView mTxtPageMiddle, mTxtPageRight, mTxtQuestion, mTxtAnswerHint, mTxtTimeCount;
     private WebView mWebExplain;
 
     private RecyclerView mRecyclerView;
@@ -82,6 +81,7 @@ public class FragmentDoResult extends Fragment {
         mTxtPageMiddle = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
         mTxtPageRight = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
         mTxtQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_title);
+        mTxtAnswerHint = (TextView) view.findViewById(R.id.txt_fragment_do_result_answer_hint);
         mTxtTimeCount = (TextView) view.findViewById(R.id.txt_fragment_do_result_time_count);
         mWebExplain = (WebView) view.findViewById(R.id.txt_fragment_do_result_web);
         mWebExplain.loadData(StringUtil.ParaseToHtml("&lt;p&gt;\n" +
@@ -109,7 +109,8 @@ public class FragmentDoResult extends Fragment {
     private void initData() {
         LogUtil.i("question_type = " + question_type + ", answer_select = " + answer_select + ",answer_real = " + answer_real);
         if (TextUtils.isEmpty(answer_select) || TextUtils.isEmpty(answer_real)) {
-            return;
+            answer_real = "[2,1,0,3]";
+//            return;
         }
 
         ListenResultContent result;
@@ -139,17 +140,17 @@ public class FragmentDoResult extends Fragment {
                 String[] sortSelectList = StringUtil.transferStringToArray(answer_select);
                 String[] sortAnswerList = StringUtil.transferStringToArray(answer_real);
 
-                //TODO  内容重新排序，借助新建一个help数组暂存出正确排序结果
+                //借助一个中间帮助数组，克隆mOptionContentList
                 ArrayList<String> helpList = new ArrayList<>();
                 for (int i = 0; i < mOptionContentList.size(); i++) {
-                    for (int j = 0; j < sortSelectList.length; j++) {
-                        if (sortSelectList[j].contains(String.valueOf(i))) {
-                            helpList.add(mOptionContentList.get(j));
-                        }
-                    }
+                    helpList.add(mOptionContentList.get(i));
                 }
-                //出错的原因应该是String[]是无序的
-                LogUtil.i("select sort = " + helpList.toString());
+                //按用户的选择重新排列顺序
+                for (int i = 0; i < sortSelectList.length; i++) {
+                    int j = Integer.parseInt(sortSelectList[i].trim());
+                    helpList.set(i, mOptionContentList.get(j));
+                    // LogUtil.i("j = " + j);
+                }
 
                 for (int i = 0; i < sortSelectList.length; i++) {
                     result = new ListenResultContent();
@@ -163,7 +164,8 @@ public class FragmentDoResult extends Fragment {
 //                    result.number = StringUtil.transferNumberToAlpha(sortAnswerList[i]);
                     result.content = helpList.get(i);
                     mResultList.add(result);
-                    ToastUtil.showMessage(getActivity(), "正确顺序是" + StringUtil.transferNumberToAlpha(answer_real));
+                    mTxtAnswerHint.setVisibility(View.VISIBLE);
+                    mTxtAnswerHint.setText("正确排序是" + StringUtil.transferNumberToAlpha(answer_real));
                 }
                 break;
             default:

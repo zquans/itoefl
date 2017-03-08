@@ -89,7 +89,7 @@ public class FragmentOrder extends Fragment {
             SQLiteDatabase mDatabaseDownload = DbUtil.getHelper(getActivity(), practiced_path).getWritableDatabase();
             String isNone_Download = DbUtil.queryToString(mDatabaseDownload, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_ALREADY_DOWNLOAD);
             if (!TextUtils.equals(isNone_Download, Constants.NONE)) {
-                String practiced_count_sql = "SELECT COUNT(*) FROM downloaded_table WHERE Section =? and Practiced =?";
+                String practiced_count_sql = "SELECT COUNT(*) FROM " + Constants.TABLE_ALREADY_DOWNLOAD + " WHERE " + Constants.SECTION + " =? and " + Constants.Practiced + " =?";
                 String practiced_count = DbUtil.cursorToString(mDatabaseDownload.rawQuery(practiced_count_sql, new String[]{nameList.get(i), "true"}));
                 mListenModule.practiced_count = practiced_count;//拿练习过的数据数量
                 LogUtil.i("practiced_count = " + practiced_count);
@@ -99,7 +99,7 @@ public class FragmentOrder extends Fragment {
             SQLiteDatabase mDatabaseTpo = DbUtil.getHelper(getActivity(), tpo_path).getWritableDatabase();
             String isNone_Tpo = DbUtil.queryToString(mDatabaseTpo, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER_RULE);
             if (!TextUtils.equals(isNone_Tpo, Constants.NONE)) {
-                String total_count_sql = "SELECT COUNT(*) FROM " + Constants.TABLE_PAPER_RULE + " WHERE PaperCode =? ";
+                String total_count_sql = "SELECT COUNT(*) FROM " + Constants.TABLE_PAPER_RULE + " WHERE " + Constants.PaperCode + " =? ";
                 String total_count = DbUtil.cursorToString(mDatabaseTpo.rawQuery(total_count_sql, new String[]{nameList.get(i)}));
                 mListenModule.total_count = total_count;//拿所有的module的数据数量
                 LogUtil.i("total_count = " + total_count);

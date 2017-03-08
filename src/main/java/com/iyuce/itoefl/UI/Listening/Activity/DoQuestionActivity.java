@@ -276,8 +276,6 @@ public class DoQuestionActivity extends BaseActivity implements
                 }
                 mDatabase.setTransactionSuccessful();
                 mDatabase.endTransaction();
-                String sql_query = "select " + Constants.UserSelect + " from " + Constants.TABLE_ALREADY_PRACTICED + " where " + Constants.Sort + " = ?";
-                LogUtil.i("a ?? = " + DbUtil.cursorToArrayList(mDatabase.rawQuery(sql_query, new String[]{"3"})).toString());
 
                 //TODO 往下载表中存入字段,标明已经练习过
                 ContentValues mValues = new ContentValues();

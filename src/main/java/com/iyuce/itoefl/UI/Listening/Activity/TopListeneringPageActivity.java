@@ -49,7 +49,7 @@ public class TopListeneringPageActivity extends BaseActivity
     private ImageView mImgReward;
 
     //传递来的章节名称
-    private String local_section;
+    private String local_section, local_practiced_count;
 
     //保存根数据库的路径
     private String root_path;
@@ -107,7 +107,7 @@ public class TopListeneringPageActivity extends BaseActivity
         mRecyclerView.setAdapter(mAdapter);
 
         //TODO 已练习数量通过我自己的表查询
-        mTxtFinish.setText("已练习 ：１篇");
+        mTxtFinish.setText("已练习 ：" + local_practiced_count + " 篇");
         mTxtTotal.setText("总共 :  " + mModuleList.size() + " 篇");
 
         //网络已连接
@@ -145,6 +145,8 @@ public class TopListeneringPageActivity extends BaseActivity
             query = "select " + Constants.Practiced + " from " + Constants.TABLE_ALREADY_DOWNLOAD + " where " + Constants.SECTION + " = ? and " + Constants.MODULE + " = ?";
             mPracticedList.add(DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{local_section, mModuleList.get(i)})));
         }
+        String sql_practiced_count = "SELECT COUNT(*) FROM " + Constants.TABLE_ALREADY_DOWNLOAD + " WHERE " + Constants.SECTION + " =? and " + Constants.Practiced + " =?";
+        local_practiced_count = DbUtil.cursorToString(mDatabase.rawQuery(sql_practiced_count, new String[]{local_section, "true"}));
         mDatabase.close();
     }
 

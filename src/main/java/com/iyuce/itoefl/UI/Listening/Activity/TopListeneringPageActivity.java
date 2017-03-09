@@ -4,8 +4,12 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,8 +34,7 @@ import java.util.ArrayList;
 import okhttp3.Call;
 import okhttp3.Response;
 
-public class TopListeneringPageActivity extends BaseActivity
-        implements View.OnClickListener, TopListeneringPageAdapter.OnPageItemClickListener {
+public class TopListeneringPageActivity extends BaseActivity implements TopListeneringPageAdapter.OnPageItemClickListener {
 
     private RecyclerView mRecyclerView;
     private TopListeneringPageAdapter mAdapter;
@@ -61,16 +64,21 @@ public class TopListeneringPageActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_top_listenering_page);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.mipmap.icon_back);
+        }
 
         initView();
     }
 
     private void initView() {
         local_section = getIntent().getStringExtra("local_section");
-        TextView textView = (TextView) findViewById(R.id.txt_header_title_item);
+        TextView textView = (TextView) findViewById(R.id.txt_activity_top_listenering_title);
         textView.setText(local_section + "\r听力真题");
-        findViewById(R.id.txt_header_title_menu).setOnClickListener(this);
-        findViewById(R.id.imgbtn_header_title).setOnClickListener(this);
 
         mImgReward = (ImageView) findViewById(R.id.img_activity_top_listenering_award);
         mTxtFinish = (TextView) findViewById(R.id.txt_activity_top_listenering_finish);
@@ -106,7 +114,6 @@ public class TopListeneringPageActivity extends BaseActivity
         mAdapter.setOnPageItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
-        //TODO 已练习数量通过我自己的表查询
         mTxtFinish.setText("已练习 ：" + local_practiced_count + " 篇");
         mTxtTotal.setText("总共 :  " + mModuleList.size() + " 篇");
 
@@ -224,31 +231,9 @@ public class TopListeneringPageActivity extends BaseActivity
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.txt_header_title_menu:
-                String url;
-                String path;
-                for (int i = 0; i < mModuleList.size(); i++) {
-                    //查对象属性,loading或者downloaded，则不下载
-                    if (mUserOprateList.get(i).loading.equals("true") || mUserOprateList.get(i).download.equals("true")) {
-                        continue;
-                    }
-                    path = SDCardUtil.getExercisePath() + File.separator + local_section + File.separator + mModuleList.get(i);
-                    url = "http://xm.iyuce.com/app/" + local_section + "_" + mModuleList.get(i) + ".zip";
-                    doDownLoad(i, url, path);
-                }
-                break;
-            case R.id.imgbtn_header_title:
-                finish();
-                break;
-        }
-    }
-
-    @Override
     public void OnPageItemClick(int pos) {
         //奖杯图标，当全部题目完成后设为亮
-        mImgReward.setBackgroundResource(R.mipmap.icon_reward_finish);
+//        mImgReward.setBackgroundResource(R.mipmap.icon_reward_finish);
 
         //这个路径用来存放下载的文件，或者传递给下一级
         String local_path = SDCardUtil.getExercisePath() + File.separator + local_section + File.separator + mModuleList.get(pos);
@@ -273,5 +258,41 @@ public class TopListeneringPageActivity extends BaseActivity
         intent.putExtra("local_module", mModuleList.get(pos));
         intent.putExtra("local_music_question", mMusicQuestionList.get(pos));
         startActivity(intent);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            case R.id.download:
+                ToastUtil.showMessage(this, "You clicked and now begin download all");
+                String url;
+                String path;
+                for (int i = 0; i < mModuleList.size(); i++) {
+                    //查对象属性,loading或者downloaded，则不下载
+                    if (mUserOprateList.get(i).loading.equals("true") || mUserOprateList.get(i).download.equals("true")) {
+                        continue;
+                    }
+                    path = SDCardUtil.getExercisePath() + File.separator + local_section + File.separator + mModuleList.get(i);
+                    url = "http://xm.iyuce.com/app/" + local_section + "_" + mModuleList.get(i) + ".zip";
+                    doDownLoad(i, url, path);
+                }
+                break;
+            case R.id.delete:
+                ToastUtil.showMessage(this, "You clicked Delete");
+                break;
+            case R.id.settings:
+                ToastUtil.showMessage(this, "You clicked Settings");
+                break;
+            default:
+        }
+        return true;
     }
 }

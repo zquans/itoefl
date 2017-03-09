@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/img_bg_sea_stone"
-    android:orientation="vertical">
+    android:background="@mipmap/img_bg_sea_stone">
 
     <include layout="@layout/header_title_bar" />
 
     <RelativeLayout
+        android:id="@+id/relative_layout_activity_page_ready_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/header_title_bar_height"
         android:paddingLeft="@dimen/activity_horizontal_padding"
         android:paddingRight="@dimen/activity_horizontal_padding">
 
@@ -57,17 +58,20 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_below="@+id/relative_layout_activity_page_ready_title"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:background="@color/Gray" />
 
     <TextView
         android:id="@+id/txt_activity_page_ready_review"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative_layout_activity_page_ready_title"
+        android:layout_marginTop="24dp"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
+        android:drawableLeft="@mipmap/icon_practiced"
+        android:drawablePadding="@dimen/activity_horizontal_padding"
         android:onClick="showResult"
         android:padding="@dimen/all_padding"
         android:textColor="@color/TxtPink"
@@ -76,11 +80,14 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="48dp"
         android:background="@color/Gray" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
         <TextView
@@ -92,7 +99,8 @@
             android:gravity="center"
             android:onClick="beginListen"
             android:text="精听听写"
-            android:textColor="@color/TxtPink" />
+            android:textColor="@color/TxtPink"
+            android:textSize="@dimen/txt_size_eighteen" />
 
         <View
             android:layout_width="2dp"
@@ -110,7 +118,8 @@
             android:gravity="center"
             android:onClick="beginPractice"
             android:text="题目练习"
-            android:textColor="@color/TxtPink" />
+            android:textColor="@color/TxtPink"
+            android:textSize="@dimen/txt_size_eighteen" />
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

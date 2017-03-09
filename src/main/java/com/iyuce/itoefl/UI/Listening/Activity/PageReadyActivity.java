@@ -102,7 +102,7 @@ public class PageReadyActivity extends BaseActivity {
         mDatabase.close();
         LogUtil.i("mUserSelecttList" + mUserSelectList);
 
-        if (mBingoList.size() == 0) {
+        if (mTimeCountList.size() == 0) {
             mTxtReview.setText("您还没有练习过哦，赶紧开始吧!");
             mTxtReview.setClickable(false);
             return;

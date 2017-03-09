@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.R;
@@ -51,7 +50,7 @@ public class QuestionMultiAdapter extends RecyclerView.Adapter<QuestionMultiAdap
             @Override
             public void onClick(View v) {
                 if (mIsSelectedList.get(position)) {
-                    holder.mTxtQuestion.setBackgroundResource(R.color.Transparent);
+                    holder.mTxtQuestion.setBackgroundResource(R.color.Transparent_SixtyFive);
                 } else {
                     holder.mTxtQuestion.setBackgroundResource(R.drawable.view_bound_pink_stroke_five);
                 }
@@ -70,7 +69,6 @@ public class QuestionMultiAdapter extends RecyclerView.Adapter<QuestionMultiAdap
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        RadioGroup mRadioGroup;
         TextView mTxtQuestion;
 
         public MyViewHolder(View itemView) {

@@ -156,24 +156,23 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
         mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_fragment_do_result_page);
-        mRelativeLayout.setVisibility(View.GONE);
+//        mRelativeLayout.setVisibility(View.GONE);
 
         //多音频题
-//        isOnlyAudio = false;
+        isOnlyAudio = false;
 //        ToastUtil.showMessage(getActivity(), "本题是多录音题");
 
         //布置参数到对应控件
         mTxtCurrentQuestion.setText(current_question);
         mTxtTotalQuestion.setText(total_question);
         mTxtQuestionContent.setText(question_content);
-        mTxtQuestionType.setText("本题是排序题");
+        mTxtQuestionType.setText("本题是排序题,请长按选项后拖动排序");
         mTxtQuestionType.setVisibility(View.VISIBLE);
 
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        mAdapter = new QuestionSortAdapter(getActivity(), mOptionContentList);
-//        mRecyclerView.setAdapter(mAdapter);
-//        doSort();
-//        LogUtil.i("isFinsh = " + isFinish);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new QuestionSortAdapter(getActivity(), mOptionContentList);
+        mRecyclerView.setAdapter(mAdapter);
+        doSort();
 
         //MediaPlayer
         mMediaPlayer = new MediaPlayer();

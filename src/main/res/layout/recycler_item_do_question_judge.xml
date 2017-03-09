@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:text="this ons is a true"
-        android:textSize="18sp" />
+        android:textColor="@color/TxtWhite"
+        android:textSize="@dimen/txt_size_eighteen" />
 
     <RadioGroup
         android:id="@+id/radio_group_item_fragment_do_question"
@@ -25,20 +26,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:background="#ffffff"
+            android:background="@color/Transparent"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:text="YES" />
+            android:text="YES"
+            android:textColor="@color/TxtWhite" />
 
         <RadioButton
             android:id="@+id/radio_item_fragment_do_question_no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
-            android:background="#ffffff"
+            android:background="@color/Transparent"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:text="NO" />
+            android:text="NO"
+            android:textColor="@color/TxtWhite" />
     </RadioGroup>
 
     <View

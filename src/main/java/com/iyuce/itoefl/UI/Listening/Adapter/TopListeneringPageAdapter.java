@@ -56,9 +56,15 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
 
         if (position == 0) {
             holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_first);
+            if (mDataList.get(0).practiced.equals("true")) {
+                holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_first);
+            }
         }
         if (position == mDataList.size() - 1) {
             holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_last);
+            if (mDataList.get(mDataList.size() - 1).practiced.equals("true")) {
+                holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_last);
+            }
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

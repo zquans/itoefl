@@ -54,7 +54,8 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="/" />
+            android:text="/"
+            android:textColor="@color/TxtWhite" />
 
         <TextView
             android:id="@+id/txt_activity_do_question_current"
@@ -71,7 +72,8 @@
             android:layout_height="match_parent"
             android:layout_toRightOf="@+id/txt_activity_do_question_placeholder"
             android:gravity="center"
-            android:text="x" />
+            android:text="x"
+            android:textColor="@color/TxtWhite" />
 
     </RelativeLayout>
 

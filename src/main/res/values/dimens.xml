@@ -16,7 +16,7 @@
     <dimen name="header_margin_bottom">8dp</dimen>
 
     <!--指示器高度-->
-    <dimen name="indicator_height">4dp</dimen>
+    <dimen name="indicator_height">2dp</dimen>
 
     <!--控件宽高-->
     <dimen name="layout_width_48">48dp</dimen>

@@ -161,10 +161,10 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
         mTxtQuestionType.setText("本题是多选题");
         mTxtQuestionType.setVisibility(View.VISIBLE);
 
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        mAdapter = new QuestionMultiAdapter(getActivity(), mOptionContentList);
-//        mAdapter.setOnQuestionItemClickListener(this);
-//        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new QuestionMultiAdapter(getActivity(), mOptionContentList);
+        mAdapter.setOnQuestionItemClickListener(this);
+        mRecyclerView.setAdapter(mAdapter);
 
         //MediaPlayer
         mMediaPlayer = new MediaPlayer();

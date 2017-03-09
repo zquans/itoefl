@@ -134,7 +134,6 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
         mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(mSpinnerAdapter);
         mSpinner.setOnItemSelectedListener(this);
-
         String musicPath = local_path + File.separator + local_music_question;
 
         //音频准备

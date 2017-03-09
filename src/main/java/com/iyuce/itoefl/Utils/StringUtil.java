@@ -6,6 +6,8 @@ package com.iyuce.itoefl.Utils;
 public class StringUtil {
 
     public static String ParaseToHtml(String orginal) {
+        orginal = orginal + "&lt;style type=&quot;text/css&quot;&gt;html{font-size:65%;color:#fcfcfc;}" +
+                "*{font-size:1rem !important;}&lt;/style&gt;\n";
         return orginal.replace("&quot;", "\"")
                 .replace("&amp;", "&")
                 .replace("&lt;", "<")

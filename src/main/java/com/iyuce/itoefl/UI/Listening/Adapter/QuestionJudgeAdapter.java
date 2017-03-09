@@ -51,6 +51,11 @@ public class QuestionJudgeAdapter extends RecyclerView.Adapter<QuestionJudgeAdap
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.radio_item_fragment_do_question_yes) {
                     mIsSelectedList.set(position, true);
+                    int radioButtonId = group.getCheckedRadioButtonId();
+//                    RadioButton radiobtn = (RadioButton) holder.itemView.findViewById(radioButtonId);
+//                    String radioButtonLabel = radiobtn.getText().toString();
+//                    LogUtil.i("yes = " + radioButtonLabel);
+//                    radiobtn.setText(mDataList.get(position));
                 } else {
                     mIsSelectedList.set(position, false);
                 }

@@ -50,10 +50,10 @@ public class ResultTitleAdapter extends RecyclerView.Adapter<ResultTitleAdapter.
 //            holder.mTitle.setTextColor(Color.parseColor("#ffffff"));
             if (mDataList.get(position).question_state) {
                 //正确的
-                holder.mImg.setBackgroundResource(R.mipmap.icon_answer_talk_right_full);
+                holder.mImg.setBackgroundResource(R.mipmap.icon_answer_cycle_right_full);
             } else {
                 //错误的
-                holder.mImg.setBackgroundResource(R.mipmap.icon_answer_talk_wrong_full);
+                holder.mImg.setBackgroundResource(R.mipmap.icon_answer_cycle_wrong_full);
             }
         }
     }

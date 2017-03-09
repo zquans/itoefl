@@ -81,7 +81,7 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:gravity="center"
             android:text="正确排序是"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/TxtPink"
             android:textSize="12sp"
             android:textStyle="bold"
             android:visibility="gone" />

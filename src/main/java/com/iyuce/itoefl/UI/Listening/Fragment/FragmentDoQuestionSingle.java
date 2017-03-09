@@ -152,6 +152,11 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
 //        isOnlyAudio = false;
 //        ToastUtil.showMessage(getActivity(), "本题是多录音题");
 
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new QuestionSingleAdapter(getActivity(), mOptionContentList);
+        mAdapter.setOnQuestionItemClickListener(this);
+        mRecyclerView.setAdapter(mAdapter);
+
         //布置参数到对应控件
         mTxtCurrentQuestion.setText(current_question);
         mTxtTotalQuestion.setText(total_question);

@@ -41,7 +41,8 @@ public class TopListeneringModuleAdapter extends RecyclerView.Adapter<TopListene
     public void onBindViewHolder(ItemViewHolder holder, final int position) {
         holder.mItemTxtTitle.setText(mList.get(position).name);
         if (!TextUtils.isEmpty(mList.get(position).practiced_count)
-                && !TextUtils.isEmpty(mList.get(position).total_count)) {
+                && !TextUtils.isEmpty(mList.get(position).total_count)
+                && Integer.parseInt(mList.get(position).practiced_count) > 0) {
             holder.mProgressBar.setVisibility(View.VISIBLE);
             holder.mProgressBar.setMax(Integer.parseInt(mList.get(position).total_count));
             holder.mProgressBar.setSecondaryProgress(Integer.parseInt(mList.get(position).total_count));

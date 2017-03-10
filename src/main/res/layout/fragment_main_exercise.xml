@@ -24,7 +24,7 @@
             <ImageView
                 android:id="@+id/img_fragment_exercise_header"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="160dp"
                 android:background="@mipmap/img_bg_header_sea_side"
                 android:fitsSystemWindows="true"
                 android:scaleType="fitStart"
@@ -44,18 +44,34 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
-            android:id="@+id/txt_do_click"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/all_margin"
+        <RelativeLayout
+            android:id="@+id/relative_do_click"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:drawablePadding="8dp"
-            android:drawableTop="@mipmap/icon_level_difficult"
-            android:gravity="center"
-            android:padding="@dimen/all_padding"
-            android:text="模拟考试练习" />
+            android:clickable="true">
+
+            <ImageView
+                android:id="@+id/img_fragment_exercise"
+                android:layout_width="56dp"
+                android:layout_height="88dp"
+                android:layout_marginLeft="48dp"
+                android:layout_marginTop="48dp"
+                android:background="@mipmap/icon_level_difficult" />
+
+            <TextView
+                android:id="@+id/txt_do_click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/img_fragment_exercise"
+                android:layout_marginLeft="36dp"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:padding="@dimen/all_padding"
+                android:text="听力练习"
+                android:textColor="@color/TxtBlack"
+                android:textStyle="bold|italic" />
+        </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton

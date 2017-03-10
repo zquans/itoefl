@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/img_recycler_item_top_listenering_page_progress"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:background="@mipmap/icon_progress_normal_center" />
@@ -78,5 +78,12 @@
         android:textColor="@color/colorPrimary"
         android:textSize="16sp"
         android:visibility="invisible" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/activity_horizontal_double_padding"
+        android:background="@color/colorPrimary" />
 
 </RelativeLayout>

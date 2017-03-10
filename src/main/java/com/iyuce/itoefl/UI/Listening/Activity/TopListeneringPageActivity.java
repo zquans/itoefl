@@ -49,7 +49,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
     private ArrayList<UserOprate> mUserOprateList = new ArrayList<>();
 
     private TextView mTxtFinish, mTxtTotal;
-    private ImageView mImgReward;
+//    private ImageView mImgReward;
 
     //传递来的章节名称
     private String local_section, local_practiced_count;
@@ -80,7 +80,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
         TextView textView = (TextView) findViewById(R.id.txt_activity_top_listenering_title);
         textView.setText(local_section + "\r听力真题");
 
-        mImgReward = (ImageView) findViewById(R.id.img_activity_top_listenering_award);
+//        mImgReward = (ImageView) findViewById(R.id.img_activity_top_listenering_award);
         mTxtFinish = (TextView) findViewById(R.id.txt_activity_top_listenering_finish);
         mTxtTotal = (TextView) findViewById(R.id.txt_activity_top_listenering_total);
 
@@ -153,7 +153,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
             mPracticedList.add(DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{local_section, mModuleList.get(i)})));
         }
         String sql_practiced_count = "SELECT COUNT(*) FROM " + Constants.TABLE_ALREADY_DOWNLOAD + " WHERE " + Constants.SECTION + " =? and " + Constants.Practiced + " =?";
-        local_practiced_count = DbUtil.cursorToString(mDatabase.rawQuery(sql_practiced_count, new String[]{local_section, "true"}));
+        local_practiced_count = DbUtil.cursorToString(mDatabase.rawQuery(sql_practiced_count, new String[]{local_section, Constants.TRUE}));
         mDatabase.close();
     }
 
@@ -164,7 +164,13 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
         HttpUtil.downLoad(url, path, new HttpInterface() {
             @Override
             public void onBefore() {
+                mUserOprateList.get(pos).loading = Constants.TRUE;
                 mRecyclerView.getChildAt(pos).setClickable(false);
+
+                ImageView imgDownload = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
+                ImageView imgReady = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download_ready);
+                imgDownload.setVisibility(View.VISIBLE);
+                imgReady.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -174,12 +180,6 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
 
             @Override
             public void inProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
-                mUserOprateList.get(pos).loading = "true";
-
-                ImageView imgDownload = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
-                ImageView imgReady = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download_ready);
-                imgDownload.setVisibility(View.VISIBLE);
-                imgReady.setVisibility(View.INVISIBLE);
                 TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
                 textView.setVisibility(View.VISIBLE);
                 textView.setText(((int) (progress * 100) + "%"));
@@ -187,15 +187,15 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
 
             @Override
             public void doSuccess(File file, Call call, Response response) {
-                mUserOprateList.get(pos).loading = "false";
-                mUserOprateList.get(pos).download = "true";
+                mUserOprateList.get(pos).loading = Constants.FALSE;
+                mUserOprateList.get(pos).download = Constants.TRUE;
 
                 SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path).getWritableDatabase();
                 ContentValues mValues = new ContentValues();
                 mValues.put(Constants.SECTION, local_section);
                 mValues.put(Constants.MODULE, mModuleList.get(pos));
-                mValues.put(Constants.DOWNLOAD, "true");
-                mValues.put(Constants.LOADING, "false");
+                mValues.put(Constants.DOWNLOAD, Constants.TRUE);
+                mValues.put(Constants.LOADING, Constants.FALSE);
                 DbUtil.insert(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, mValues);
                 //TODO 以下两行好像可以删掉 --->用户操作表中，SECTION = local_section 作为筛选条件
                 String sql_query = "select " + Constants.MODULE + " from " + Constants.TABLE_ALREADY_DOWNLOAD + " where " + Constants.SECTION + " = ?";
@@ -277,7 +277,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
                 String path;
                 for (int i = 0; i < mModuleList.size(); i++) {
                     //查对象属性,loading或者downloaded，则不下载
-                    if (mUserOprateList.get(i).loading.equals("true") || mUserOprateList.get(i).download.equals("true")) {
+                    if (mUserOprateList.get(i).loading.equals(Constants.TRUE) || mUserOprateList.get(i).download.equals(Constants.TRUE)) {
                         continue;
                     }
                     path = SDCardUtil.getExercisePath() + File.separator + local_section + File.separator + mModuleList.get(i);
@@ -285,13 +285,8 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
                     doDownLoad(i, url, path);
                 }
                 break;
-            case R.id.delete:
-                ToastUtil.showMessage(this, "You clicked Delete");
-                break;
-            case R.id.settings:
-                ToastUtil.showMessage(this, "You clicked Settings");
-                break;
             default:
+                break;
         }
         return true;
     }

@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.R;
-import com.iyuce.itoefl.UI.Listening.Fragment.FragmentClassify;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentOrder;
 
 import java.util.ArrayList;
@@ -48,9 +47,9 @@ public class TopListeneringActivity extends BaseActivity {
         mViewPager = (ViewPager) findViewById(R.id.viewpager_activity_top_listenering);
         mTab = (TabLayout) findViewById(R.id.tab_activity_top_listenering);
         mTabList.add("顺序");
-        mTabList.add("分类");
+//        mTabList.add("分类");
         mFragmentList.add(new FragmentOrder());
-        mFragmentList.add(new FragmentClassify());
+//        mFragmentList.add(new FragmentClassify());
         mAdapter = new TabTopListeneringAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
         mTab.setTabMode(TabLayout.MODE_FIXED);

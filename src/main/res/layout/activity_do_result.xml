@@ -81,6 +81,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/all_margin"
-        android:background="@color/Transparent_Thirty" />
+        android:background="@drawable/view_background_transparent_thirty" />
 
 </LinearLayout>

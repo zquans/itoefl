@@ -179,14 +179,14 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             result.question_is_select = i == 0;
             //TODO 模拟正确答案数据,模拟正确答案题型,有真实数据时以下if内可以删除
             if (i == 5) {
-                result.real_answer = "1,0,2,3";// result.real_answer = "[true,true,false,false]";
+                result.real_answer = "3,2,0,1";// result.real_answer = "[true,true,false,false]";
                 mQuestionType = Constants.QUESTION_TYPE_SORT;
             }
-            if (i == 2) {
-                result.real_answer = "13";
-                mQuestionType = Constants.QUESTION_TYPE_MULTI;
-            }
-//            if (i == 1) {
+//            if (i == 2) {
+//                result.real_answer = "13";
+//                mQuestionType = Constants.QUESTION_TYPE_MULTI;
+//            }
+//            if (i == 5) {
 //                result.real_answer = "[true,true,false,false]";
 //                mQuestionType = Constants.QUESTION_TYPE_JUDGE;
 //            }

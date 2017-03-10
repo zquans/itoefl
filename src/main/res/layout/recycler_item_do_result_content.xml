@@ -20,6 +20,5 @@
         android:layout_alignBaseline="@+id/txt_item_fragment_do_result_answer"
         android:gravity="center"
         android:padding="4dp"
-        android:text="A"
         android:textColor="@color/TxtWhite" />
 </RelativeLayout>

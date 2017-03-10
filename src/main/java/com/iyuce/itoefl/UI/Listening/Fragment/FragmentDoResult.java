@@ -127,11 +127,11 @@ public class FragmentDoResult extends Fragment {
                     result.judgeSelect = judgeSelectList[i].trim();
                     result.judgeAnswer = judgeAnswerList[i].trim();
                     if (result.judgeSelect.trim().contains(result.judgeAnswer.trim())) {
-                        result.state = "true";
-                    } else if (result.judgeSelect.contains("null")) {
-                        result.state = "null";
+                        result.state = Constants.TRUE;
+                    } else if (result.judgeSelect.contains(Constants.NULL)) {
+                        result.state = Constants.NULL;
                     } else {
-                        result.state = "false";
+                        result.state = Constants.FALSE;
                     }
                     result.content = mOptionContentList.get(i);
                     mResultList.add(result);
@@ -159,9 +159,9 @@ public class FragmentDoResult extends Fragment {
                     result.judgeSelect = sortSelectList[i].trim();
                     result.judgeAnswer = sortAnswerList[i].trim();
                     if (result.judgeSelect.contains(result.judgeAnswer.trim())) {
-                        result.state = "true";
+                        result.state = Constants.TRUE;
                     } else {
-                        result.state = "false";
+                        result.state = Constants.FALSE;
                     }
 //                    result.number = StringUtil.transferNumberToAlpha(sortAnswerList[i]);
                     result.content = helpList.get(i);
@@ -185,11 +185,11 @@ public class FragmentDoResult extends Fragment {
                 for (int i = 0; i < mOptionContentList.size(); i++) {
                     //遍历做判断,answer_option或answer_select包含该题，则修改该题的图标,先判断正确，后判断错误
                     if (answer_real.contains(mResultList.get(i).number)) {
-                        mResultList.get(i).state = "true";
+                        mResultList.get(i).state = Constants.TRUE;
                     } else if (answer_select.contains(mResultList.get(i).number)) {
-                        mResultList.get(i).state = "false";
+                        mResultList.get(i).state = Constants.FALSE;
                     } else {
-                        mResultList.get(i).state = "none";
+                        mResultList.get(i).state = Constants.NONE;
                     }
                 }
                 break;

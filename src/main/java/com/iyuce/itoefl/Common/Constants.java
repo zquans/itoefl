@@ -11,6 +11,9 @@ public class Constants {
     public static final String URL_WEB_ONE_TO_ONE = "http://www.iyuce.com/m/appjxy.html";
 
     public static final String NONE = "none";
+    public static final String TRUE = "true";
+    public static final String FALSE = "false";
+    public static final String NULL = "null";
 
     //题型
     public static final String QUESTION_TYPE_SINGEL = "SINGLE";

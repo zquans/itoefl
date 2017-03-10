@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.Model.UserOprate;
 import com.iyuce.itoefl.R;
 
@@ -40,29 +41,35 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
 
     @Override
     public void onBindViewHolder(PageViewHolder holder, final int position) {
-        holder.mTxtContent.setText(mDataList.get(position).module);
+        String replace_string;
+        if (mDataList.get(position).module.contains("C"))
+            replace_string = mDataList.get(position).module.replace("C", "Conversation ");
+        else
+            replace_string = mDataList.get(position).module.replace("L", "Lecture ");
 
-        //TODO 已经下载过，则隐藏下载相关图标
-        if (mDataList.get(position).download.equals("true")) {
+        holder.mTxtContent.setText(replace_string);
+
+        // 已经下载过，则隐藏下载相关图标
+        if (mDataList.get(position).download.equals(Constants.TRUE)) {
             holder.mImgDownloadReady.setVisibility(View.INVISIBLE);
             holder.mTxtContentState.setText("未练习");
         }
 
-        //TODO 已经练习过，则显示相关文字，并修改前面的进度图标为亮，隐藏下载相关图标
-        if (mDataList.get(position).practiced.equals("true")) {
+        // 已经练习过，则显示相关文字，并修改前面的进度图标为亮，隐藏下载相关图标
+        if (mDataList.get(position).practiced.equals(Constants.TRUE)) {
             holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_center);
             holder.mTxtContentState.setText("查看练习记录");
         }
 
         if (position == 0) {
             holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_first);
-            if (mDataList.get(0).practiced.equals("true")) {
+            if (mDataList.get(0).practiced.equals(Constants.TRUE)) {
                 holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_first);
             }
         }
         if (position == mDataList.size() - 1) {
             holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_last);
-            if (mDataList.get(mDataList.size() - 1).practiced.equals("true")) {
+            if (mDataList.get(mDataList.size() - 1).practiced.equals(Constants.TRUE)) {
                 holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_last);
             }
         }

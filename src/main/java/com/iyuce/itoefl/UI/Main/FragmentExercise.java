@@ -9,8 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Activity.TopListeneringActivity;
@@ -20,8 +19,8 @@ import com.iyuce.itoefl.UI.Listening.Activity.TopListeneringActivity;
  */
 public class FragmentExercise extends Fragment {
 
-    private ImageView mImg;
     private CollapsingToolbarLayout mCollapLayout;
+    private RelativeLayout mRelative;
 
     @Nullable
     @Override
@@ -33,9 +32,8 @@ public class FragmentExercise extends Fragment {
 
     private void initView(View view) {
 
-
-        TextView mTxt = (TextView) view.findViewById(R.id.txt_do_click);
-        mTxt.setOnClickListener(new View.OnClickListener() {
+        mRelative = (RelativeLayout) view.findViewById(R.id.relative_do_click);
+        mRelative.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().startActivity(new Intent(getActivity(), TopListeneringActivity.class));

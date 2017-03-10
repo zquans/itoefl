@@ -78,7 +78,7 @@ public class ResultContentAdapter extends RecyclerView.Adapter<ResultContentAdap
         }
 
         //非判断题型
-        holder.mTxtNumber.setText(mDataList.get(position).number);
+//        holder.mTxtNumber.setText(mDataList.get(position).number);
         if (mDataList.get(position).state.equals("true")) {
             holder.mTxtNumber.setBackgroundResource(R.mipmap.icon_answer_cycle_right_full);
         } else if (mDataList.get(position).state.equals("false")) {

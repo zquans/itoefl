@@ -29,6 +29,7 @@ import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionSort;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.SDCardUtil;
+import com.iyuce.itoefl.Utils.StringUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 
 import java.io.File;
@@ -227,21 +228,41 @@ public class DoQuestionActivity extends BaseActivity implements
                 //TODO 比较两个答案是否相同，直接传递是否正确的结果给下一级
                 ArrayList<String> mBingoList = new ArrayList();
                 for (int i = 0; i < mSelectedAnswerList.size(); i++) {
-                    if (TextUtils.equals(mSelectedAnswerList.get(i), mAnswerList.get(i))) {
-                        mBingoList.add("true");
-                    } else {
-                        mBingoList.add("false");
+                    switch (mQuestionTypeList.get(i)) {
+                        //不同类型的题目判断方法不一样
+                        case Constants.QUESTION_TYPE_MULTI:
+                            if (StringUtil.transferAlpahToNumber(mAnswerList.get(i)).equals(mSelectedAnswerList.get(i))) {
+                                mBingoList.add(Constants.TRUE);
+                            } else {
+                                mBingoList.add(Constants.FALSE);
+                            }
+                            break;
+                        case Constants.QUESTION_TYPE_SORT:
+                            if (StringUtil.transferStringListToString(mAnswerList.get(i))
+                                    .equals(StringUtil.transferStringListToString(mSelectedAnswerList.get(i)))) {
+                                mBingoList.add(Constants.TRUE);
+                            } else {
+                                mBingoList.add(Constants.FALSE);
+                            }
+                            break;
+                        default:
+                            if (mAnswerList.get(i).equals(StringUtil.trimAll(mSelectedAnswerList.get(i)))) {
+                                mBingoList.add(Constants.TRUE);
+                            } else {
+                                mBingoList.add(Constants.FALSE);
+                            }
+                            break;
                     }
                 }
                 //或者答完,建用户练习表，保存用户的做题记录,进入下一个页面
                 String downloaded_sql_path = SDCardUtil.getExercisePath() + File.separator + Constants.SQLITE_DOWNLOAD;
                 SQLiteDatabase mDatabase = DbUtil.getHelper(this, downloaded_sql_path).getWritableDatabase();
                 String create = "create table if not exists " + Constants.TABLE_ALREADY_PRACTICED + "("
-                        + Constants.Sort + " integer primary key,"
+                        + Constants.QuestionId + " integer primary key,"
                         + Constants.PaperCode + " text,"
                         + Constants.RuleName + " text,"
                         + Constants.QuestionType + " text,"
-                        + Constants.QuestionId + " text,"
+                        + Constants.Sort + " text,"
                         + Constants.Content + " text,"
                         + Constants.UserSelect + " text,"
                         + Constants.Answer + " text,"
@@ -252,21 +273,21 @@ public class DoQuestionActivity extends BaseActivity implements
                 for (int i = 0; i < mSortList.size(); i++) {
                     //判断是否存在，不存在则插入，存在则更新
                     String sql_replace = "replace into " + Constants.TABLE_ALREADY_PRACTICED + " ("
-                            + Constants.Sort + ","
+                            + Constants.QuestionId + ","
                             + Constants.PaperCode + ","
                             + Constants.RuleName + ","
                             + Constants.QuestionType + ","
-                            + Constants.QuestionId + ","
+                            + Constants.Sort + ","
                             + Constants.Content + ","
                             + Constants.UserSelect + ","
                             + Constants.Answer + ","
                             + Constants.Bingo + ","
                             + Constants.TimeCount + ")values(\""
-                            + mSortList.get(i) + "\",\""
+                            + mQuestionIdList.get(i) + "\",\""
                             + local_paper_code + "\",\""
                             + local_paper_code + "\",\""
                             + mQuestionTypeList.get(i) + "\",\""
-                            + mQuestionIdList.get(i) + "\",\""
+                            + mSortList.get(i) + "\",\""
                             + mQuestionContentList.get(i) + "\",\""
                             + mSelectedAnswerList.get(i) + "\",\""
                             + mAnswerList.get(i) + "\",\""
@@ -279,7 +300,7 @@ public class DoQuestionActivity extends BaseActivity implements
 
                 //TODO 往下载表中存入字段,标明已经练习过
                 ContentValues mValues = new ContentValues();
-                mValues.put(Constants.Practiced, "true");
+                mValues.put(Constants.Practiced, Constants.TRUE);
                 mDatabase.update(Constants.TABLE_ALREADY_DOWNLOAD, mValues, Constants.SECTION + " =? and " + Constants.MODULE + " =? ",
                         new String[]{local_paper_code.substring(0, 5), local_paper_code.substring(6)});
                 mValues.clear();
@@ -363,14 +384,14 @@ public class DoQuestionActivity extends BaseActivity implements
             getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
             return;
         }
-        if (position == 3) {
-            mFrgment = FragmentDoQuestionMulti.newInstance(
-                    TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
-                    mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
-                    local_path, local_paper_code);
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
-            return;
-        }
+//        if (position == 3) {
+//            mFrgment = FragmentDoQuestionMulti.newInstance(
+//                    TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
+//                    mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
+//                    local_path, local_paper_code);
+//            getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
+//            return;
+//        }
 //        if (position == 2) {
 //            mFrgment = FragmentDoQuestionJudge.newInstance(
 //                    TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),

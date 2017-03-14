@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
@@ -27,6 +28,7 @@ public class PageReadyActivity extends BaseActivity {
     private TextView mTxtHeadTitle, mTxtEnglish, mTxtChinese, mTxtCategory, mTxtReview;
     private ImageView mImgLevel;
     private String local_paper_code, local_path, local_music_question;
+    private String title_chinese, title_english, img_scene, img_level;
 
     private ArrayList<String> mSortList;
     private ArrayList<String> mQuestionIdList;
@@ -56,8 +58,24 @@ public class PageReadyActivity extends BaseActivity {
     private void initView() {
         local_path = getIntent().getStringExtra("local_path");
         //不从表中查，直接拼装上一级的section和module
-        local_paper_code = getIntent().getStringExtra("local_section") + "_" + getIntent().getStringExtra("local_module");
+        String local_section = getIntent().getStringExtra("local_section");
+        String local_module = getIntent().getStringExtra("local_module");
+        local_paper_code = local_section + "_" + local_module;
         local_music_question = getIntent().getStringExtra("local_music_question"); //主音频名称
+
+        String path = SDCardUtil.getExercisePath();
+        String tpo_path = path + File.separator + Constants.SQLITE_TPO;
+        SQLiteDatabase mDatabase = DbUtil.getHelper(this, tpo_path).getWritableDatabase();
+        String sql_query;
+        sql_query = "select " + Constants.QuestionGrade + " from " + Constants.TABLE_PAPER_RULE + " where " + Constants.PaperCode + " = ? and " + Constants.RuleName + " = ?";
+        img_level = DbUtil.cursorToNotNullString(mDatabase.rawQuery(sql_query, new String[]{local_section, local_module}));
+        sql_query = "select " + Constants.RuleTitle + " from " + Constants.TABLE_PAPER_RULE + " where " + Constants.PaperCode + " = ? and " + Constants.RuleName + " = ?";
+        title_chinese = DbUtil.cursorToNotNullString(mDatabase.rawQuery(sql_query, new String[]{local_section, local_module}));
+        sql_query = "select " + Constants.RuleTitle_En + " from " + Constants.TABLE_PAPER_RULE + " where " + Constants.PaperCode + " = ? and " + Constants.RuleName + " = ?";
+        title_english = DbUtil.cursorToNotNullString(mDatabase.rawQuery(sql_query, new String[]{local_section, local_module}));
+        sql_query = "select " + Constants.MusicPicture + " from " + Constants.TABLE_PAPER_RULE + " where " + Constants.PaperCode + " = ? and " + Constants.RuleName + " = ?";
+        img_scene = DbUtil.cursorToNotNullString(mDatabase.rawQuery(sql_query, new String[]{local_section, local_module}));
+        mDatabase.close();
 
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
         findViewById(R.id.imgbtn_header_title).setOnClickListener(new View.OnClickListener() {
@@ -66,7 +84,6 @@ public class PageReadyActivity extends BaseActivity {
                 finish();
             }
         });
-
         mTxtHeadTitle = (TextView) findViewById(R.id.txt_header_title_item);
         mTxtEnglish = (TextView) findViewById(R.id.txt_activity_page_ready_title_english);
         mTxtChinese = (TextView) findViewById(R.id.txt_activity_page_ready_title_chinese);
@@ -75,6 +92,21 @@ public class PageReadyActivity extends BaseActivity {
         mImgLevel = (ImageView) findViewById(R.id.img_activity_page_ready_title_level);
 
         mTxtHeadTitle.setText(local_paper_code);
+        mTxtChinese.setText(title_chinese);
+        mTxtEnglish.setText(title_english);
+        switch (img_level) {
+            case "易":
+                Glide.with(this).load(R.mipmap.icon_level_easy).into(mImgLevel);
+                break;
+            case "中":
+                Glide.with(this).load(R.mipmap.icon_level_middle).into(mImgLevel);
+                break;
+            case "难":
+                Glide.with(this).load(R.mipmap.icon_level_difficult).into(mImgLevel);
+                break;
+            default:
+                Glide.with(this).load(R.mipmap.icon_level_difficult).into(mImgLevel);
+        }
     }
 
     /**
@@ -141,6 +173,9 @@ public class PageReadyActivity extends BaseActivity {
 
     public void beginPractice(View view) {
         Intent intent = new Intent(this, DoQuestionReadyActivity.class);
+        intent.putExtra("img_scene", img_scene);
+        intent.putExtra("title_chinese", title_chinese);
+        intent.putExtra("title_english", title_english);
         intent.putExtra("local_path", local_path);
         intent.putExtra(Constants.PaperCode, local_paper_code);
         intent.putExtra(Constants.MusicQuestion, local_music_question);

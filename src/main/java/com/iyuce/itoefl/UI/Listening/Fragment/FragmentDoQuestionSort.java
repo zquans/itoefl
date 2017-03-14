@@ -50,6 +50,9 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
     private boolean isOnlyAudio = true;
     private int mEndPosition = 0;
     private String mEndText;
+    //多音频列表
+    private String[] mAudioList = new String[]{};
+    private int current_audio = 0;
 
     //接收参数
     private String total_question, current_question, current_music, current_question_id, question_content, local_path, local_paper_code;
@@ -156,11 +159,13 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
         mRelativeLayout = (RelativeLayout) view.findViewById(R.id.relative_fragment_do_result_page);
-//        mRelativeLayout.setVisibility(View.GONE);
-
-        //多音频题
-        isOnlyAudio = false;
-//        ToastUtil.showMessage(getActivity(), "本题是多录音题");
+        //非单音频题
+        if (current_music.contains(",")) {
+            isOnlyAudio = false;
+            mAudioList = current_music.split(",");
+        } else {
+            mRelativeLayout.setVisibility(View.GONE);
+        }
 
         //布置参数到对应控件
         mTxtCurrentQuestion.setText(current_question);
@@ -169,11 +174,6 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
         mTxtQuestionType.setText("本题是排序题,请长按选项后拖动排序");
         mTxtQuestionType.setVisibility(View.VISIBLE);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new QuestionSortAdapter(getActivity(), mOptionContentList);
-        mRecyclerView.setAdapter(mAdapter);
-        doSort();
-
         //MediaPlayer
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(this);
@@ -181,7 +181,12 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
         mMediaPlayer.setOnCompletionListener(this);
         try {
             //路徑直接传递过来，从参数中直接获取
-            String musicPath = local_path + File.separator + current_music;
+            String musicPath;
+            if (isOnlyAudio) {
+                musicPath = local_path + File.separator + current_music;
+            } else {
+                musicPath = local_path + File.separator + mAudioList[current_audio];
+            }
             mMediaPlayer.setDataSource(musicPath);
             mMediaPlayer.prepare();
         } catch (IOException e) {
@@ -193,14 +198,18 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
     @Override
     public void onCompletion(MediaPlayer mp) {
         if (!isOnlyAudio) {
-            isOnlyAudio = true;
+            if (current_audio == mAudioList.length - 1) {
+                isOnlyAudio = true;
+            } else {
+                current_audio++;
+            }
             //避免音频再次播放时，延迟1秒的handle持续更新进度条
             mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
             mProgressBar.setProgress(mEndPosition);
             mTxtProgressCurrent.setText(mEndText);
             mMediaPlayer.reset();
             try {
-                String musicPath = local_path + File.separator + current_music;
+                String musicPath = local_path + File.separator + mAudioList[current_audio];
                 mMediaPlayer.setDataSource(musicPath);
                 mMediaPlayer.prepare();
             } catch (IOException e) {

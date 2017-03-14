@@ -26,7 +26,6 @@ import com.iyuce.itoefl.UI.Listening.Adapter.ResultTitleAdapter;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoResult;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.RecyclerItemClickListener;
-import com.iyuce.itoefl.Utils.StringUtil;
 import com.iyuce.itoefl.Utils.TimeUtil;
 
 import java.io.File;
@@ -159,6 +158,9 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             String mQuestionType = mQuestionTypeList.get(i);
             String mQuestionContent = mQuestionContentList.get(i);
             SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
+            //答案解析
+            String mDetail = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Detail, Constants.ID, mQuestionIdList.get(i));
+
             //根据不同题型查不同表
             ArrayList<String> mOptionContentList;
             ArrayList<String> mOptionCodeList;
@@ -177,11 +179,11 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             result.question_state = Boolean.parseBoolean(mBingoList.get(i));
             //用户是否在查看该题,默认选中第1题
             result.question_is_select = i == 0;
-            //TODO 模拟正确答案数据,模拟正确答案题型,有真实数据时以下if内可以删除
-            if (i == 5) {
-                result.real_answer = "3,2,0,1";// result.real_answer = "[true,true,false,false]";
-                mQuestionType = Constants.QUESTION_TYPE_SORT;
-            }
+//            //TODO 模拟正确答案数据,模拟正确答案题型,有真实数据时以下if内可以删除
+//            if (i == 5) {
+//                result.real_answer = "3,2,0,1";// result.real_answer = "[true,true,false,false]";
+//                mQuestionType = Constants.QUESTION_TYPE_SORT;
+//            }
 //            if (i == 2) {
 //                result.real_answer = "13";
 //                mQuestionType = Constants.QUESTION_TYPE_MULTI;
@@ -196,7 +198,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             //传递给Fragment数据,可以增加参数
             FragmentDoResult mFragmentDoResult = FragmentDoResult.newInstance(result.question_name,
                     mQuestionIdList.size() + "", mQuestionContent, mOptionContentList, mOptionCodeList, mQuestionType,
-                    mSelectedAnswerList.get(i), mAnswerList.get(i), mTimeCountList.get(i));
+                    mDetail, mSelectedAnswerList.get(i), mAnswerList.get(i), mTimeCountList.get(i));
             mResultContentList.add(mFragmentDoResult);
         }
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_activity_do_result_question);
@@ -223,34 +225,6 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             mMediaPlayer.prepare();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * 判断用户是否答对了
-     * 根据不同类型的QuestionType判断question_state
-     */
-    private void getQuestionState(String mQuestionType, ListenResult result) {
-        switch (mQuestionType) {
-            case Constants.QUESTION_TYPE_MULTI:
-                //多选题
-                if (StringUtil.transferAlpahToNumber(result.real_answer).equals(result.select_answer)) {
-                    result.question_state = true;
-                }
-                break;
-            case Constants.QUESTION_TYPE_SORT:
-                //排序
-                if (StringUtil.transferStringListToString(result.real_answer)
-                        .equals(StringUtil.transferStringListToString(result.select_answer))) {
-                    result.question_state = true;
-                }
-                break;
-            default:
-                //单选和判断题
-                if (result.real_answer.equals(StringUtil.trimAll(result.select_answer))) {
-                    result.question_state = true;
-                }
-                break;
         }
     }
 

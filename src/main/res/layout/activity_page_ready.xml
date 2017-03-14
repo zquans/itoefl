@@ -18,19 +18,18 @@
             android:id="@+id/txt_activity_page_ready_title_english"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/img_activity_page_ready_title_level"
             android:text="\nPage ready title"
             android:textColor="@color/TxtWhite"
             android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/img_activity_page_ready_title_level"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="48dp"
             android:layout_alignBaseline="@+id/txt_activity_page_ready_title_english"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/txt_activity_page_ready_title_english"
-            android:background="@mipmap/icon_level_difficult"
-            android:text="难"
             android:textColor="@color/White"
             android:textSize="12sp" />
 
@@ -40,6 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_activity_page_ready_title_english"
             android:layout_marginTop="8dp"
+            android:layout_toLeftOf="@+id/img_activity_page_ready_title_level"
             android:text="听力准备页面"
             android:textColor="@color/TxtWhite"
             android:textSize="18sp" />

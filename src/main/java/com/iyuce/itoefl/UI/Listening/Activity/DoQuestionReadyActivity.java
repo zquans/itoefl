@@ -12,10 +12,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 public class DoQuestionReadyActivity extends BaseActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener,
         MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, AdapterView.OnItemSelectedListener {
 
+    private ImageView mImgMedia;
     private ImageButton mImageButton;
     private TextView mTxtEnglish, mTxtChinese, mTxtCurrent, mTxtTotal, mTxtBegin;
 
@@ -49,6 +52,8 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     private static final int BEGIN = 0;
 
     private String local_paper_code, local_path, local_music_question;
+
+    private String title_chinese, title_english, img_scene;
 
     private Handler mMediaProgressHandler = new Handler() {
         @Override
@@ -104,6 +109,9 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     }
 
     private void initView() {
+        title_chinese = getIntent().getStringExtra("title_chinese");
+        title_english = getIntent().getStringExtra("title_english");
+        img_scene = getIntent().getStringExtra("img_scene");
         local_path = getIntent().getStringExtra("local_path");
         local_paper_code = getIntent().getStringExtra(Constants.PaperCode);
         local_music_question = getIntent().getStringExtra(Constants.MusicQuestion);
@@ -118,11 +126,19 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
         mTxtChinese = (TextView) findViewById(R.id.txt_activity_do_question_ready_chinese);
         mTxtCurrent = (TextView) findViewById(R.id.txt_activity_do_question_ready_current);
         mTxtTotal = (TextView) findViewById(R.id.txt_activity_do_question_ready_total);
+        mImgMedia = (ImageView) findViewById(R.id.img_activity_do_question_ready_media);
         mImageButton = (ImageButton) findViewById(R.id.imgbtn_activity_do_question_ready_media);
         mTxtBegin = (TextView) findViewById(R.id.btn_activity_do_question_ready_begin);
         mImageButton.setOnClickListener(this);
         mTxtBegin.setOnClickListener(this);
         mSeekBar.setOnSeekBarChangeListener(this);
+
+        mTxtChinese.setText(title_chinese);
+        mTxtEnglish.setText(title_english);
+
+        String imgPath = local_path + File.separator + img_scene;
+        LogUtil.i("imgPath = " + imgPath);
+        Glide.with(this).load(imgPath).into(mImgMedia);
 
         //音频播放速度选择
         mRateList.add("播放速度 x1.0");

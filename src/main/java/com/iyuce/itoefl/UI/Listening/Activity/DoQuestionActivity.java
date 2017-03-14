@@ -225,7 +225,7 @@ public class DoQuestionActivity extends BaseActivity implements
                     LogUtil.i("当前第" + mCurrentQuestion + "题");
                     break;
                 }
-                //TODO 比较两个答案是否相同，直接传递是否正确的结果给下一级
+                //比较两个答案是否相同，直接传递是否正确的结果给下一级
                 ArrayList<String> mBingoList = new ArrayList();
                 for (int i = 0; i < mSelectedAnswerList.size(); i++) {
                     switch (mQuestionTypeList.get(i)) {
@@ -376,14 +376,14 @@ public class DoQuestionActivity extends BaseActivity implements
      * 根据当前题型进行不同Fragment的数据装载
      */
     private void toSwitch(int position) {
-        if (position == 6) {
-            mFrgment = FragmentDoQuestionSort.newInstance(
-                    TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
-                    mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
-                    local_path, local_paper_code);
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
-            return;
-        }
+//        if (position == 6) {
+//            mFrgment = FragmentDoQuestionSort.newInstance(
+//                    TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
+//                    mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
+//                    local_path, local_paper_code);
+//            getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
+//            return;
+//        }
 //        if (position == 3) {
 //            mFrgment = FragmentDoQuestionMulti.newInstance(
 //                    TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),

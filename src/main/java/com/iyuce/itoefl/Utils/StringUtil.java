@@ -40,6 +40,11 @@ public class StringUtil {
         return orginla.replace(",", "")
                 .replace("[", "")
                 .replace("]", "")
+                .replace("0", "A")
+                .replace("1", "B")
+                .replace("2", "C")
+                .replace("3", "D")
+                .replace("4", "E")
                 .replace(" ", "");
     }
 

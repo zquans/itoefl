@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,11 +30,11 @@ public class FragmentDoResult extends Fragment {
     private ArrayList<String> mOptionCodeList;
     private ResultContentAdapter mAdapter;
 
-    private String page_current, page_total, page_question, question_type, answer_select, answer_real, time_count;
+    private String page_current, page_total, page_question, question_type, detail, answer_select, answer_real, time_count;
 
     public static FragmentDoResult newInstance(String page_current, String page_total, String page_question,
                                                ArrayList<String> option_content_list, ArrayList<String> option_code_list,
-                                               String question_type, String answer_select, String answer_real, String time_count) {
+                                               String question_type, String detail, String answer_select, String answer_real, String time_count) {
         FragmentDoResult fragment = new FragmentDoResult();
         Bundle bundle = new Bundle();
         bundle.putString("page_current", page_current);
@@ -44,6 +43,7 @@ public class FragmentDoResult extends Fragment {
         bundle.putStringArrayList("option_content_list", option_content_list);
         bundle.putStringArrayList("option_code_list", option_code_list);
         bundle.putString("question_type", question_type);
+        bundle.putString("detail", detail);
         bundle.putString("answer_select", answer_select);
         bundle.putString("answer_real", answer_real);
         bundle.putString("time_count", time_count);
@@ -61,6 +61,7 @@ public class FragmentDoResult extends Fragment {
             mOptionContentList = getArguments().getStringArrayList("option_content_list");
             mOptionCodeList = getArguments().getStringArrayList("option_code_list");
             question_type = getArguments().getString("question_type");
+            detail = getArguments().getString("detail");
             answer_select = getArguments().getString("answer_select");
             answer_real = getArguments().getString("answer_real");
             time_count = getArguments().getString("time_count");
@@ -86,14 +87,7 @@ public class FragmentDoResult extends Fragment {
         mWebExplain = (WebView) view.findViewById(R.id.txt_fragment_do_result_web);
         mWebExplain.setBackgroundColor(0); // 设置背景色
         mWebExplain.getBackground().setAlpha(0);
-        mWebExplain.loadData(StringUtil.ParaseToHtml("&lt;p&gt;\n" +
-                "\t&lt;span style=&quot;font-size:10.5pt;font-family:&amp;quot;&quot;&gt;I\n" +
-                "set an announcement for an event. And this morning I checked the events section\n" +
-                "of the university\\'s website. And nothing, there is no mention of it&lt;/span&gt;\n" +
-                "&lt;/p&gt;\n" +
-                "&lt;p&gt;\n" +
-                "\t&lt;span style=&quot;font-size:10.5pt;font-family:&amp;quot;&quot;&gt;选C。&lt;/span&gt;\n" +
-                "&lt;/p&gt;"), "text/html; charset=UTF-8", null);
+        mWebExplain.loadData(StringUtil.ParaseToHtml(detail), "text/html; charset=UTF-8", null);
 
         mTxtPageMiddle.setText(page_current);
         mTxtPageRight.setText(page_total);
@@ -110,10 +104,10 @@ public class FragmentDoResult extends Fragment {
 
     private void initData() {
         LogUtil.i("question_type = " + question_type + ", answer_select = " + answer_select + ",answer_real = " + answer_real);
-        if (TextUtils.isEmpty(answer_select) || TextUtils.isEmpty(answer_real)) {
-            answer_real = "[2,1,0,3]";
-//            return;
-        }
+//        if (TextUtils.isEmpty(answer_select) || TextUtils.isEmpty(answer_real)) {
+//            answer_real = "[2,1,0,3]";
+////            return;
+//        }
 
         ListenResultContent result;
         switch (question_type) {
@@ -158,7 +152,8 @@ public class FragmentDoResult extends Fragment {
                     result = new ListenResultContent();
                     result.judgeSelect = sortSelectList[i].trim();
                     result.judgeAnswer = sortAnswerList[i].trim();
-                    if (result.judgeSelect.contains(result.judgeAnswer.trim())) {
+                    if (StringUtil.transferNumberToAlpha(result.judgeSelect)
+                            .contains(result.judgeAnswer.trim())) {
                         result.state = Constants.TRUE;
                     } else {
                         result.state = Constants.FALSE;

@@ -53,6 +53,10 @@ public class Constants {
     public static final String PaperCode = "PaperCode";
     public static final String DownUrl = "DownUrl";
     public static final String DownTime = "DownTime";
+    public static final String RuleTitle = "RuleTitle";
+    public static final String RuleTitle_En = "RuleTitle_En";
+    public static final String QuestionGrade = "QuestionGrade";
+    public static final String MusicPicture = "MusicPicture";
     public static final String QuestionType = "QuestionType";
     public static final String RuleName = "RuleName";
     public static final String QuestionCount = "QuestionCount";
@@ -64,7 +68,7 @@ public class Constants {
     public static final String MasterId = "MasterId";
     public static final String Content = "Content";
     public static final String Answer = "Answer";
-    public static final String Detial = "Detial";
+    public static final String Detail = "Detail";
     public static final String Code = "Code";
 
     //自建的表中的column字段

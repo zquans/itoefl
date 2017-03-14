@@ -63,10 +63,10 @@
             android:layout_margin="@dimen/activity_margin">
 
             <ImageView
+                android:id="@+id/img_activity_do_question_ready_media"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:background="@mipmap/sample" />
+                android:layout_marginTop="@dimen/activity_vertical_margin" />
 
             <ImageButton
                 android:id="@+id/imgbtn_activity_do_question_ready_media"

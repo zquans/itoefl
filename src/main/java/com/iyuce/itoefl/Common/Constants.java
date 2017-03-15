@@ -9,6 +9,12 @@ public class Constants {
     public static final int CODE_WRITE_EXTERNAL_STORAGE = 0x0002;
 
     public static final String URL_WEB_ONE_TO_ONE = "http://www.iyuce.com/m/appjxy.html";
+    public static final String URL_TO_SUGGESTION = "http://api.iyuce.com/v1/service/feedback";
+    public static final String URL_CHECK_UPDATE = "http://www.iyuce.com/Scripts/andoird.json";
+
+    //APP包名
+    public static final String AppPackageName = "com.woyuce.activity";
+    public static final String AppName = "ITOEFL";
 
     public static final String NONE = "none";
     public static final String TRUE = "true";

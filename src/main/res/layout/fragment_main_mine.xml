@@ -65,157 +65,16 @@
             android:orientation="vertical"
             android:padding="@dimen/all_padding">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <TextView
-                    android:id="@+id/txt_tab5_message"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="     查看课表"
-                    android:textColor="#a2a2a2"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/txt_tab5_localmessage"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_weight="1"
-                    android:text="登录后可见"
-                    android:textColor="#f0742e"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_margin="8dp"
-                android:background="#cccccc" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <TextView
-                    android:id="@+id/txt_tab5_room"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="     我的考场"
-                    android:textColor="#a2a2a2"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/txt_tab5_localroom"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_weight="1"
-                    android:textColor="#f0742e"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_margin="8dp"
-                android:background="#cccccc" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <TextView
-                    android:id="@+id/txt_tab5_subject"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="     我的考题"
-                    android:textColor="#a2a2a2"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/txt_tab5_localsubject"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_weight="1"
-                    android:ellipsize="marquee"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:singleLine="true"
-                    android:textColor="#f0742e"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_margin="8dp"
-                android:background="#cccccc" />
-
             <TextView
-                android:id="@+id/txt_to_service"
+                android:id="@+id/txt_to_manage_download"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
                 android:gravity="center_vertical"
                 android:padding="8dp"
-                android:text="     在线客服"
-                android:textColor="#a2a2a2"
-                android:textSize="16sp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_margin="8dp"
-                android:background="#cccccc" />
-
-            <TextView
-                android:id="@+id/txt_to_clearcache"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:padding="8dp"
-                android:text="     清除缓存"
-                android:textColor="#a2a2a2"
-                android:textSize="16sp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_margin="8dp"
-                android:background="#cccccc" />
-
-            <TextView
-                android:id="@+id/txt_to_update"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                android:padding="8dp"
-                android:text="     版本更新"
-                android:textColor="#a2a2a2"
+                android:text="     离线管理"
+                android:textColor="@color/Gray"
                 android:textSize="16sp" />
 
             <View
@@ -233,7 +92,7 @@
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     意见反馈"
-                android:textColor="#a2a2a2"
+                android:textColor="@color/Gray"
                 android:textSize="16sp" />
 
             <View
@@ -251,7 +110,7 @@
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     关于我们"
-                android:textColor="#a2a2a2"
+                android:textColor="@color/Gray"
                 android:textSize="16sp" />
 
             <View
@@ -261,7 +120,25 @@
                 android:background="#cccccc" />
 
             <TextView
-                android:id="@+id/txt_to_signout"
+                android:id="@+id/txt_to_update"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:padding="8dp"
+                android:text="     检查版本"
+                android:textColor="@color/Gray"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_margin="8dp"
+                android:background="#cccccc" />
+
+            <TextView
+                android:id="@+id/txt_to_sign_out"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
@@ -269,7 +146,7 @@
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     切换账号"
-                android:textColor="#a2a2a2"
+                android:textColor="@color/Gray"
                 android:textSize="16sp" />
 
             <View

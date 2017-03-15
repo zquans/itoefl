@@ -4,26 +4,34 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.LogUtil;
 
 /**
- * Created by Administrator on 2016/9/23.
+ * Created by Administrator on 2016/9/23
  */
 public class AboutUsActivity extends BaseActivity {
+
+    private TextView mTxtTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_us);
 
-        initEvent();
-    }
-
-    public void back(View view) {
-        finish();
+        mTxtTitle = (TextView) findViewById(R.id.txt_header_title_item);
+        mTxtTitle.setText("关于我们");
+        findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
+        findViewById(R.id.imgbtn_header_title).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+//        initEvent();
     }
 
     /* 两种方式判断最大允许运行内存 */

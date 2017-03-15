@@ -42,6 +42,8 @@
             android:launchMode="singleTop" />
         <activity android:name=".UI.Listening.Activity.DoResultActivity" />
         <activity android:name=".UI.Mine.AboutUsActivity" />
+        <activity android:name=".UI.Mine.ManageDownLoadActivity" />
+        <activity android:name=".UI.Mine.SuggestionActivity" />
 
         <!--<meta-data-->
         <!--android:name="UMENG_CHANNEL"-->

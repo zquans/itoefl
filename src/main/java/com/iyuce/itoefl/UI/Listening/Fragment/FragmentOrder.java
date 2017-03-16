@@ -17,7 +17,6 @@ import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.TopListeneringModuleAdapter;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.SDCardUtil;
-import com.iyuce.itoefl.Utils.ToastUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,10 +48,8 @@ public class FragmentOrder extends Fragment {
     }
 
     private void initView(View view) {
-        if (initData()) return;
-
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_top_listenering_order);
-
+        initData();
         mAdapter = new TopListeneringModuleAdapter(getActivity(), mModuleeList);
         GridLayoutManager mGridLayoutManager = new GridLayoutManager(getActivity(), 4);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
@@ -63,18 +60,11 @@ public class FragmentOrder extends Fragment {
     /**
      * 装载数据
      */
-    private boolean initData() {
+    private void initData() {
         String path = SDCardUtil.getExercisePath();
         String tpo_path = path + File.separator + Constants.SQLITE_TPO;
 
         SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), tpo_path).getWritableDatabase();
-        //从默认主表中查，是否有这张表
-        String isNone_Paper = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER);
-        if (TextUtils.equals(isNone_Paper, Constants.NONE)) {
-            ToastUtil.showMessage(getActivity(), "网络不佳，未获取到数据,请返回重试");
-            mDatabase.close();
-            return true;
-        }
         ArrayList<String> nameList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER, null, Constants.PaperName);
         mDatabase.close();
 
@@ -96,16 +86,15 @@ public class FragmentOrder extends Fragment {
             mDatabaseDownload.close();
 
             SQLiteDatabase mDatabaseTpo = DbUtil.getHelper(getActivity(), tpo_path).getWritableDatabase();
-            String isNone_Tpo = DbUtil.queryToString(mDatabaseTpo, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER_RULE);
-            if (!TextUtils.equals(isNone_Tpo, Constants.NONE)) {
-                String total_count_sql = "SELECT COUNT(*) FROM " + Constants.TABLE_PAPER_RULE + " WHERE " + Constants.PaperCode + " =? ";
-                String total_count = DbUtil.cursorToString(mDatabaseTpo.rawQuery(total_count_sql, new String[]{nameList.get(i)}));
-                mListenModule.total_count = total_count;//拿所有的module的数据数量
+//            String isNone_Tpo = DbUtil.queryToString(mDatabaseTpo, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER_RULE);
+//            if (!TextUtils.equals(isNone_Tpo, Constants.NONE)) {
+            String total_count_sql = "SELECT COUNT(*) FROM " + Constants.TABLE_PAPER_RULE + " WHERE " + Constants.PaperCode + " =? ";
+            String total_count = DbUtil.cursorToString(mDatabaseTpo.rawQuery(total_count_sql, new String[]{nameList.get(i)}));
+            mListenModule.total_count = total_count;//拿所有的module的数据数量
 //                LogUtil.i("total_count = " + total_count);
-            }
+//            }
             mDatabaseTpo.close();
             mModuleeList.add(mListenModule);
         }
-        return false;
     }
 }

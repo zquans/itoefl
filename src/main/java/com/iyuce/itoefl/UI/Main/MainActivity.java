@@ -1,14 +1,12 @@
 package com.iyuce.itoefl.UI.Main;
 
 import android.Manifest;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,7 +15,6 @@ import android.widget.TextView;
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
-import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.SDCardUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
@@ -119,19 +116,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         String path = SDCardUtil.getExercisePath();
         String filePath = path + File.separator + Constants.SQLITE_TPO;
         File file = new File(filePath);
-        LogUtil.i("sql exist = " + file.exists());
         if (!file.exists()) {
             doDownLoad(path);
-        } else {
-            LogUtil.i("sql exist = yes");
-            SQLiteDatabase mDatabase = DbUtil.getHelper(this, filePath).getWritableDatabase();
-            String isNone = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER);
-            mDatabase.close();
-            if (TextUtils.equals(isNone, Constants.NONE)) {
-                LogUtil.i("still download the zip");
-                doDownLoad(path);
-            }
         }
+//        else {
+//            LogUtil.i("sql exist = yes");
+//            SQLiteDatabase mDatabase = DbUtil.getHelper(this, filePath).getWritableDatabase();
+//            String isNone = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER);
+//            mDatabase.close();
+//            if (TextUtils.equals(isNone, Constants.NONE)) {
+//                LogUtil.i("still download the zip");
+//                doDownLoad(path);
+//            }
+//        }
     }
 
     private void doDownLoad(final String path) {
@@ -140,7 +137,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     @Override
                     public void downloadProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
                         super.downloadProgress(currentSize, totalSize, progress, networkSpeed);
-                        LogUtil.i(currentSize + "||" + totalSize + "||" + progress);
                     }
 
                     @Override
@@ -152,9 +148,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private void unZipFile(File file, String path) {
         try {
-            //解压zip文件到对应路径
+            //解压后删除该文件压缩包
             ZipUtil.UnZipFolder(file.getAbsolutePath(), path);
-            //删除该文件压缩包.zip
             LogUtil.i("zip delete = " + file.delete());
         } catch (Exception e) {
             e.printStackTrace();
@@ -167,7 +162,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onPageSelected(int position) {
-        //重选Tab
         resetTab(position);
     }
 
@@ -192,8 +186,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     /**
      * 重选对应Tab
-     *
-     * @param pos
      */
     private void resetTab(int pos) {
         mViewPager.setCurrentItem(pos);

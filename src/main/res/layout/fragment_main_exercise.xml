@@ -19,7 +19,7 @@
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:title="IToefl">
+            app:title="我预测托福">
 
             <ImageView
                 android:id="@+id/img_fragment_exercise_header"

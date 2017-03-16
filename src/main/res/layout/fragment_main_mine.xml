@@ -71,10 +71,11 @@
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
+                android:drawableLeft="@mipmap/icon_manage_download"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     离线管理"
-                android:textColor="@color/TxtGray"
+                android:textColor="@color/TxtBlack"
                 android:textSize="16sp" />
 
             <View
@@ -89,10 +90,11 @@
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
+                android:drawableLeft="@mipmap/icon_suggestion"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     意见反馈"
-                android:textColor="@color/TxtGray"
+                android:textColor="@color/TxtBlack"
                 android:textSize="16sp" />
 
             <View
@@ -107,10 +109,11 @@
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
+                android:drawableLeft="@mipmap/icon_about_us"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     关于我们"
-                android:textColor="@color/TxtGray"
+                android:textColor="@color/TxtBlack"
                 android:textSize="16sp" />
 
             <View
@@ -125,10 +128,11 @@
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
+                android:drawableLeft="@mipmap/icon_check_update"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     检查版本"
-                android:textColor="@color/TxtGray"
+                android:textColor="@color/TxtBlack"
                 android:textSize="16sp" />
 
             <View
@@ -143,10 +147,11 @@
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
+                android:drawableLeft="@mipmap/icon_login_out"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="     切换账号"
-                android:textColor="@color/TxtGray"
+                android:textColor="@color/TxtBlack"
                 android:textSize="16sp" />
 
             <View

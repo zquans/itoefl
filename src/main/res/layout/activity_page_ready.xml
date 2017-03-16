@@ -76,7 +76,6 @@
         android:onClick="showResult"
         android:padding="@dimen/all_padding"
         android:textColor="@color/TxtPink"
-        android:textSize="20sp"
         android:textStyle="bold" />
 
     <View

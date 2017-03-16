@@ -1,10 +1,12 @@
 package com.iyuce.itoefl.UI.Listening.Activity;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -55,10 +57,21 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
     private String local_section, local_practiced_count;
 
     //保存根数据库的路径
-    private String root_path;
+    private String root_path, local_path;
 
     //自创的SQL库，路径
     private String downloaded_sql_path;
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mUserOprateList.clear();
+        mLoadingList.clear();
+        mDownloadList.clear();
+        mPracticedList.clear();
+        initData();
+        mAdapter.notifyDataSetChanged();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,30 +97,9 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
         mTxtFinish = (TextView) findViewById(R.id.txt_activity_top_listenering_finish);
         mTxtTotal = (TextView) findViewById(R.id.txt_activity_top_listenering_total);
 
-        //初始化列表数据,从主表中获取到的local_section读取PAPER_RULE表中的RuleName字段
-        root_path = SDCardUtil.getExercisePath() + File.separator + Constants.SQLITE_TPO;
-        SQLiteDatabase mDatabase = DbUtil.getHelper(this, root_path).getWritableDatabase();
-        //其实可以在DbUtil中封装成一个类数组返回
-        mModuleList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.RuleName, Constants.PaperCode + " =? ", local_section);
-        mDownTimeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.DownTime, Constants.PaperCode + " =? ", local_section);
-        mUrlList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.DownUrl, Constants.PaperCode + " =? ", local_section);
-        mMusicQuestionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.MusicQuestion, Constants.PaperCode + " =? ", local_section);
-        mDatabase.close();
-        LogUtil.i("mMusicQuestionList = " + mMusicQuestionList.toString());
+        //初始化数据列表
+        initData();
 
-        //初始化用户操作数据库(打开或创建)
-        CreateOrOpenDbTable();
-
-        //从两个数据库中查询完成数据拼装，Adapter装载数据
-        UserOprate mUserOprate;
-        for (int i = 0; i < mModuleList.size(); i++) {
-            mUserOprate = new UserOprate();
-            mUserOprate.module = mModuleList.get(i);
-            mUserOprate.download = mDownloadList.get(i);
-            mUserOprate.loading = mLoadingList.get(i);
-            mUserOprate.practiced = mPracticedList.get(i);
-            mUserOprateList.add(mUserOprate);
-        }
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_activity_top_listenering_page);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new TopListeneringPageAdapter(this, mUserOprateList);
@@ -128,6 +120,36 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
         }
     }
 
+    private void initData() {
+        //初始化列表数据,从主表中获取到的local_section读取PAPER_RULE表中的RuleName字段
+        root_path = SDCardUtil.getExercisePath() + File.separator + Constants.SQLITE_TPO;
+        SQLiteDatabase mDatabase = DbUtil.getHelper(this, root_path).getWritableDatabase();
+        //其实可以在DbUtil中封装成一个类数组返回
+        mModuleList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.RuleName, Constants.PaperCode + " =? ", local_section);
+        mDownTimeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.DownTime, Constants.PaperCode + " =? ", local_section);
+        mUrlList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.DownUrl, Constants.PaperCode + " =? ", local_section);
+        mMusicQuestionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.MusicQuestion, Constants.PaperCode + " =? ", local_section);
+        mDatabase.close();
+        LogUtil.i("mMusicQuestionList = " + mMusicQuestionList.toString());
+        LogUtil.e("mDownTimeList = " + mDownTimeList);
+
+        //初始化用户操作数据库(打开或创建)
+        CreateOrOpenDbTable();
+
+        //从两个数据库中查询完成数据拼装，Adapter装载数据
+        UserOprate mUserOprate;
+        for (int i = 0; i < mModuleList.size(); i++) {
+            mUserOprate = new UserOprate();
+            mUserOprate.module = mModuleList.get(i);
+            mUserOprate.download = mDownloadList.get(i);
+            mUserOprate.loading = mLoadingList.get(i);
+            mUserOprate.practiced = mPracticedList.get(i);
+            mUserOprateList.add(mUserOprate);
+        }
+        LogUtil.i(mUserOprateList.toString());
+        mTxtFinish.setText("已练习 ：" + local_practiced_count + " 篇");
+    }
+
     /**
      * 打开或者新建一个我创建的本地数据库，查询是否有表,无表则新建一张DownLoad清单表
      */
@@ -141,6 +163,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
                 + Constants.MODULE + " text,"
                 + Constants.LOADING + " text,"
                 + Constants.DOWNLOAD + " text,"
+                + Constants.DownTime + " text,"
                 + Constants.Practiced + " text)";
         mDatabase.execSQL(create);
         String query;
@@ -196,10 +219,8 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
                 mValues.put(Constants.MODULE, mModuleList.get(pos));
                 mValues.put(Constants.DOWNLOAD, Constants.TRUE);
                 mValues.put(Constants.LOADING, Constants.FALSE);
+                mValues.put(Constants.DownTime, mDownTimeList.get(pos));
                 DbUtil.insert(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, mValues);
-                //TODO 以下两行好像可以删掉 --->用户操作表中，SECTION = local_section 作为筛选条件
-                String sql_query = "select " + Constants.MODULE + " from " + Constants.TABLE_ALREADY_DOWNLOAD + " where " + Constants.SECTION + " = ?";
-                LogUtil.i(DbUtil.cursorToArrayList(mDatabase.rawQuery(sql_query, new String[]{local_section})).toString());
                 mDatabase.close();
 
                 //解压文件夹
@@ -231,12 +252,9 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
     }
 
     @Override
-    public void OnPageItemClick(int pos) {
-        //奖杯图标，当全部题目完成后设为亮
-//        mImgReward.setBackgroundResource(R.mipmap.icon_reward_finish);
-
+    public void OnPageItemClick(final int pos) {
         //这个路径用来存放下载的文件，或者传递给下一级
-        String local_path = SDCardUtil.getExercisePath() + File.separator + local_section + File.separator + mModuleList.get(pos);
+        local_path = SDCardUtil.getExercisePath() + File.separator + local_section + File.separator + mModuleList.get(pos);
 
         //查询download库中的下载表,判断是否下载到本地了，是则进入，否则下载
         SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path).getWritableDatabase();
@@ -251,13 +269,44 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
             return;
         }
 
-        Intent intent = new Intent(this, PageReadyActivity.class);
-        intent.putExtra("local_path", local_path);
-        //留给子数据库拼装末位路径
-        intent.putExtra("local_section", local_section);
-        intent.putExtra("local_module", mModuleList.get(pos));
-        intent.putExtra("local_music_question", mMusicQuestionList.get(pos));
-        startActivity(intent);
+        //TODO 如果新表修改了，则提示用户是否下载新表
+        String path = SDCardUtil.getExercisePath();
+        String filePath = path + File.separator + Constants.SQLITE_TPO;
+        SQLiteDatabase database = DbUtil.getHelper(TopListeneringPageActivity.this, filePath).getWritableDatabase();
+        String sql_down_time_last = "select " + Constants.DownTime + " from " + Constants.TABLE_PAPER_RULE
+                + " where " + Constants.PaperCode + " = ? and " + Constants.RuleName + " = ? ";
+        String down_time_last = DbUtil.cursorToString(database.rawQuery(sql_down_time_last, new String[]{local_section, mModuleList.get(pos)}));
+        database.close();
+        if (!down_time_last.equals(mDownTimeList.get(pos))) {
+            new AlertDialog.Builder(this).setMessage("有更新的题库，建议下载新题库")
+                    .setPositiveButton("使用原题库", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(TopListeneringPageActivity.this, PageReadyActivity.class);
+                            intent.putExtra("local_path", local_path);
+                            //留给子数据库拼装末位路径
+                            intent.putExtra("local_section", local_section);
+                            intent.putExtra("local_module", mModuleList.get(pos));
+                            intent.putExtra("local_music_question", mMusicQuestionList.get(pos));
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("下载新题库", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //TODO 下载新题，会出问题
+                            doDownLoad(pos, mUrlList.get(pos), local_path);
+                        }
+                    }).show();
+        } else {
+            Intent intent = new Intent(TopListeneringPageActivity.this, PageReadyActivity.class);
+            intent.putExtra("local_path", local_path);
+            //留给子数据库拼装末位路径
+            intent.putExtra("local_section", local_section);
+            intent.putExtra("local_module", mModuleList.get(pos));
+            intent.putExtra("local_music_question", mMusicQuestionList.get(pos));
+            startActivity(intent);
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -42,11 +42,11 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
     @Override
     public void onBindViewHolder(PageViewHolder holder, final int position) {
         String replace_string;
-        if (mDataList.get(position).module.contains("C"))
+        if (mDataList.get(position).module.contains("C")) {
             replace_string = mDataList.get(position).module.replace("C", "Conversation ");
-        else
+        } else {
             replace_string = mDataList.get(position).module.replace("L", "Lecture ");
-
+        }
         holder.mTxtContent.setText(replace_string);
 
         // 已经下载过，则隐藏下载相关图标
@@ -63,13 +63,14 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
 
         if (position == 0) {
             holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_first);
-            if (mDataList.get(0).practiced.equals(Constants.TRUE)) {
+            if (mDataList.get(position).practiced.equals(Constants.TRUE)) {
                 holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_first);
             }
         }
+
         if (position == mDataList.size() - 1) {
             holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_last);
-            if (mDataList.get(mDataList.size() - 1).practiced.equals(Constants.TRUE)) {
+            if (mDataList.get(position).practiced.equals(Constants.TRUE)) {
                 holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_last);
             }
         }

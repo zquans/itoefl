@@ -58,6 +58,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        downDatabase();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -87,6 +93,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mMyTabAdapter = new MyMainTabAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mMyTabAdapter);
 
+        downDatabase();
+    }
+
+    /**
+     * 下载数据库
+     */
+    private void downDatabase() {
         //判断是否有权限
         if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             decideDownload();
@@ -116,20 +129,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        //重选Tab
-        resetTab(position);
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-    }
-
     private void doDownLoad(final String path) {
         OkGo.get("http://xm.iyuce.com/app/tpo.zip")
                 .execute(new FileCallback(path, "") {
@@ -155,6 +154,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        //重选Tab
+        resetTab(position);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
     }
 
     @Override

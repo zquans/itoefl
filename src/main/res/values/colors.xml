@@ -23,6 +23,7 @@
 
     <color name="TxtBlack">#1B1D1F</color>
     <color name="TxtWhite">#FCFCFC</color>
+    <color name="TxtGray">#AAAAAA</color>
     <color name="TxtPink">#FF3370</color>
 
 </resources>

@@ -71,8 +71,7 @@ public class FragmentOrder extends Fragment {
         //从默认主表中查，是否有这张表
         String isNone_Paper = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER);
         if (TextUtils.equals(isNone_Paper, Constants.NONE)) {
-            ToastUtil.showMessage(getActivity(), "网络不佳，未获取到数据,请重试");
-
+            ToastUtil.showMessage(getActivity(), "网络不佳，未获取到数据,请返回重试");
             mDatabase.close();
             return true;
         }
@@ -92,7 +91,7 @@ public class FragmentOrder extends Fragment {
                 String practiced_count_sql = "SELECT COUNT(*) FROM " + Constants.TABLE_ALREADY_DOWNLOAD + " WHERE " + Constants.SECTION + " =? and " + Constants.Practiced + " =?";
                 String practiced_count = DbUtil.cursorToString(mDatabaseDownload.rawQuery(practiced_count_sql, new String[]{nameList.get(i), "true"}));
                 mListenModule.practiced_count = practiced_count;//拿练习过的数据数量
-                LogUtil.i("practiced_count = " + practiced_count);
+//                LogUtil.i("practiced_count = " + practiced_count);
             }
             mDatabaseDownload.close();
 
@@ -102,7 +101,7 @@ public class FragmentOrder extends Fragment {
                 String total_count_sql = "SELECT COUNT(*) FROM " + Constants.TABLE_PAPER_RULE + " WHERE " + Constants.PaperCode + " =? ";
                 String total_count = DbUtil.cursorToString(mDatabaseTpo.rawQuery(total_count_sql, new String[]{nameList.get(i)}));
                 mListenModule.total_count = total_count;//拿所有的module的数据数量
-                LogUtil.i("total_count = " + total_count);
+//                LogUtil.i("total_count = " + total_count);
             }
             mDatabaseTpo.close();
             mModuleeList.add(mListenModule);

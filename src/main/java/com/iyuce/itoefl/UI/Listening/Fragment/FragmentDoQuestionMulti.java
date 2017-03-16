@@ -190,12 +190,12 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
     //MediaPlayer
     @Override
     public void onCompletion(MediaPlayer mp) {
+        if (current_audio == mAudioList.length - 1) {
+            isOnlyAudio = true;
+            mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
+        }
         if (!isOnlyAudio) {
-            if (current_audio == mAudioList.length - 1) {
-                isOnlyAudio = true;
-            } else {
-                current_audio++;
-            }
+            current_audio++;
             //避免音频再次播放时，延迟1秒的handle持续更新进度条
             mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
             mProgressBar.setProgress(mEndPosition);

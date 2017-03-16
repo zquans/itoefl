@@ -72,8 +72,7 @@ public class DoQuestionActivity extends BaseActivity implements
     private ArrayList<String> mAnswerList = new ArrayList<>();
 
     //路径
-    private String local_paper_code, local_path, local_music_question;
-
+    private String local_paper_code, local_path, title_chinese, title_english, local_music_question;
     private FragmentDoQuestionDefault mFrgment;
 
     //计时器
@@ -110,6 +109,8 @@ public class DoQuestionActivity extends BaseActivity implements
 
     private void initView() {
         local_path = getIntent().getStringExtra("local_path");
+        title_chinese = getIntent().getStringExtra("title_chinese");
+        title_english = getIntent().getStringExtra("title_english");
         local_paper_code = getIntent().getStringExtra(Constants.PaperCode);
         local_music_question = getIntent().getStringExtra(Constants.MusicQuestion);
 
@@ -309,6 +310,8 @@ public class DoQuestionActivity extends BaseActivity implements
 
                 Intent intent = new Intent(this, DoResultActivity.class);
                 intent.putExtra("local_path", local_path);
+                intent.putExtra("title_chinese", title_chinese);
+                intent.putExtra("title_english", title_english);
                 intent.putExtra(Constants.PaperCode, local_paper_code);
                 intent.putExtra(Constants.MusicQuestion, local_music_question);
                 //分段录音
@@ -376,30 +379,6 @@ public class DoQuestionActivity extends BaseActivity implements
      * 根据当前题型进行不同Fragment的数据装载
      */
     private void toSwitch(int position) {
-//        if (position == 6) {
-//            mFrgment = FragmentDoQuestionSort.newInstance(
-//                    TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
-//                    mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
-//                    local_path, local_paper_code);
-//            getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
-//            return;
-//        }
-//        if (position == 3) {
-//            mFrgment = FragmentDoQuestionMulti.newInstance(
-//                    TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
-//                    mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
-//                    local_path, local_paper_code);
-//            getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
-//            return;
-//        }
-//        if (position == 2) {
-//            mFrgment = FragmentDoQuestionJudge.newInstance(
-//                    TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
-//                    mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
-//                    local_path, local_paper_code);
-//            getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
-//            return;
-//        }
         switch (mQuestionTypeList.get(position - 1)) {
             case Constants.QUESTION_TYPE_MULTI:
                 mFrgment = FragmentDoQuestionMulti.newInstance(

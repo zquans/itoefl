@@ -25,7 +25,7 @@ public class StringUtil {
 
     public static String transferAlpahToNumber(String orginal) {
         return orginal.replace(",", "")
-                .replace("A", "1")
+                .replace("A", "0")
                 .replace("B", "1")
                 .replace("C", "2")
                 .replace("D", "3")

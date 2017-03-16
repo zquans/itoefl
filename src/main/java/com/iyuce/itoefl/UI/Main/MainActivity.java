@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -37,6 +38,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private ArrayList<Fragment> mFragmentList = new ArrayList<>();
 
     private TextView mTxtPractice, mTxtLecture, mTxtMine;
+    private ImageView mImgPractice, mImgLecture, mImgMine;
 
     private boolean isFirst = true;
     private long lastTime;
@@ -75,6 +77,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mTxtPractice = (TextView) findViewById(R.id.txt_activity_main_practice);
         mTxtLecture = (TextView) findViewById(R.id.txt_activity_main_lecture);
         mTxtMine = (TextView) findViewById(R.id.txt_activity_main_mine);
+        mImgPractice = (ImageView) findViewById(R.id.img_activity_main_practice);
+        mImgLecture = (ImageView) findViewById(R.id.img_activity_main_lecture);
+        mImgMine = (ImageView) findViewById(R.id.img_activity_main_mine);
         LinearLayout mTabPractice = (LinearLayout) findViewById(R.id.linearlayout_activity_main_practice);
         LinearLayout mTabLecture = (LinearLayout) findViewById(R.id.linearlayout_activity_main_lecture);
         LinearLayout mTabMine = (LinearLayout) findViewById(R.id.linearlayout_activity_main_mine);
@@ -130,7 +135,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void doDownLoad(final String path) {
-        OkGo.get("http://xm.iyuce.com/app/tpo.zip")
+        OkGo.get(Constants.URL_DOWNLOAD_MAIN_DATABASE)
                 .execute(new FileCallback(path, "") {
                     @Override
                     public void downloadProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
@@ -192,18 +197,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
      */
     private void resetTab(int pos) {
         mViewPager.setCurrentItem(pos);
+        mImgPractice.setBackgroundResource(R.mipmap.icon_exercise_normal);
+        mImgLecture.setBackgroundResource(R.mipmap.icon_lesson_normal);
+        mImgMine.setBackgroundResource(R.mipmap.icon_mine_normal);
         mTxtPractice.setTextColor(Color.parseColor("#FCFCFC"));
         mTxtLecture.setTextColor(Color.parseColor("#FCFCFC"));
         mTxtMine.setTextColor(Color.parseColor("#FCFCFC"));
         switch (pos) {
             case 0:
                 mTxtPractice.setTextColor(Color.parseColor("#FF3370"));
+                mImgPractice.setBackgroundResource(R.mipmap.icon_exercise_select);
                 break;
             case 1:
                 mTxtLecture.setTextColor(Color.parseColor("#FF3370"));
+                mImgLecture.setBackgroundResource(R.mipmap.icon_lesson_select);
                 break;
             case 2:
                 mTxtMine.setTextColor(Color.parseColor("#FF3370"));
+                mImgMine.setBackgroundResource(R.mipmap.icon_mine_select);
                 break;
         }
     }

@@ -30,7 +30,8 @@
                     android:layout_height="80dp"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:src="@mipmap/icon_level_easy" />
+                    android:layout_marginBottom="4dp"
+                    android:src="@mipmap/icon_user_avatar" />
 
                 <TextView
                     android:id="@+id/txt_tab5_username"
@@ -39,11 +40,10 @@
                     android:layout_below="@id/img_tab5_icon"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="4dp"
-                    android:text="用户名"
+                    android:text="暂未开放用户系统"
                     android:textColor="@color/White"
                     android:textSize="@dimen/txt_size_eighteen" />
             </RelativeLayout>
-
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

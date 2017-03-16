@@ -51,7 +51,6 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
     private ArrayList<UserOprate> mUserOprateList = new ArrayList<>();
 
     private TextView mTxtFinish, mTxtTotal;
-//    private ImageView mImgReward;
 
     //传递来的章节名称
     private String local_section, local_practiced_count;
@@ -93,7 +92,6 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
         TextView textView = (TextView) findViewById(R.id.txt_activity_top_listenering_title);
         textView.setText(local_section + "\r听力真题");
 
-//        mImgReward = (ImageView) findViewById(R.id.img_activity_top_listenering_award);
         mTxtFinish = (TextView) findViewById(R.id.txt_activity_top_listenering_finish);
         mTxtTotal = (TextView) findViewById(R.id.txt_activity_top_listenering_total);
 
@@ -102,6 +100,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_activity_top_listenering_page);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setHasFixedSize(true);
         mAdapter = new TopListeneringPageAdapter(this, mUserOprateList);
         mAdapter.setOnPageItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
@@ -131,7 +130,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
         mMusicQuestionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.MusicQuestion, Constants.PaperCode + " =? ", local_section);
         mDatabase.close();
         LogUtil.i("mMusicQuestionList = " + mMusicQuestionList.toString());
-        LogUtil.e("mDownTimeList = " + mDownTimeList);
+        LogUtil.e("mUrlList = " + mUrlList);
 
         //初始化用户操作数据库(打开或创建)
         CreateOrOpenDbTable();
@@ -230,8 +229,9 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
                 ImageView imgDownload = (ImageView) mRecyclerView.getChildAt(pos).findViewById(R.id.img_recycler_item_top_listenering_page_download);
                 TextView textDownload = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_download);
                 TextView textState = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_recycler_item_top_listenering_page_state);
-                imgDownload.setVisibility(View.INVISIBLE);
                 textDownload.setVisibility(View.INVISIBLE);
+//                textDownload.setText("未练习");
+                imgDownload.setVisibility(View.INVISIBLE);
                 textState.setVisibility(View.INVISIBLE);
             }
         });
@@ -264,8 +264,8 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
         mDatabase.close();
         LogUtil.i(local_section + "_" + mModuleList.get(pos) + " isExist = " + isExist);
         if (isExist.equals(Constants.NONE)) {
-            String url = "http://xm.iyuce.com/app/" + local_section + "_" + mModuleList.get(pos) + ".zip";
-            doDownLoad(pos, url, local_path);
+//            String url = Constants.URL_PATH + local_section + "_" + mModuleList.get(pos) + ".zip";
+            doDownLoad(pos, mUrlList.get(pos), local_path);
             return;
         }
 
@@ -321,7 +321,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
                 finish();
                 break;
             case R.id.download:
-                ToastUtil.showMessage(this, "You clicked and now begin download all");
+                ToastUtil.showMessage(this, "begin download all");
                 String url;
                 String path;
                 for (int i = 0; i < mModuleList.size(); i++) {
@@ -330,8 +330,8 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
                         continue;
                     }
                     path = SDCardUtil.getExercisePath() + File.separator + local_section + File.separator + mModuleList.get(i);
-                    url = "http://xm.iyuce.com/app/" + local_section + "_" + mModuleList.get(i) + ".zip";
-                    doDownLoad(i, url, path);
+//                    url = Constants.URL_PATH + local_section + "_" + mModuleList.get(i) + ".zip";
+                    doDownLoad(i, mUrlList.get(i), path);
                 }
                 break;
             default:

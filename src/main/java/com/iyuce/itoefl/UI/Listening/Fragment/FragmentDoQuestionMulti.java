@@ -164,7 +164,7 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
         mTxtCurrentQuestion.setText(current_question);
         mTxtTotalQuestion.setText(total_question);
         mTxtQuestionContent.setText(question_content);
-        mTxtQuestionType.setText("本题是多选题");
+        mTxtQuestionType.setText("本题是多选题,答案不止一个哦");
         mTxtQuestionType.setVisibility(View.VISIBLE);
 
         //MediaPlayer

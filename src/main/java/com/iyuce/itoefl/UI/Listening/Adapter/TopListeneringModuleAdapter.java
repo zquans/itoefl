@@ -47,6 +47,8 @@ public class TopListeneringModuleAdapter extends RecyclerView.Adapter<TopListene
             holder.mProgressBar.setMax(Integer.parseInt(mList.get(position).total_count));
             holder.mProgressBar.setSecondaryProgress(Integer.parseInt(mList.get(position).total_count));
             holder.mProgressBar.setProgress(Integer.parseInt(mList.get(position).practiced_count));
+        } else {
+            holder.mProgressBar.setVisibility(View.GONE);
         }
         holder.mItemTxtTitle.setOnClickListener(new View.OnClickListener() {
             @Override

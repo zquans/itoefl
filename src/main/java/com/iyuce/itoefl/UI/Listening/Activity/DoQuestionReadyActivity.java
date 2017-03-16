@@ -174,6 +174,8 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
             case R.id.btn_activity_do_question_ready_begin:
                 Intent intent = new Intent(this, DoQuestionActivity.class);
                 intent.putExtra("local_path", local_path);
+                intent.putExtra("title_chinese", title_chinese);
+                intent.putExtra("title_english", title_english);
                 intent.putExtra(Constants.PaperCode, local_paper_code);
                 intent.putExtra(Constants.MusicQuestion, local_music_question);
                 startActivity(intent);
@@ -259,7 +261,6 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        LogUtil.i("onItemSelected = " + position);
         if (isFirstSelect) {
             isFirstSelect = false;
             return;

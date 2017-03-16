@@ -171,7 +171,7 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
         mTxtCurrentQuestion.setText(current_question);
         mTxtTotalQuestion.setText(total_question);
         mTxtQuestionContent.setText(question_content);
-        mTxtQuestionType.setText("本题是排序题,请长按选项后拖动排序");
+        mTxtQuestionType.setText("本题是排序题,长按高亮后拖动选项排序");
         mTxtQuestionType.setVisibility(View.VISIBLE);
 
         //MediaPlayer

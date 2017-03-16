@@ -48,32 +48,21 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
             replace_string = mDataList.get(position).module.replace("L", "Lecture ");
         }
         holder.mTxtContent.setText(replace_string);
-
-        // 已经下载过，则隐藏下载相关图标
-        if (mDataList.get(position).download.equals(Constants.TRUE)) {
+        holder.mTxtContentState.setVisibility(View.VISIBLE);
+        if (mDataList.get(position).download.equals(Constants.TRUE) && mDataList.get(position).practiced.equals(Constants.TRUE)) {
             holder.mImgDownloadReady.setVisibility(View.INVISIBLE);
-            holder.mTxtContentState.setText("未练习");
-        }
-
-        // 已经练习过，则显示相关文字，并修改前面的进度图标为亮，隐藏下载相关图标
-        if (mDataList.get(position).practiced.equals(Constants.TRUE)) {
             holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_center);
             holder.mTxtContentState.setText("查看练习记录");
+        } else if (mDataList.get(position).download.equals(Constants.TRUE)) {
+            holder.mImgDownloadReady.setVisibility(View.INVISIBLE);
+            holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_center);
+            holder.mTxtContentState.setText("未练习");
+        } else {
+            holder.mImgDownloadReady.setVisibility(View.VISIBLE);
+            holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_center);
+            holder.mTxtContentState.setText("未下载");
         }
 
-        if (position == 0) {
-            holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_first);
-            if (mDataList.get(position).practiced.equals(Constants.TRUE)) {
-                holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_first);
-            }
-        }
-
-        if (position == mDataList.size() - 1) {
-            holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_normal_last);
-            if (mDataList.get(position).practiced.equals(Constants.TRUE)) {
-                holder.mImgProgress.setBackgroundResource(R.mipmap.icon_progress_finish_last);
-            }
-        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

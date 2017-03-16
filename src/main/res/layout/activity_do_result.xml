@@ -8,10 +8,25 @@
     <include layout="@layout/header_title_bar" />
 
     <TextView
+        android:id="@+id/title_activity_do_result_title_chinese"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/all_padding"
-        android:text="Hello World\n哈喽沃德"
+        android:paddingLeft="@dimen/activity_horizontal_padding"
+        android:paddingRight="@dimen/activity_horizontal_padding"
+        android:paddingTop="@dimen/activity_vertical_padding"
+        android:text="Hello World"
+        android:textColor="@color/TxtWhite"
+        android:textSize="@dimen/txt_size_eighteen"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/title_activity_do_result_title_english"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_padding"
+        android:paddingRight="@dimen/activity_horizontal_padding"
+        android:paddingTop="4dp"
+        android:text="哈喽沃德"
         android:textColor="@color/TxtWhite"
         android:textSize="@dimen/txt_size_eighteen"
         android:textStyle="bold" />

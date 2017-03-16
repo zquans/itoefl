@@ -36,7 +36,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, ViewPager.OnPageChangeListener {
 
     private ImageButton mImageButton;
-    private TextView mTxtCurrent, mTxtTotal;
+    private TextView mTxtTitleChinese, mTxtTitleEnglish, mTxtCurrent, mTxtTotal;
 
     //音频播放相关
     private MediaPlayer mMediaPlayer;
@@ -66,8 +66,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
     private ArrayList<String> mTimeCountList;
 
     //路径
-    private String local_paper_code, local_path, local_music_question;
-
+    private String local_paper_code, local_path, title_chinese, title_english, local_music_question;
     private static final int BEGIN = 0;
 
     private Handler mMediaProgressHandler = new Handler() {
@@ -128,6 +127,8 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
 
     private void initView() {
         local_path = getIntent().getStringExtra("local_path");
+        title_chinese = getIntent().getStringExtra("title_chinese");
+        title_english = getIntent().getStringExtra("title_english");
         local_paper_code = getIntent().getStringExtra(Constants.PaperCode);
         local_music_question = getIntent().getStringExtra(Constants.MusicQuestion);
         mSortList = getIntent().getStringArrayListExtra("mSortList");
@@ -147,20 +148,23 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         mTxtHeadTitle.setText("练习结果\r" + local_paper_code);
 
         mSeekBar = (SeekBar) findViewById(R.id.bar_activity_do_result_progress);
+        mTxtTitleChinese = (TextView) findViewById(R.id.title_activity_do_result_title_chinese);
+        mTxtTitleEnglish = (TextView) findViewById(R.id.title_activity_do_result_title_english);
         mTxtCurrent = (TextView) findViewById(R.id.txt_activity_do_result_current);
         mTxtTotal = (TextView) findViewById(R.id.txt_activity_do_result_total);
         mImageButton = (ImageButton) findViewById(R.id.imgbtn_activity_do_result_play);
         mImageButton.setOnClickListener(this);
         mSeekBar.setOnSeekBarChangeListener(this);
+        mTxtTitleChinese.setText(title_chinese);
+        mTxtTitleEnglish.setText(title_english);
 
         //数据源
         for (int i = 0; i < mSortList.size(); i++) {
             String mQuestionType = mQuestionTypeList.get(i);
             String mQuestionContent = mQuestionContentList.get(i);
-            SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
             //答案解析
+            SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
             String mDetail = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION, Constants.Detail, Constants.ID, mQuestionIdList.get(i));
-
             //根据不同题型查不同表
             ArrayList<String> mOptionContentList;
             ArrayList<String> mOptionCodeList;
@@ -177,23 +181,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             result.real_answer = mAnswerList.get(i);
             result.select_answer = mSelectedAnswerList.get(i);
             result.question_state = Boolean.parseBoolean(mBingoList.get(i));
-            //用户是否在查看该题,默认选中第1题
-            result.question_is_select = i == 0;
-//            //TODO 模拟正确答案数据,模拟正确答案题型,有真实数据时以下if内可以删除
-//            if (i == 5) {
-//                result.real_answer = "3,2,0,1";// result.real_answer = "[true,true,false,false]";
-//                mQuestionType = Constants.QUESTION_TYPE_SORT;
-//            }
-//            if (i == 2) {
-//                result.real_answer = "13";
-//                mQuestionType = Constants.QUESTION_TYPE_MULTI;
-//            }
-//            if (i == 5) {
-//                result.real_answer = "[true,true,false,false]";
-//                mQuestionType = Constants.QUESTION_TYPE_JUDGE;
-//            }
-            //获取得到result.question_state(用户是否答对)
-//            getQuestionState(mQuestionType, result);
+            result.question_is_select = i == 0;//用户是否在查看该题,默认选中第1题
             mResultTitleList.add(result);
             //传递给Fragment数据,可以增加参数
             FragmentDoResult mFragmentDoResult = FragmentDoResult.newInstance(result.question_name,

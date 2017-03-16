@@ -118,7 +118,7 @@ public class PageReadyActivity extends BaseActivity {
         String isNone = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_ALREADY_PRACTICED);
         if (TextUtils.equals(isNone, Constants.NONE)) {
             mDatabase.close();
-            mTxtReview.setText("您还没有练习过哦，赶紧开始吧!");
+            mTxtReview.setText("您还没有练习过哦，赶快开始吧!");
             mTxtReview.setClickable(false);
             return;
         }
@@ -155,6 +155,8 @@ public class PageReadyActivity extends BaseActivity {
     public void showResult(View view) {
         Intent intent = new Intent(this, DoResultActivity.class);
         intent.putExtra("local_path", local_path);
+        intent.putExtra("title_chinese", title_chinese);
+        intent.putExtra("title_english", title_english);
         intent.putExtra(Constants.PaperCode, local_paper_code);
         intent.putExtra(Constants.MusicQuestion, local_music_question);
 

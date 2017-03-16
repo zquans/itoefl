@@ -16,7 +16,6 @@ import com.iyuce.itoefl.Model.Exercise.ListenModule;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.UI.Listening.Adapter.TopListeneringModuleAdapter;
 import com.iyuce.itoefl.Utils.DbUtil;
-import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.SDCardUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 
@@ -57,6 +56,7 @@ public class FragmentOrder extends Fragment {
         mAdapter = new TopListeneringModuleAdapter(getActivity(), mModuleeList);
         GridLayoutManager mGridLayoutManager = new GridLayoutManager(getActivity(), 4);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);
     }
 

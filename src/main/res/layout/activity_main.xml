@@ -3,14 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@mipmap/img_background_fog_city"
     android:orientation="vertical"
-    tools:context=".UI.Main.MainActivity">
+    tools:context=".Control.Main.MainActivity">
 
-    <android.support.v4.view.ViewPager
+    <com.iyuce.itoefl.View.NoScrollViewPager
         android:id="@+id/viewpager_activity_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/White" />
 
     <include layout="@layout/bottom_tab_bar" />
 

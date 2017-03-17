@@ -28,8 +28,11 @@ public class DbUtil {
         //开启事务批量操作
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                return cursor.getString(0);
+                target = cursor.getString(0);
+                cursor.close();
+                return target;
             }
+            cursor.close();
         }
         return target;
     }
@@ -45,6 +48,7 @@ public class DbUtil {
                 String target = cursor.getString(cursor.getColumnIndex(column_name));
                 mList.add(target);
             }
+            cursor.close();
         }
         //批量操作成功,关闭事务
         database.setTransactionSuccessful();
@@ -62,6 +66,7 @@ public class DbUtil {
                 String target = cursor.getString(0);
                 mList.add(target);
             }
+            cursor.close();
         }
         //批量操作成功,关闭事务
         database.setTransactionSuccessful();
@@ -79,6 +84,7 @@ public class DbUtil {
                 String target = cursor.getString(0);
                 mList.add(target);
             }
+            cursor.close();
         }
         //批量操作成功,关闭事务
         database.setTransactionSuccessful();
@@ -93,6 +99,7 @@ public class DbUtil {
                 String target = cursor.getString(0);
                 mList.add(target);
             }
+            cursor.close();
         }
         return mList;
     }
@@ -103,6 +110,7 @@ public class DbUtil {
             while (cursor.moveToNext()) {
                 target = cursor.getString(0);
             }
+            cursor.close();
         }
         return target;
     }
@@ -112,10 +120,12 @@ public class DbUtil {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 if (TextUtils.isEmpty(cursor.getString(0))) {
+                    cursor.close();
                     return target;
                 }
                 target = cursor.getString(0);
             }
+            cursor.close();
         }
         return target;
     }

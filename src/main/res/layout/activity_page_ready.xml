@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@mipmap/img_bg_sea_stone">
 
     <include layout="@layout/header_title_bar" />
 
     <RelativeLayout
+        android:id="@+id/relative_layout_activity_page_ready_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/header_title_bar_height"
         android:paddingLeft="@dimen/activity_horizontal_padding"
         android:paddingRight="@dimen/activity_horizontal_padding">
 
@@ -16,19 +18,18 @@
             android:id="@+id/txt_activity_page_ready_title_english"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/img_activity_page_ready_title_level"
             android:text="\nPage ready title"
-            android:textColor="@color/Black"
+            android:textColor="@color/TxtWhite"
             android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/txt_activity_page_ready_title_level"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/txt_activity_page_ready_title_english"
+        <ImageView
+            android:id="@+id/img_activity_page_ready_title_level"
+            android:layout_width="32dp"
+            android:layout_height="48dp"
+            android:layout_alignBaseline="@+id/txt_activity_page_ready_title_english"
             android:layout_alignParentRight="true"
-            android:background="@color/Red"
-            android:padding="2dp"
-            android:text="难"
+            android:layout_alignTop="@+id/txt_activity_page_ready_title_english"
             android:textColor="@color/White"
             android:textSize="12sp" />
 
@@ -38,8 +39,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_activity_page_ready_title_english"
             android:layout_marginTop="8dp"
+            android:layout_toLeftOf="@+id/img_activity_page_ready_title_level"
             android:text="听力准备页面"
-            android:textColor="@color/Black"
+            android:textColor="@color/TxtWhite"
             android:textSize="18sp" />
 
         <TextView
@@ -48,31 +50,45 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_activity_page_ready_title_chinese"
             android:layout_marginTop="12dp"
-            android:text="讲座.自然科学.人文" />
+            android:text="分类:暂无分类"
+            android:textColor="@color/Gray" />
 
     </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/relative_layout_activity_page_ready_title"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@color/Gray" />
 
     <TextView
         android:id="@+id/txt_activity_page_ready_review"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative_layout_activity_page_ready_title"
+        android:layout_marginTop="24dp"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
+        android:drawableLeft="@mipmap/icon_pen"
+        android:drawablePadding="@dimen/activity_horizontal_padding"
+        android:gravity="center_vertical"
         android:onClick="showResult"
         android:padding="@dimen/all_padding"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/TxtPink"
         android:textStyle="bold" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="#f1f1f1" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="48dp"
+        android:background="@color/Gray" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
         <TextView
@@ -84,14 +100,15 @@
             android:gravity="center"
             android:onClick="beginListen"
             android:text="精听听写"
-            android:textColor="#f8a540" />
+            android:textColor="@color/TxtPink"
+            android:textSize="@dimen/txt_size_eighteen" />
 
         <View
             android:layout_width="2dp"
             android:layout_height="match_parent"
             android:layout_marginBottom="4dp"
             android:layout_marginTop="4dp"
-            android:background="#f1f1f1" />
+            android:background="@color/Gray" />
 
         <TextView
             android:layout_width="0dp"
@@ -102,7 +119,8 @@
             android:gravity="center"
             android:onClick="beginPractice"
             android:text="题目练习"
-            android:textColor="#f8a540" />
+            android:textColor="@color/TxtPink"
+            android:textSize="@dimen/txt_size_eighteen" />
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

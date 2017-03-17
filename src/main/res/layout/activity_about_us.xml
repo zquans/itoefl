@@ -5,18 +5,7 @@
     android:background="#ffffff"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/txt_aboutus_back"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/header_title_bar_height"
-        android:background="#f7941d"
-        android:drawableLeft="@mipmap/icon_back"
-        android:gravity="center"
-        android:onClick="back"
-        android:text="关于我们"
-        android:textColor="#ffffff"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+    <include layout="@layout/header_title_bar" />
 
     <ImageView
         android:layout_width="wrap_content"

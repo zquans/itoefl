@@ -6,6 +6,8 @@ package com.iyuce.itoefl.Utils;
 public class StringUtil {
 
     public static String ParaseToHtml(String orginal) {
+        orginal = orginal + "&lt;style type=&quot;text/css&quot;&gt;html{font-size:65%;color:#fcfcfc;}" +
+                "*{font-size:1rem !important;}&lt;/style&gt;\n";
         return orginal.replace("&quot;", "\"")
                 .replace("&amp;", "&")
                 .replace("&lt;", "<")
@@ -23,7 +25,7 @@ public class StringUtil {
 
     public static String transferAlpahToNumber(String orginal) {
         return orginal.replace(",", "")
-                .replace("A", "1")
+                .replace("A", "0")
                 .replace("B", "1")
                 .replace("C", "2")
                 .replace("D", "3")
@@ -38,7 +40,20 @@ public class StringUtil {
         return orginla.replace(",", "")
                 .replace("[", "")
                 .replace("]", "")
+                .replace("0", "A")
+                .replace("1", "B")
+                .replace("2", "C")
+                .replace("3", "D")
+                .replace("4", "E")
                 .replace(" ", "");
+    }
+
+    public static String transferBooleanToAlpha(String orginal) {
+        return orginal.replace(" ", "")
+                .replace("FALSE", "B")
+                .replace("TRUE", "A")
+                .replace("false", "B")
+                .replace("true", "A");
     }
 
     public static String[] transferStringToArray(String orginal) {

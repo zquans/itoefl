@@ -1,54 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/header_title_bar" />
-
-    <RelativeLayout
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:background="#ffffff">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
 
-        <ImageView
-            android:id="@+id/img_activity_top_listenering_award"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:background="@mipmap/icon_reward_unfinish" />
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:title=" ">
 
-        <TextView
-            android:id="@+id/txt_activity_top_listenering_finish"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="32dp"
-            android:layout_marginTop="32dp"
-            android:layout_toRightOf="@+id/img_activity_top_listenering_award"
-            android:gravity="center"
-            android:text="已练习：2篇" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:background="@mipmap/img_bg_header_sea_side"
+                android:fitsSystemWindows="true"
+                android:scaleType="fitStart"
+                app:layout_collapseMode="parallax">
 
-        <TextView
-            android:id="@+id/txt_activity_top_listenering_total"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_activity_top_listenering_finish"
-            android:layout_marginLeft="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_toRightOf="@+id/img_activity_top_listenering_award"
-            android:gravity="center"
-            android:text="总共: 12篇" />
-    </RelativeLayout>
+                <ImageView
+                    android:id="@+id/img_activity_top_listenering_award"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:background="@mipmap/icon_reward_unfinish"
+                    android:visibility="gone" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/activity_vertical_margin"
-        android:background="#f8f8f8" />
+                <TextView
+                    android:id="@+id/txt_activity_top_listenering_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="48dp"
+                    android:layout_marginTop="48dp"
+                    android:layout_toRightOf="@+id/img_activity_top_listenering_award"
+                    android:text="TPO_18"
+                    android:textColor="@color/TxtWhite"
+                    android:textSize="20sp" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_activity_top_listenering_page"
+                <TextView
+                    android:id="@+id/txt_activity_top_listenering_finish"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txt_activity_top_listenering_title"
+                    android:layout_marginLeft="48dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_toRightOf="@+id/img_activity_top_listenering_award"
+                    android:gravity="center"
+                    android:text="已练习：2篇"
+                    android:textColor="@color/TxtWhite" />
+
+                <TextView
+                    android:id="@+id/txt_activity_top_listenering_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txt_activity_top_listenering_finish"
+                    android:layout_marginLeft="48dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@+id/img_activity_top_listenering_award"
+                    android:gravity="center"
+                    android:text="总共: 12篇"
+                    android:textColor="@color/TxtWhite" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffffff" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-</LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_activity_top_listenering_page"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:padding="@dimen/all_padding" />
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+</android.support.design.widget.CoordinatorLayout>

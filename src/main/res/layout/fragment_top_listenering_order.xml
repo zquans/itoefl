@@ -8,6 +8,6 @@
         android:id="@+id/recycler_fragment_top_listenering_order"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/activity_vertical_margin" />
+        android:padding="@dimen/all_padding" />
 
 </LinearLayout>

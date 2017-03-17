@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
@@ -43,7 +44,6 @@ public class UpdateManager {
     private ProgressBar pb;
     private Dialog mDownLoadDialog;
 
-    private final String URL_SERVE = "http://www.iyuce.com/Scripts/andoird.json";
     private static final int DOWNLOADING = 1;
     private static final int DOWNLOAD_FINISH = 0;
 
@@ -54,10 +54,10 @@ public class UpdateManager {
     private int mProgress;
     private boolean mIsCancel = false;
 
-    private Context mcontext;
+    private Context mContext;
 
     public UpdateManager(Context context) {
-        mcontext = context;
+        mContext = context;
     }
 
     @SuppressLint("HandlerLeak")
@@ -76,7 +76,7 @@ public class UpdateManager {
     };
 
     public void checkUpdate() {
-        OkGo.get(URL_SERVE)
+        OkGo.get(Constants.URL_CHECK_UPDATE)
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
@@ -103,38 +103,36 @@ public class UpdateManager {
             if (isUpdate()) {
                 showNoticeDialog();
             } else {
-//					Toast.makeText(mcontext, "don't need update", Toast.LENGTH_SHORT).show();
+                ToastUtil.showMessage(mContext, "don't need update");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public boolean isUpdate() {   /*boolean比较本地版本是否需要更新*/
+    //boolean比较本地版本是否需要更新
+    public boolean isUpdate() {
         float serverVersion = Float.parseFloat(mVersion);
         //将该数据保存如sharepreference，留用
-        PreferenceUtil.save(mcontext, "serverVersion", String.valueOf(serverVersion));
+        PreferenceUtil.save(mContext, "serverVersion", String.valueOf(serverVersion));
         String localVersion = null;
 
         try {
-            localVersion = mcontext.getPackageManager().getPackageInfo("com.woyuce.activity", 0).versionName;   //获取versionName作比较
+            //获取versionName作比较
+            localVersion = mContext.getPackageManager().getPackageInfo(Constants.AppPackageName, 0).versionName;
             //将该数据保存如sharepreference，留用
-            PreferenceUtil.save(mcontext, "localVersion", mcontext.getPackageManager().getPackageInfo("com.woyuce.activity", 0).versionName);
+            PreferenceUtil.save(mContext, "localVersion", localVersion);
 //			Log.e("localVersion", "localVersion = " + localVersion);
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
-        if (serverVersion > Float.parseFloat(localVersion)) {
-            return true;
-        } else {
-            return false;
-        }
+        return serverVersion > Float.parseFloat(localVersion);
     }
 
     @SuppressLint("InlinedApi")
     @SuppressWarnings("deprecation")
     protected void showNoticeDialog() {     //show 弹窗供选择是否更新
-        Builder builder = new Builder(mcontext, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+        Builder builder = new Builder(mContext, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
         builder.setTitle("发现新版本");
         builder.setMessage(mMessage);
         builder.setPositiveButton("更新", new OnClickListener() {
@@ -156,10 +154,10 @@ public class UpdateManager {
     @SuppressWarnings("deprecation")
     @SuppressLint({"InflateParams", "InlinedApi"})
     protected void showDownloadDialog() {     //显示下载进度
-        Builder builder = new Builder(mcontext, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+        Builder builder = new Builder(mContext, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
         builder.setTitle("下载中");
 
-        View view = LayoutInflater.from(mcontext).inflate(R.layout.style_dialog_progress, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.style_dialog_progress, null);
         pb = (ProgressBar) view.findViewById(R.id.update_progress);
         builder.setView(view);
         builder.setNegativeButton("取消下载", new OnClickListener() {
@@ -182,9 +180,7 @@ public class UpdateManager {
             public void run() {
                 try {
                     if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                        String sdPath = Environment.getExternalStorageDirectory() + "/";// sd卡根目录
-                        mSavePath = sdPath + "iyuce";
-
+                        mSavePath = SDCardUtil.getItoeflPath();
                         File dir = new File(mSavePath);
                         if (!dir.exists()) {
                             dir.mkdir();
@@ -195,7 +191,7 @@ public class UpdateManager {
                         InputStream is = conn.getInputStream();
                         int length = conn.getContentLength();
 
-                        File apkFile = new File(mSavePath, mVersion);
+                        File apkFile = new File(mSavePath, Constants.AppName + mVersion);
                         FileOutputStream fos = new FileOutputStream(apkFile);
 
                         int count = 0;
@@ -227,8 +223,8 @@ public class UpdateManager {
     //安装下载好的APK
     private void installAPK() {
         //移除引导值，使下一次运行仍有引导画面
-        PreferenceUtil.removefirstguide(mcontext);
-        File apkFile = new File(mSavePath, mVersion);
+        PreferenceUtil.removefirstguide(mContext);
+        File apkFile = new File(mSavePath, Constants.AppName + mVersion);
         if (!apkFile.exists()) {
             return;
         }
@@ -236,7 +232,7 @@ public class UpdateManager {
         it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Uri uri = Uri.parse("file://" + apkFile.toString());
         it.setDataAndType(uri, "application/vnd.android.package-archive");
-        mcontext.startActivity(it);
+        mContext.startActivity(it);
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 }

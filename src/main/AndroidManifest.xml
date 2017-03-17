@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UI.WelcomeActivity">
+        <activity android:name=".Control.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,24 +24,26 @@
         </activity>
 
         <activity
-            android:name=".UI.Main.MainActivity"
+            android:name=".Control.Main.MainActivity"
             android:launchMode="singleTask" />
         <activity android:name=".BaseActivity" />
-        <activity android:name=".UI.Listening.Activity.TopListeneringActivity" />
+        <activity android:name=".Control.Listening.Activity.TopListeneringActivity" />
         <activity
-            android:name=".UI.Listening.Activity.TopListeneringPageActivity"
+            android:name=".Control.Listening.Activity.TopListeneringPageActivity"
             android:launchMode="singleTask" />
         <activity
-            android:name=".UI.Listening.Activity.PageReadyActivity"
+            android:name=".Control.Listening.Activity.PageReadyActivity"
             android:launchMode="singleTask" />
         <activity
-            android:name=".UI.Listening.Activity.DoQuestionReadyActivity"
+            android:name=".Control.Listening.Activity.DoQuestionReadyActivity"
             android:launchMode="singleTop" />
         <activity
-            android:name=".UI.Listening.Activity.DoQuestionActivity"
+            android:name=".Control.Listening.Activity.DoQuestionActivity"
             android:launchMode="singleTop" />
-        <activity android:name=".UI.Listening.Activity.DoResultActivity" />
-        <activity android:name=".UI.Mine.AboutUsActivity" />
+        <activity android:name=".Control.Listening.Activity.DoResultActivity" />
+        <activity android:name=".Control.Mine.AboutUsActivity" />
+        <activity android:name=".Control.Mine.ManageDownLoadActivity" />
+        <activity android:name=".Control.Mine.SuggestionActivity" />
 
         <!--<meta-data-->
         <!--android:name="UMENG_CHANNEL"-->

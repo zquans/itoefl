@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@mipmap/img_bg_sea_stone"
     android:orientation="vertical">
 
     <include layout="@layout/header_title_bar" />
@@ -11,7 +12,8 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/activity_horizontal_padding"
         android:paddingTop="@dimen/activity_vertical_padding"
-        android:text="音频材料" />
+        android:text="材料音频"
+        android:textColor="@color/TxtWhite" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -24,7 +26,7 @@
             android:paddingLeft="@dimen/activity_horizontal_padding"
             android:paddingTop="@dimen/activity_vertical_padding"
             android:text="Faint Young Sun Paradox"
-            android:textColor="@color/Black"
+            android:textColor="@color/TxtWhite"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -36,89 +38,120 @@
             android:paddingLeft="@dimen/activity_horizontal_padding"
             android:paddingTop="@dimen/activity_vertical_padding"
             android:text="太阳悖论"
-            android:textColor="@color/Black"
+            android:textColor="@color/TxtWhite"
             android:textSize="18sp"
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <FrameLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_margin="@dimen/activity_margin">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:background="@mipmap/ic_launcher" />
-
-        <ImageButton
-            android:id="@+id/imgbtn_activity_do_question_ready_media"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@mipmap/icon_media_pause" />
-    </FrameLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/activity_horizontal_padding">
-
-        <TextView
-            android:id="@+id/txt_activity_do_question_ready_current"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:text="00:00" />
-
-        <SeekBar
-            android:id="@+id/seekbar_activity_do_question_ready"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/txt_activity_do_question_ready_total"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:gravity="center_vertical"
-            android:paddingRight="@dimen/activity_horizontal_padding"
-            android:text="04:01" />
-
-    </LinearLayout>
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@color/Gray" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/all_margin_double"
+        android:layout_weight="1"
+        android:background="@drawable/view_background_transparent_sixtyfive">
+
+        <FrameLayout
+            android:id="@+id/frame_activity_do_question_ready"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:layout_margin="@dimen/activity_margin">
+
+            <ImageView
+                android:id="@+id/img_activity_do_question_ready_media"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/activity_vertical_margin" />
+
+            <ImageButton
+                android:id="@+id/imgbtn_activity_do_question_ready_media"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@mipmap/icon_media_pause" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/frame_activity_do_question_ready"
+            android:layout_marginTop="@dimen/activity_double_vertical_padding"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/activity_horizontal_padding">
+
+            <TextView
+                android:id="@+id/txt_activity_do_question_ready_current"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="00:00"
+                android:textColor="@color/TxtWhite" />
+
+            <SeekBar
+                android:id="@+id/seekbar_activity_do_question_ready"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/txt_activity_do_question_ready_total"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:gravity="center_vertical"
+                android:paddingRight="@dimen/activity_horizontal_padding"
+                android:text="04:01"
+                android:textColor="@color/TxtWhite" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_double_padding"
+        android:layout_marginRight="@dimen/activity_horizontal_double_padding"
+        android:orientation="horizontal">
 
         <Spinner
             android:id="@+id/spinner_activity_do_question_ready_rate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:background="#f8f8f8"
-            android:padding="@dimen/all_padding"
-            android:textColor="#f8a540" />
+            android:layout_width="144dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:background="@drawable/view_bound_pink_stroke_fifteen"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp"
+            android:textColor="@color/TxtWhite" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/btn_activity_do_question_ready_begin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:background="?android:attr/selectableItemBackground"
+            android:layout_width="144dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|bottom"
+            android:background="@drawable/view_bound_pink_stroke_fifteen"
             android:clickable="true"
-            android:gravity="right"
-            android:padding="@dimen/all_padding"
+            android:gravity="center"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
             android:text="开始答题"
-            android:textColor="#f8a540" />
-    </RelativeLayout>
+            android:textColor="@color/TxtWhite"
+            android:textSize="16sp" />
+    </LinearLayout>
 </LinearLayout>

@@ -168,7 +168,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             //根据不同题型查不同表
             ArrayList<String> mOptionContentList;
             ArrayList<String> mOptionCodeList;
-            if (mQuestionType.equals(Constants.QUESTION_TYPE_JUDGE)) {
+            if (mQuestionType.equals(Constants.QUESTION_TYPE_JUDGE) || mQuestionType.equals(Constants.QUESTION_TYPE_NEST)) {
                 mOptionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION_CHILD, Constants.Content, Constants.MasterId + " =? ", mQuestionIdList.get(i));
                 mOptionCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION_CHILD, Constants.Sort, Constants.MasterId + " =? ", mQuestionIdList.get(i));
             } else {

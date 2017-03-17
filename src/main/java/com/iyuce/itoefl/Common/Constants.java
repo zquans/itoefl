@@ -28,6 +28,7 @@ public class Constants {
     public static final String QUESTION_TYPE_MULTI = "MULTI";
     public static final String QUESTION_TYPE_JUDGE = "JUDGE";
     public static final String QUESTION_TYPE_SORT = "SORT";
+    public static final String QUESTION_TYPE_NEST = "NEST";
 
     //音频状态
     public static final int FLAG_AUDIO_PLAY = 0;

@@ -76,7 +76,6 @@ public class FragmentDoResult extends Fragment {
         return view;
     }
 
-    //TODO 不止一段录音的doResult
     private void initView(View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_do_result);
         mTxtPageMiddle = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
@@ -121,6 +120,27 @@ public class FragmentDoResult extends Fragment {
                     result.judgeSelect = judgeSelectList[i].trim();
                     result.judgeAnswer = judgeAnswerList[i].trim();
                     if (result.judgeSelect.trim().contains(result.judgeAnswer.trim())) {
+                        result.state = Constants.TRUE;
+                    } else if (result.judgeSelect.contains(Constants.NULL)) {
+                        result.state = Constants.NULL;
+                    } else {
+                        result.state = Constants.FALSE;
+                    }
+                    result.content = mOptionContentList.get(i);
+                    mResultList.add(result);
+                }
+                break;
+            case Constants.QUESTION_TYPE_NEST:
+                //判断题
+                String[] nestSelectList = StringUtil.transferStringToArray(answer_select);
+                String[] nestAnswerList = StringUtil.transferStringToArray(answer_real);
+
+                for (int i = 0; i < nestSelectList.length; i++) {
+                    result = new ListenResultContent();
+                    result.judgeSelect = nestSelectList[i].trim();
+                    result.judgeAnswer = nestAnswerList[i].trim();
+                    if (StringUtil.transferBooleanToAlpha(result.judgeSelect)
+                            .contains(result.judgeAnswer.trim())) {
                         result.state = Constants.TRUE;
                     } else if (result.judgeSelect.contains(Constants.NULL)) {
                         result.state = Constants.NULL;

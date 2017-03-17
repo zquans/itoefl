@@ -48,6 +48,14 @@ public class StringUtil {
                 .replace(" ", "");
     }
 
+    public static String transferBooleanToAlpha(String orginal) {
+        return orginal.replace(" ", "")
+                .replace("FALSE", "B")
+                .replace("TRUE", "A")
+                .replace("false", "B")
+                .replace("true", "A");
+    }
+
     public static String[] transferStringToArray(String orginal) {
         return orginal.replace("[", " ")
                 .replace("]", " ")

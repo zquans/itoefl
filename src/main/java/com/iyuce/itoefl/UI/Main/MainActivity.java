@@ -16,6 +16,7 @@ import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.LogUtil;
+import com.iyuce.itoefl.View.NoScrollViewPager;
 import com.iyuce.itoefl.Utils.SDCardUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 import com.iyuce.itoefl.Utils.ZipUtil;
@@ -30,7 +31,7 @@ import okhttp3.Response;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
 
-    private ViewPager mViewPager;
+    private NoScrollViewPager mViewPager;
     private MyMainTabAdapter mMyTabAdapter;
     private ArrayList<Fragment> mFragmentList = new ArrayList<>();
 
@@ -84,7 +85,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mTabLecture.setOnClickListener(this);
         mTabMine.setOnClickListener(this);
 
-        mViewPager = (ViewPager) findViewById(R.id.viewpager_activity_main);
+        mViewPager = (NoScrollViewPager) findViewById(R.id.viewpager_activity_main);
         mViewPager.setOnPageChangeListener(this);
         FragmentExercise mFragmentExercise = new FragmentExercise();
         FragmentLecture mFragmentLecture = new FragmentLecture();

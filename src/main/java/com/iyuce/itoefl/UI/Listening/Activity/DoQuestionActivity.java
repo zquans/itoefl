@@ -24,6 +24,7 @@ import com.iyuce.itoefl.UI.Listening.Adapter.BottomDoQuestionAdapter;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionDefault;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionJudge;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionMulti;
+import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionNest;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionSingle;
 import com.iyuce.itoefl.UI.Listening.Fragment.FragmentDoQuestionSort;
 import com.iyuce.itoefl.Utils.DbUtil;
@@ -246,6 +247,14 @@ public class DoQuestionActivity extends BaseActivity implements
                                 mBingoList.add(Constants.FALSE);
                             }
                             break;
+                        case Constants.QUESTION_TYPE_NEST:
+                            if (StringUtil.transferBooleanToAlpha(mAnswerList.get(i))
+                                    .equals(StringUtil.transferBooleanToAlpha(mSelectedAnswerList.get(i)))) {
+                                mBingoList.add(Constants.TRUE);
+                            } else {
+                                mBingoList.add(Constants.FALSE);
+                            }
+                            break;
                         default:
                             if (mAnswerList.get(i).equals(StringUtil.trimAll(mSelectedAnswerList.get(i)))) {
                                 mBingoList.add(Constants.TRUE);
@@ -389,6 +398,13 @@ public class DoQuestionActivity extends BaseActivity implements
                 break;
             case Constants.QUESTION_TYPE_JUDGE:
                 mFrgment = FragmentDoQuestionJudge.newInstance(
+                        TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
+                        mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
+                        local_path, local_paper_code);
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_activity_do_question, mFrgment).commit();
+                break;
+            case Constants.QUESTION_TYPE_NEST:
+                mFrgment = FragmentDoQuestionNest.newInstance(
                         TOTAL_QUESTION_COUNT, mSortList.get(position - 1), mMusicQuestionList.get(position - 1),
                         mQuestionIdList.get(position - 1), mQuestionContentList.get(position - 1),
                         local_path, local_paper_code);

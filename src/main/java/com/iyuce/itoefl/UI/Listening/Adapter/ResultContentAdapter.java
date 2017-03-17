@@ -33,7 +33,8 @@ public class ResultContentAdapter extends RecyclerView.Adapter<ResultContentAdap
     @Override
     public ResultContentAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //判断题的布局
-        if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_JUDGE)) {
+        if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_JUDGE) ||
+                TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_NEST)) {
             return new MyViewHolder(LayoutInflater.from(mContext)
                     .inflate(R.layout.recycler_item_do_result_content_judge, parent, false));
         }
@@ -46,7 +47,8 @@ public class ResultContentAdapter extends RecyclerView.Adapter<ResultContentAdap
     public void onBindViewHolder(ResultContentAdapter.MyViewHolder holder, int position) {
         holder.mTxtAnswer.setText(mDataList.get(position).content);
         //判断题型
-        if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_JUDGE)) {
+        if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_JUDGE) ||
+                TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_NEST)) {
             //是判断题，先判断状态
             if (mDataList.get(position).state.contains("true")) {
                 //用户答对了
@@ -100,7 +102,8 @@ public class ResultContentAdapter extends RecyclerView.Adapter<ResultContentAdap
             super(itemView);
             mTxtNumber = (TextView) itemView.findViewById(R.id.txt_item_fragment_do_result_number);
             mTxtAnswer = (TextView) itemView.findViewById(R.id.txt_item_fragment_do_result_answer);
-            if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_JUDGE)) {
+            if (TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_JUDGE) ||
+                    TextUtils.equals(mQuestionType, Constants.QUESTION_TYPE_NEST)) {
                 mImgYes = (ImageView) itemView.findViewById(R.id.img_item_fragment_do_result_judge_yes);
                 mImgNo = (ImageView) itemView.findViewById(R.id.img_item_fragment_do_result_judge_no);
             }

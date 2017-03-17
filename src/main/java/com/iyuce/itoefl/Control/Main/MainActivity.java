@@ -16,10 +16,10 @@ import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.LogUtil;
-import com.iyuce.itoefl.View.NoScrollViewPager;
 import com.iyuce.itoefl.Utils.SDCardUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 import com.iyuce.itoefl.Utils.ZipUtil;
+import com.iyuce.itoefl.View.NoScrollViewPager;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
 
@@ -95,7 +95,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mFragmentList.add(mFragmentMine);
         mMyTabAdapter = new MyMainTabAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mMyTabAdapter);
-
+        mViewPager.setOffscreenPageLimit(mFragmentList.size() - 1);
         downDatabase();
     }
 

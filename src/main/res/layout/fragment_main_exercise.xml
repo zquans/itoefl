@@ -25,7 +25,7 @@
                 android:id="@+id/img_fragment_exercise_header"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                android:background="@mipmap/img_bg_header_sea_side"
+                android:background="@color/colorPrimary"
                 android:fitsSystemWindows="true"
                 android:scaleType="fitStart"
                 app:layout_collapseMode="parallax" />
@@ -44,38 +44,27 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <RelativeLayout
-            android:id="@+id/relative_do_click"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true">
 
-            <ImageView
-                android:id="@+id/img_fragment_exercise"
-                android:layout_width="56dp"
-                android:layout_height="88dp"
-                android:layout_marginLeft="48dp"
-                android:layout_marginTop="48dp"
-                android:background="@mipmap/icon_level_difficult" />
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager_fragment_exercise"
+                android:layout_width="match_parent"
+                android:layout_height="520dp"
+                android:background="@color/Transparent"
+                android:paddingBottom="24dp"
+                android:paddingLeft="64dp"
+                android:paddingRight="64dp"
+                android:paddingTop="48dp" />
+        </LinearLayout>
 
-            <TextView
-                android:id="@+id/txt_do_click"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/img_fragment_exercise"
-                android:layout_marginLeft="36dp"
-                android:drawablePadding="8dp"
-                android:gravity="center"
-                android:padding="@dimen/all_padding"
-                android:text="听力练习"
-                android:textColor="@color/TxtBlack"
-                android:textStyle="bold|italic" />
-        </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_fragment_a"
+        android:id="@+id/fab_fragment_exercise"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"

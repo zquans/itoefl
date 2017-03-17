@@ -6,8 +6,7 @@
 
     <ImageView
         android:id="@+id/img_fragment_show_flip"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@mipmap/img_bg_golden_gate_bridge" />
+        android:layout_width="180dp"
+        android:layout_height="280dp" />
 
 </LinearLayout>

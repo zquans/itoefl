@@ -8,9 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +19,9 @@ import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.SDCardUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
+import com.yarolegovich.discretescrollview.DiscreteScrollView;
+import com.yarolegovich.discretescrollview.transform.Pivot;
+import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,14 +30,14 @@ import java.util.ArrayList;
  * Created by LeBang on 2017/1/22
  */
 public class FragmentExercise extends Fragment
-        implements View.OnClickListener, FragmentShowFlip.OnFlipShowListener {
+        implements View.OnClickListener, DisCreteScrollAdapter.OnScrollSelectListener {
 
     private CollapsingToolbarLayout mCollapLayout;
     private FloatingActionButton mFloatBtn;
 
-    private ViewPager mViewPager;
-    private FragmentPagerAdapter mAdapter;
-    private ArrayList<Fragment> mFragmentList = new ArrayList<>();
+    private DiscreteScrollView mDisScrollview;
+    private DisCreteScrollAdapter mAdapter;
+    private ArrayList<Integer> mImgList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -48,25 +48,29 @@ public class FragmentExercise extends Fragment
     }
 
     private void initView(View view) {
-        mFloatBtn = (FloatingActionButton) view.findViewById(R.id.fab_fragment_exercise);
-        mFloatBtn.setOnClickListener(this);
-
         mCollapLayout = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar_layout);
-        //加载Gif图
-//        mImg = (ImageView) view.findViewById(R.id.img_fragment_exercise_header);
-//        Glide.with(getActivity()).load(R.raw.gif_header_exercise).into(mImg);
         //改变字体颜色
         mCollapLayout.setExpandedTitleColor(Color.parseColor("#FCFCFC"));
         mCollapLayout.setCollapsedTitleTextColor(Color.parseColor("#FF3370"));
 
-        mViewPager = (ViewPager) view.findViewById(R.id.viewPager_fragment_exercise);
-        FragmentShowFlip mFrag = new FragmentShowFlip();
-        mFrag.setOnFlipShowListener(this);
-        mFragmentList.add(mFrag);
-        mFragmentList.add(new FragmentShowFlip());
-        mAdapter = new FlipAdapter(getFragmentManager());
-        mViewPager.setAdapter(mAdapter);
-        mViewPager.setOffscreenPageLimit(mFragmentList.size() - 1);
+        mFloatBtn = (FloatingActionButton) view.findViewById(R.id.fab_fragment_exercise);
+        mFloatBtn.setOnClickListener(this);
+
+        mDisScrollview = (DiscreteScrollView) view.findViewById(R.id.discrete_scroll_fragment_exercise);
+
+        mImgList.add(R.mipmap.img_bg_golden_gate_bridge);
+        mImgList.add(R.mipmap.img_bg_sea_stone);
+        mImgList.add(R.mipmap.img_background_fog_city);
+        mAdapter = new DisCreteScrollAdapter(mImgList, getActivity());
+        mAdapter.setOnScrollSelectListener(this);
+        mDisScrollview.setAdapter(mAdapter);
+        mDisScrollview.scrollToPosition(1);
+        mDisScrollview.setItemTransformer(new ScaleTransformer.Builder()
+                .setMaxScale(1.05f)
+                .setMinScale(0.8f)
+                .setPivotX(Pivot.X.CENTER) // CENTER is a default one
+                .setPivotY(Pivot.Y.BOTTOM) // CENTER is a default one
+                .build());
     }
 
     private boolean decidedEnter() {
@@ -84,22 +88,6 @@ public class FragmentExercise extends Fragment
         return true;
     }
 
-    private class FlipAdapter extends FragmentPagerAdapter {
-        public FlipAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-    }
-
     @Override
     public void onClick(View v) {
         if (decidedEnter())
@@ -109,7 +97,7 @@ public class FragmentExercise extends Fragment
     }
 
     @Override
-    public void OnFlipShowClick() {
+    public void onSelect(int pos) {
         if (decidedEnter())
             getActivity().startActivity(new Intent(getActivity(), TopListeneringActivity.class));
         else

@@ -87,12 +87,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         mViewPager = (NoScrollViewPager) findViewById(R.id.viewpager_activity_main);
         mViewPager.setOnPageChangeListener(this);
-        FragmentExercise mFragmentExercise = new FragmentExercise();
-        FragmentLecture mFragmentLecture = new FragmentLecture();
-        FragmentMine mFragmentMine = new FragmentMine();
-        mFragmentList.add(mFragmentExercise);
-        mFragmentList.add(mFragmentLecture);
-        mFragmentList.add(mFragmentMine);
+        mFragmentList.add(new FragmentExercise());
+        mFragmentList.add(new FragmentLecture());
+        mFragmentList.add(new FragmentMine());
         mMyTabAdapter = new MyMainTabAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mMyTabAdapter);
         mViewPager.setOffscreenPageLimit(mFragmentList.size() - 1);

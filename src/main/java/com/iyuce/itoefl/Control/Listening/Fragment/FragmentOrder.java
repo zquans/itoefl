@@ -3,7 +3,6 @@ package com.iyuce.itoefl.Control.Listening.Fragment;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -11,10 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.iyuce.itoefl.BaseFragment;
 import com.iyuce.itoefl.Common.Constants;
+import com.iyuce.itoefl.Control.Listening.Adapter.TopListeneringModuleAdapter;
 import com.iyuce.itoefl.Model.Exercise.ListenModule;
 import com.iyuce.itoefl.R;
-import com.iyuce.itoefl.Control.Listening.Adapter.TopListeneringModuleAdapter;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.SDCardUtil;
 
@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * Created by LeBang on 2017/1/22
  * 顺序
  */
-public class FragmentOrder extends Fragment {
+public class FragmentOrder extends BaseFragment {
 
     private RecyclerView mRecyclerView;
     private ArrayList<ListenModule> mModuleeList = new ArrayList<>();
@@ -40,8 +40,8 @@ public class FragmentOrder extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         mModuleeList.clear();
         initData();
         mAdapter.notifyDataSetChanged();
@@ -61,6 +61,7 @@ public class FragmentOrder extends Fragment {
      * 装载数据
      */
     private void initData() {
+        progressdialogshow(getActivity());
         String path = SDCardUtil.getExercisePath();
         String tpo_path = path + File.separator + Constants.SQLITE_TPO;
 
@@ -94,7 +95,9 @@ public class FragmentOrder extends Fragment {
 //                LogUtil.i("total_count = " + total_count);
 //            }
             mDatabaseTpo.close();
+//            mListenModule.total_count = "6";
             mModuleeList.add(mListenModule);
         }
+        progressdialogcancel();
     }
 }

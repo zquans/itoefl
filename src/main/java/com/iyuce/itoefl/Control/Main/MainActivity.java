@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
+import com.iyuce.itoefl.Model.DecidedDownload;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.SDCardUtil;
@@ -22,6 +23,11 @@ import com.iyuce.itoefl.Utils.ZipUtil;
 import com.iyuce.itoefl.View.NoScrollViewPager;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.HttpParams;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,6 +43,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private TextView mTxtPractice, mTxtLecture, mTxtMine;
     private ImageView mImgPractice, mImgLecture, mImgMine;
+
+    private DecidedDownload mDecidedDownload = new DecidedDownload();
 
     private boolean isFirst = true;
     private long lastTime;
@@ -55,12 +63,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 lastTime = System.currentTimeMillis();
             }
         }
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        downDatabase();
     }
 
     @Override
@@ -93,44 +95,70 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mMyTabAdapter = new MyMainTabAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mMyTabAdapter);
         mViewPager.setOffscreenPageLimit(mFragmentList.size() - 1);
-        downDatabase();
+
+        //通过Http 决定是否下载,1.是则下载，2.否，则判断是否有文件，无则下载
+        requestIfDown();
+    }
+
+    private void requestIfDown() {
+        HttpParams params = new HttpParams();
+        params.put("updatetime", "");
+        OkGo.post(Constants.URL_TPO_MAIN_STATUS).params(params)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(String s, Call call, Response response) {
+                        try {
+                            JSONObject obj;
+                            obj = new JSONObject(s);
+                            mDecidedDownload.code = obj.getString("code");
+                            mDecidedDownload.data = obj.getString("data");
+                            mDecidedDownload.message = obj.getString("message");
+                            if (mDecidedDownload.code.equals(Constants.CODE_HTTP_SUCCESS)) {
+                                //需要下载，无论存在文件与否，都去下载
+                                ToastUtil.showMessage(MainActivity.this, "题库更新," + mDecidedDownload.message + "吗?");
+                                downDatabase(true);
+                            } else {
+                                //不需要下载，依然去判断是否存在文件
+                                decideDownload(false);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 
     /**
      * 下载数据库
      */
-    private void downDatabase() {
+    private void downDatabase(boolean todownload) {
         //判断是否有权限
         if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            decideDownload();
+            decideDownload(todownload);
         } else {
             //没权限，进行权限请求
             requestPermission(Constants.CODE_WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
     }
 
-    private void decideDownload() {
+    private void decideDownload(boolean todownload) {
         //查看根文件路径中是否已存在根sql库,否则下载
         String path = SDCardUtil.getExercisePath();
         String filePath = path + File.separator + Constants.SQLITE_TPO;
         File file = new File(filePath);
-        if (!file.exists()) {
+        if (todownload) {
+            //接口说要下载
             doDownLoad(path);
+        } else {
+            //接口说不要下载
+            if (!file.exists()) {
+                doDownLoad(path);
+            }
         }
-//        else {
-//            LogUtil.i("sql exist = yes");
-//            SQLiteDatabase mDatabase = DbUtil.getHelper(this, filePath).getWritableDatabase();
-//            String isNone = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER);
-//            mDatabase.close();
-//            if (TextUtils.equals(isNone, Constants.NONE)) {
-//                LogUtil.i("still download the zip");
-//                doDownLoad(path);
-//            }
-//        }
     }
 
     private void doDownLoad(final String path) {
-        OkGo.get(Constants.URL_DOWNLOAD_MAIN_DATABASE)
+        OkGo.get(mDecidedDownload.data)
                 .execute(new FileCallback(path, "") {
                     @Override
                     public void downloadProgress(long currentSize, long totalSize, float progress, long networkSpeed) {

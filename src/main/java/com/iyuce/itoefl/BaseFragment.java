@@ -1,25 +1,30 @@
 package com.iyuce.itoefl;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 /**
  * Created by LeBang on 2017/1/22
  */
 public class BaseFragment extends Fragment {
 
-    @Override
-    public void onStop() {
-        super.onStop();
+    private ProgressDialog progressdialog;
+
+    public void progressdialogshow(Context context) {
+        if (progressdialog == null) {
+            progressdialog = new ProgressDialog(context);
+        }
+        progressdialog.setTitle("加载中，请稍候");
+        progressdialog.setMessage("Loading...");
+        progressdialog.setCanceledOnTouchOutside(false);
+//         progressdialog.setCancelable(false);
+        progressdialog.show();
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+    public void progressdialogcancel() {
+        if (progressdialog != null) {
+            progressdialog.cancel();
+        }
     }
 }

@@ -1,27 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".Control.Listening.Activity.TopListeneringActivity">
+    android:orientation="vertical">
 
     <include layout="@layout/header_title_bar" />
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tab_activity_top_listenering"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/colorPrimary"
-        app:tabIndicatorColor="@color/Pink"
-        app:tabIndicatorHeight="@dimen/indicator_height"
-        app:tabSelectedTextColor="@color/Pink"
-        app:tabTextColor="@color/White" />
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager_activity_top_listenering"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:title="TPO 听力真题">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:background="@mipmap/img_bg_header_sea_side"
+                android:fitsSystemWindows="true"
+                app:layout_collapseMode="parallax" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!--<android.support.design.widget.TabLayout-->
+            <!--android:id="@+id/tab_activity_top_listenering"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="48dp"-->
+            <!--android:background="@color/colorPrimary"-->
+            <!--app:tabIndicatorColor="@color/Pink"-->
+            <!--app:tabIndicatorHeight="@dimen/indicator_height"-->
+            <!--app:tabSelectedTextColor="@color/Pink"-->
+            <!--app:tabTextColor="@color/White" />-->
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewpager_activity_top_listenering"
+                android:layout_width="match_parent"
+                android:layout_height="680dp" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -1,5 +1,7 @@
 package com.iyuce.itoefl.Utils;
 
+import android.text.TextUtils;
+
 import com.iyuce.itoefl.Utils.Interface.HttpInterface;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
@@ -15,15 +17,10 @@ import okhttp3.Response;
  */
 public class HttpUtil {
 
-    public static void downLoad(String url,final String path, final HttpInterface mHttpInterface) {
-//        String url;
-//        if (pos % 2 == 0) {
-//            url = "http://img.enhance.cn/toefl/zip/listenaudiozip/1402.zip";
-//        } else {
-//            url = "http://xm.iyuce.com/app/TPO18_L1.zip";
-//        }
-//        OkGo.get("http://img.enhance.cn/toefl/zip/listenaudiozip/1402.zip")
-//        OkGo.get("http://xm.iyuce.com/app/TPO18L1.zip")
+    public static void downLoad(String url, final String path, final HttpInterface mHttpInterface) {
+        if (TextUtils.isEmpty(url)) {
+            return;
+        }
         OkGo.get(url)
                 .execute(new FileCallback(path, "") {
                     @Override

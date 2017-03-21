@@ -8,6 +8,9 @@ public class Constants {
     //权限
     public static final int CODE_WRITE_EXTERNAL_STORAGE = 0x0002;
 
+    //Share Preference 字段
+    public static final String REQUEST_TIME_MAIN_DATABASE = "main_database_request_date";
+
     //网络
     public static final String CODE_HTTP_SUCCESS = "0";
     public static final String URL_DOWNLOAD_MAIN_DATABASE = "http://tpo.iyuce.com/Content/upload/TPO/tpo.zip";

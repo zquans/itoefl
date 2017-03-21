@@ -1,12 +1,14 @@
 package com.iyuce.itoefl.Control.Main;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,6 +19,7 @@ import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.Model.DecidedDownload;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.LogUtil;
+import com.iyuce.itoefl.Utils.PreferenceUtil;
 import com.iyuce.itoefl.Utils.SDCardUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 import com.iyuce.itoefl.Utils.ZipUtil;
@@ -48,6 +51,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private boolean isFirst = true;
     private long lastTime;
+    private String check_download_time;
 
     @Override
     public void onBackPressed() {
@@ -96,13 +100,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mViewPager.setAdapter(mMyTabAdapter);
         mViewPager.setOffscreenPageLimit(mFragmentList.size() - 1);
 
-        //通过Http 决定是否下载,1.是则下载，2.否，则判断是否有文件，无则下载
-        requestIfDown();
+        //TODO 通过Http 决定是否 下载,1.是则下载，2.否，则判断是否有文件，无则下载
+        check_download_time = PreferenceUtil.getSharePre(this).getString(Constants.REQUEST_TIME_MAIN_DATABASE, "");
+        requestIfDown(check_download_time);
     }
 
-    private void requestIfDown() {
+    private void requestIfDown(String check_download_time) {
         HttpParams params = new HttpParams();
-        params.put("updatetime", "");
+        params.put("updatetime", check_download_time);
         OkGo.post(Constants.URL_TPO_MAIN_STATUS).params(params)
                 .execute(new StringCallback() {
                     @Override
@@ -113,10 +118,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                             mDecidedDownload.code = obj.getString("code");
                             mDecidedDownload.data = obj.getString("data");
                             mDecidedDownload.message = obj.getString("message");
+                            mDecidedDownload.request_date = obj.getString("request_date");
                             if (mDecidedDownload.code.equals(Constants.CODE_HTTP_SUCCESS)) {
                                 //需要下载，无论存在文件与否，都去下载
-                                ToastUtil.showMessage(MainActivity.this, "题库更新," + mDecidedDownload.message + "吗?");
-                                downDatabase(true);
+                                LogUtil.i("接口说要下载");
+                                downloadAlertDialog();
                             } else {
                                 //不需要下载，依然去判断是否存在文件
                                 decideDownload(false);
@@ -126,6 +132,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         }
                     }
                 });
+    }
+
+    /**
+     * 给用户友好提示，是否需要下载
+     */
+    private void downloadAlertDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("题库更新啦")
+                .setMessage("去下载最新题库吗?")
+                .setPositiveButton("立刻更新", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        downDatabase(true);
+                    }
+                }).setNegativeButton("以后再说", null)
+                .show();
     }
 
     /**
@@ -151,6 +173,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             doDownLoad(path);
         } else {
             //接口说不要下载
+            LogUtil.i("接口说不要下载");
             if (!file.exists()) {
                 doDownLoad(path);
             }
@@ -168,6 +191,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     @Override
                     public void onSuccess(File file, Call call, Response response) {
                         unZipFile(file, path);
+                        PreferenceUtil.save(MainActivity.this, Constants.REQUEST_TIME_MAIN_DATABASE, mDecidedDownload.request_date);
                     }
                 });
     }
@@ -176,7 +200,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         try {
             //解压后删除该文件压缩包
             ZipUtil.UnZipFolder(file.getAbsolutePath(), path);
-            LogUtil.i("zip delete = " + file.delete());
+            if (file.delete()) {
+                ToastUtil.showMessage(this, "下载更新成功啦");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -243,6 +269,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
 
         @Override
+
+
         public Fragment getItem(int position) {
             return mFragmentList.get(position);
         }

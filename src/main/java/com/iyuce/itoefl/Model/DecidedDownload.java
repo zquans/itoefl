@@ -8,11 +8,5 @@ public class DecidedDownload {
     public String code;
     public String data;
     public String message;
-
-
-//    {
-//        "data":"http://tpo.iyuce.com/Content/upload/TPO/TPO.zip",
-//            "code":0,
-//            "message":"需要更新下载最新数据"
-//    }
+    public String request_date;
 }

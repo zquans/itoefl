@@ -47,10 +47,10 @@
         <com.yarolegovich.discretescrollview.DiscreteScrollView
             android:id="@+id/discrete_scroll_fragment_exercise"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_horizontal_double_padding"
-            android:layout_marginRight="@dimen/activity_horizontal_double_padding"
-            android:layout_marginTop="88dp"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/activity_horizontal_double_padding"
+            android:paddingRight="@dimen/activity_horizontal_double_padding"
+            android:paddingTop="88dp"
             app:dsv_orientation="horizontal" />
 
     </android.support.v4.widget.NestedScrollView>

@@ -1,6 +1,7 @@
 package com.iyuce.itoefl.Control.Main;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,7 @@ public class DisCreteScrollAdapter extends RecyclerView.Adapter<DisCreteScrollAd
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         Glide.with(mContext).load(mDataList.get(position)).into(holder.mImg);
-        holder.mImg.setOnClickListener(new View.OnClickListener() {
+        holder.mCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
@@ -61,10 +62,12 @@ public class DisCreteScrollAdapter extends RecyclerView.Adapter<DisCreteScrollAd
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView mImg;
+        CardView mCard;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mImg = (ImageView) itemView.findViewById(R.id.img_fragment_show_flip);
+            mCard = (CardView) itemView.findViewById(R.id.card_fragment_show_flip);
         }
     }
 

@@ -117,6 +117,7 @@
         android:paddingTop="@dimen/activity_vertical_padding"
         android:text="Why does the professor interrupt the student is the class on "
         android:textColor="@color/TxtWhite"
+        android:textSize="@dimen/txt_size_eighteen"
         android:textStyle="bold" />
 
     <TextView

@@ -106,9 +106,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void requestIfDown(String check_download_time) {
-        HttpParams params = new HttpParams();
-        params.put("updatetime", check_download_time);
-        OkGo.post(Constants.URL_TPO_MAIN_STATUS).params(params)
+        LogUtil.w("check_download_time = " + check_download_time);
+        OkGo.post(Constants.URL_TPO_MAIN_STATUS + check_download_time)
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {

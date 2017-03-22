@@ -73,10 +73,11 @@ public class SuggestionActivity extends BaseActivity implements View.OnClickList
         params.put("user_id", PreferenceUtil.getSharePre(SuggestionActivity.this).getString("userId", "ANDROID_TOEFL"));
         params.put("createat", getNowDate());
         params.put("content", mContent);
+        params.put("type", "ANDROID_TOEFL");
         OkGo.post(Constants.URL_TO_SUGGESTION).params(params).execute(new StringCallback() {
             @Override
             public void onSuccess(String s, Call call, Response response) {
-                LogUtil.e("suggest activty is here" + getNowDate());
+                LogUtil.e("suggest activity is here" + getNowDate());
                 ToastUtil.showMessage(SuggestionActivity.this, "亲，提交成功啦，感谢您的宝贵意见");
                 SuggestionActivity.this.finish();
             }

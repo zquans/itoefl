@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
+import com.iyuce.itoefl.Control.Listening.Fragment.FragmentOrder;
 import com.iyuce.itoefl.Model.DecidedDownload;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.LogUtil;
@@ -93,7 +94,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         mViewPager = (NoScrollViewPager) findViewById(R.id.viewpager_activity_main);
         mViewPager.setOnPageChangeListener(this);
-        mFragmentList.add(new FragmentExercise());
+        mFragmentList.add(new FragmentOrder());
         mFragmentList.add(new FragmentLecture());
         mFragmentList.add(new FragmentMine());
         mMyTabAdapter = new MyMainTabAdapter(getSupportFragmentManager());

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:layout_marginTop="12dp">
+
+    <TextView
+        android:id="@+id/txt_item_fragment_do_question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="this ons is a true"
+        android:textColor="@color/TxtWhite"
+        android:textSize="@dimen/txt_size_eighteen" />
+
+    <RadioGroup
+        android:id="@+id/radio_group_item_fragment_do_question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_item_fragment_do_question"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/radio_item_fragment_do_question_yes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:background="@color/Transparent"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="YES"
+            android:textColor="@color/TxtWhite" />
+
+        <RadioButton
+            android:id="@+id/radio_item_fragment_do_question_middle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="4dp"
+            android:background="@color/Transparent"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="NULL"
+            android:textColor="@color/TxtWhite" />
+
+        <RadioButton
+            android:id="@+id/radio_item_fragment_do_question_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="4dp"
+            android:background="@color/Transparent"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="NO"
+            android:textColor="@color/TxtWhite" />
+    </RadioGroup>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/radio_group_item_fragment_do_question"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@color/Gray" />
+
+</RelativeLayout>

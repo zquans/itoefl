@@ -56,6 +56,16 @@ public class StringUtil {
                 .replace("true", "A");
     }
 
+    public static String transferNestToAlpha(String orginal) {
+        return orginal.replace(" ", "")
+                .replace("FALSE", "C")
+                .replace("NULL", "B")
+                .replace("TRUE", "A")
+                .replace("false", "C")
+                .replace("null", "B")
+                .replace("true", "A");
+    }
+
     public static String[] transferStringToArray(String orginal) {
         return orginal.replace("[", " ")
                 .replace("]", " ")

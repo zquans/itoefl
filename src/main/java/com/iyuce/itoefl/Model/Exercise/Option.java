@@ -5,10 +5,10 @@ package com.iyuce.itoefl.Model.Exercise;
  */
 public class Option {
 
-    private String Id;
-    private String QuestionId;
-    private String Code;
-    private String Content;
-    private String Sort;
+    public String Id;
+    public String QuestionId;
+    public String Code;
+    public String Content;
+    public String Sort;
 
 }

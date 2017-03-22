@@ -1,5 +1,7 @@
 package com.iyuce.itoefl.Control.Listening.Fragment;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,9 +13,12 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.Common.Constants;
-import com.iyuce.itoefl.Model.Exercise.ListenResultContent;
-import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Control.Listening.Adapter.ResultContentAdapter;
+import com.iyuce.itoefl.Control.Listening.Adapter.ResultContentNestAdapter;
+import com.iyuce.itoefl.Model.Exercise.ListenResultContent;
+import com.iyuce.itoefl.Model.Exercise.QuestionNest;
+import com.iyuce.itoefl.R;
+import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.StringUtil;
 
@@ -30,13 +35,17 @@ public class FragmentDoResult extends Fragment {
     private ArrayList<String> mOptionCodeList;
     private ResultContentAdapter mAdapter;
 
+    private String local_path, local_paper_code, question_id;
     private String page_current, page_total, page_question, question_type, detail, answer_select, answer_real, time_count;
 
-    public static FragmentDoResult newInstance(String page_current, String page_total, String page_question,
+    public static FragmentDoResult newInstance(String local_path, String local_paper_code, String question_id, String page_current, String page_total, String page_question,
                                                ArrayList<String> option_content_list, ArrayList<String> option_code_list,
                                                String question_type, String detail, String answer_select, String answer_real, String time_count) {
         FragmentDoResult fragment = new FragmentDoResult();
         Bundle bundle = new Bundle();
+        bundle.putString("local_path", local_path);
+        bundle.putString("local_paper_code", local_paper_code);
+        bundle.putString("question_id", question_id);
         bundle.putString("page_current", page_current);
         bundle.putString("page_total", page_total);
         bundle.putString("page_question", page_question);
@@ -55,6 +64,9 @@ public class FragmentDoResult extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            local_path = getArguments().getString("local_path");
+            local_paper_code = getArguments().getString("local_paper_code");
+            question_id = getArguments().getString("question_id");
             page_current = getArguments().getString("page_current");
             page_total = getArguments().getString("page_total");
             page_question = getArguments().getString("page_question");
@@ -94,11 +106,6 @@ public class FragmentDoResult extends Fragment {
         mTxtTimeCount.setText("本题用时 " + time_count + " 秒");
 
         initData();
-
-        //装载适配器
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new ResultContentAdapter(getActivity(), mResultList, question_type);
-        mRecyclerView.setAdapter(mAdapter);
     }
 
     private void initData() {
@@ -107,9 +114,78 @@ public class FragmentDoResult extends Fragment {
 //            answer_real = "[2,1,0,3]";
 ////            return;
 //        }
-
         ListenResultContent result;
         switch (question_type) {
+            case Constants.QUESTION_TYPE_NEST:
+                //嵌套题
+                String[] nestSelectList = StringUtil.transferStringToArray(answer_select);
+                String[] nestAnswerList = StringUtil.transferStringToArray(answer_real);
+                ArrayList<QuestionNest> mNestContentList = new ArrayList<>();
+
+                //TODO 数据源需要重新查表
+                //数据源
+                SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
+                //查表Child和Option
+                Cursor cursor = mDatabase.query(Constants.TABLE_QUESTION_CHILD, null, Constants.MasterId + " =? ", new String[]{question_id}, null, null, null);
+                //开启事务批量操作
+                mDatabase.beginTransaction();
+                if (cursor != null) {
+                    QuestionNest questionNest;
+                    while (cursor.moveToNext()) {
+                        questionNest = new QuestionNest();
+                        //内容
+                        questionNest.content = cursor.getString(cursor.getColumnIndex(Constants.Content));
+                        //子选项
+                        String id_for_options = cursor.getString(cursor.getColumnIndex(Constants.ID));
+                        questionNest.options = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId + " =? ", id_for_options);
+                        mNestContentList.add(questionNest);
+                    }
+                    cursor.close();
+                }
+                //批量操作成功,关闭事务
+                mDatabase.setTransactionSuccessful();
+                mDatabase.endTransaction();
+                mDatabase.close();
+
+                for (int i = 0; i < mNestContentList.size(); i++) {
+                    //三选一题
+                    //0,1,2分别表示第一个，第二个，第三个
+                    if (mNestContentList.get(i).options.size() == 3) {
+                        if (nestSelectList[i].trim().equals("true")) {
+                            mNestContentList.get(i).select = 0;
+                        } else if (nestSelectList[i].trim().equals("null")) {
+                            mNestContentList.get(i).select = 1;
+                        } else {
+                            mNestContentList.get(i).select = 2;
+                        }
+                        if (nestAnswerList[i].trim().equals("A")) {
+                            mNestContentList.get(i).answer = 0;
+                        } else if (nestAnswerList[i].trim().equals("B")) {
+                            mNestContentList.get(i).answer = 1;
+                        } else {
+                            mNestContentList.get(i).answer = 2;
+                        }
+                    } else {
+                        //其他题
+                        if (nestSelectList[i].trim().equals("true")) {
+                            mNestContentList.get(i).select = 0;
+                        } else {
+                            mNestContentList.get(i).select = 1;
+                        }
+                        if (nestAnswerList[i].trim().equals("A")) {
+                            mNestContentList.get(i).answer = 0;
+                        } else {
+                            mNestContentList.get(i).answer = 1;
+                        }
+                    }
+                }
+
+
+                //装载适配器
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                ResultContentNestAdapter mAdapter = new ResultContentNestAdapter(getActivity(), mNestContentList);
+                mRecyclerView.setAdapter(mAdapter);
+                return;
             case Constants.QUESTION_TYPE_JUDGE:
                 //判断题
                 String[] judgeSelectList = StringUtil.transferStringToArray(answer_select);
@@ -120,27 +196,6 @@ public class FragmentDoResult extends Fragment {
                     result.judgeSelect = judgeSelectList[i].trim();
                     result.judgeAnswer = judgeAnswerList[i].trim();
                     if (result.judgeSelect.trim().contains(result.judgeAnswer.trim())) {
-                        result.state = Constants.TRUE;
-                    } else if (result.judgeSelect.contains(Constants.NULL)) {
-                        result.state = Constants.NULL;
-                    } else {
-                        result.state = Constants.FALSE;
-                    }
-                    result.content = mOptionContentList.get(i);
-                    mResultList.add(result);
-                }
-                break;
-            case Constants.QUESTION_TYPE_NEST:
-                //判断题
-                String[] nestSelectList = StringUtil.transferStringToArray(answer_select);
-                String[] nestAnswerList = StringUtil.transferStringToArray(answer_real);
-
-                for (int i = 0; i < nestSelectList.length; i++) {
-                    result = new ListenResultContent();
-                    result.judgeSelect = nestSelectList[i].trim();
-                    result.judgeAnswer = nestAnswerList[i].trim();
-                    if (StringUtil.transferBooleanToAlpha(result.judgeSelect)
-                            .contains(result.judgeAnswer.trim())) {
                         result.state = Constants.TRUE;
                     } else if (result.judgeSelect.contains(Constants.NULL)) {
                         result.state = Constants.NULL;
@@ -209,6 +264,10 @@ public class FragmentDoResult extends Fragment {
                 }
                 break;
         }
+        //装载适配器
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new ResultContentAdapter(getActivity(), mResultList, question_type);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
 }

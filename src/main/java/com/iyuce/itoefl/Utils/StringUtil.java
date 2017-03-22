@@ -56,6 +56,16 @@ public class StringUtil {
                 .replace("true", "A");
     }
 
+    public static String transferBooleanToNest(String orginal) {
+        return orginal.replace(" ", "")
+                .replace("TRUE", "A")
+                .replace("NULL", "B")
+                .replace("FALSE", "C")
+                .replace("true", "A")
+                .replace("null", "B")
+                .replace("false", "C");
+    }
+
     public static String[] transferStringToArray(String orginal) {
         return orginal.replace("[", " ")
                 .replace("]", " ")

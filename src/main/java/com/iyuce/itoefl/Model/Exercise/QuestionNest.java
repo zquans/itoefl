@@ -9,5 +9,7 @@ import java.util.ArrayList;
 public class QuestionNest implements Serializable {
 
     public String content;
+    public int answer;
+    public int select;
     public ArrayList<String> options;
 }

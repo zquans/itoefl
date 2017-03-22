@@ -25,7 +25,7 @@ import java.util.ArrayList;
  */
 public class PageReadyActivity extends BaseActivity {
 
-    private TextView mTxtHeadTitle, mTxtEnglish, mTxtChinese, mTxtCategory, mTxtReview;
+    private TextView mTxtHeadTitle, mTxtEnglish, mTxtChinese, mTxtCategory, mTxtReview, mTxtReviewEntry;
     private ImageView mImgLevel;
     private String local_paper_code, local_path, local_music_question;
     private String title_chinese, title_english, img_scene, img_level;
@@ -89,6 +89,7 @@ public class PageReadyActivity extends BaseActivity {
         mTxtChinese = (TextView) findViewById(R.id.txt_activity_page_ready_title_chinese);
         mTxtCategory = (TextView) findViewById(R.id.txt_activity_page_ready_title_category);
         mTxtReview = (TextView) findViewById(R.id.txt_activity_page_ready_review);
+        mTxtReviewEntry = (TextView) findViewById(R.id.txt_activity_page_ready_review_entry);
         mImgLevel = (ImageView) findViewById(R.id.img_activity_page_ready_title_level);
 
         mTxtHeadTitle.setText(local_paper_code);
@@ -119,6 +120,7 @@ public class PageReadyActivity extends BaseActivity {
         if (TextUtils.equals(isNone, Constants.NONE)) {
             mDatabase.close();
             mTxtReview.setText("您还没有练习过哦，赶快开始吧!");
+            mTxtReviewEntry.setVisibility(View.GONE);
             mTxtReview.setClickable(false);
             return;
         }
@@ -136,6 +138,7 @@ public class PageReadyActivity extends BaseActivity {
 
         if (mTimeCountList.size() == 0) {
             mTxtReview.setText("您还没有练习过哦，赶紧开始吧!");
+            mTxtReviewEntry.setVisibility(View.GONE);
             mTxtReview.setClickable(false);
             return;
         }
@@ -148,7 +151,8 @@ public class PageReadyActivity extends BaseActivity {
             }
         }
         String result_review = "上次做题结果 : " + total + "/" + mBingoList.size();
-        mTxtReview.setClickable(true);
+        mTxtReviewEntry.setVisibility(View.VISIBLE);
+//        mTxtReview.setClickable(true);
         mTxtReview.setText(result_review);
     }
 

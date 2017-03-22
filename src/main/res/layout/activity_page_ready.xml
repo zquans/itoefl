@@ -18,6 +18,7 @@
             android:id="@+id/txt_activity_page_ready_title_english"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:layout_toLeftOf="@+id/img_activity_page_ready_title_level"
             android:text="\nPage ready title"
             android:textColor="@color/TxtWhite"
@@ -64,17 +65,31 @@
 
     <TextView
         android:id="@+id/txt_activity_page_ready_review"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/relative_layout_activity_page_ready_title"
+        android:layout_marginTop="24dp"
+        android:drawableLeft="@mipmap/icon_pen"
+        android:drawablePadding="@dimen/activity_horizontal_padding"
+        android:gravity="center_vertical"
+        android:padding="@dimen/all_padding"
+        android:textColor="@color/TxtPink"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txt_activity_page_ready_review_entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/relative_layout_activity_page_ready_title"
         android:layout_marginTop="24dp"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
-        android:drawableLeft="@mipmap/icon_pen"
         android:drawablePadding="@dimen/activity_horizontal_padding"
         android:gravity="center_vertical"
         android:onClick="showResult"
         android:padding="@dimen/all_padding"
+        android:text="查看详情"
         android:textColor="@color/TxtPink"
         android:textStyle="bold" />
 
@@ -101,14 +116,16 @@
             android:onClick="beginListen"
             android:text="精听听写"
             android:textColor="@color/TxtPink"
-            android:textSize="@dimen/txt_size_eighteen" />
+            android:textSize="@dimen/txt_size_eighteen"
+            android:visibility="gone" />
 
         <View
             android:layout_width="2dp"
             android:layout_height="match_parent"
             android:layout_marginBottom="4dp"
             android:layout_marginTop="4dp"
-            android:background="@color/Gray" />
+            android:background="@color/Gray"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="0dp"

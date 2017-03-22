@@ -20,10 +20,10 @@ import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
-import com.iyuce.itoefl.Model.Exercise.ListenResult;
-import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Control.Listening.Adapter.ResultTitleAdapter;
 import com.iyuce.itoefl.Control.Listening.Fragment.FragmentDoResult;
+import com.iyuce.itoefl.Model.Exercise.ListenResult;
+import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.RecyclerItemClickListener;
 import com.iyuce.itoefl.Utils.TimeUtil;

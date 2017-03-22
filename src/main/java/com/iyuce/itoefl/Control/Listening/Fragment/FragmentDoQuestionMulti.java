@@ -15,8 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.Common.Constants;
-import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Control.Listening.Adapter.QuestionMultiAdapter;
+import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.TimeUtil;
@@ -164,7 +164,8 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
         mTxtCurrentQuestion.setText(current_question);
         mTxtTotalQuestion.setText(total_question);
         mTxtQuestionContent.setText(question_content);
-        mTxtQuestionType.setText("本题是多选题,答案不止一个哦");
+        int item_options = mAnswer.replace(",", "").length();
+        mTxtQuestionType.setText("本题是多选题,有" + item_options + "个选项哦");
         mTxtQuestionType.setVisibility(View.VISIBLE);
 
         //MediaPlayer

@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
-import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Control.Listening.Adapter.BottomDoQuestionAdapter;
 import com.iyuce.itoefl.Control.Listening.Fragment.FragmentDoQuestionDefault;
 import com.iyuce.itoefl.Control.Listening.Fragment.FragmentDoQuestionJudge;
@@ -27,6 +26,7 @@ import com.iyuce.itoefl.Control.Listening.Fragment.FragmentDoQuestionMulti;
 import com.iyuce.itoefl.Control.Listening.Fragment.FragmentDoQuestionNest;
 import com.iyuce.itoefl.Control.Listening.Fragment.FragmentDoQuestionSingle;
 import com.iyuce.itoefl.Control.Listening.Fragment.FragmentDoQuestionSort;
+import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.SDCardUtil;
@@ -203,6 +203,12 @@ public class DoQuestionActivity extends BaseActivity implements
                     ToastUtil.showMessage(this, "本题未答完");
                     return;
                 }
+                //TODO 提示多选题该选几题
+                if (mQuestionTypeList.get(mCurrentQuestion - 1).equals(Constants.QUESTION_TYPE_MULTI)
+                        && mFrgment.realAnswer().replace(",", "").length() != mFrgment.answerDefault.replace(",", "").length()) {
+                    ToastUtil.showMessage(this, "本题答案是" + mFrgment.realAnswer().replace(",", "").length() + "个选项");
+                    return;
+                }
 
                 //保存或替换当前题号和所选答案
                 if (mSelectedQuestionList.contains(mCurrentQuestion)) {
@@ -298,7 +304,7 @@ public class DoQuestionActivity extends BaseActivity implements
                             + local_paper_code + "\",\""
                             + mQuestionTypeList.get(i) + "\",\""
                             + mSortList.get(i) + "\",\""
-                            + mQuestionContentList.get(i) + "\",\""
+                            + StringUtil.changeSpecial(mQuestionContentList.get(i)) + "\",\""
                             + mSelectedAnswerList.get(i) + "\",\""
                             + mAnswerList.get(i) + "\",\""
                             + mBingoList.get(i) + "\",\""

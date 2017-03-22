@@ -56,6 +56,11 @@ public class StringUtil {
                 .replace("true", "A");
     }
 
+    public static String changeSpecial(String orginal) {
+        return orginal.replace("\"", "“")
+                .replace("\'", "‘");
+    }
+
     public static String[] transferStringToArray(String orginal) {
         return orginal.replace("[", " ")
                 .replace("]", " ")

@@ -141,11 +141,11 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
         Glide.with(this).load(imgPath).into(mImgMedia);
 
         //音频播放速度选择
+        mRateList.add("播放速度 x0.8");
+        mRateList.add("播放速度 x0.9");
         mRateList.add("播放速度 x1.0");
+        mRateList.add("播放速度 x1.1");
         mRateList.add("播放速度 x1.2");
-        mRateList.add("播放速度 x1.4");
-        mRateList.add("播放速度 x1.6");
-        mRateList.add("播放速度 x1.8");
         mSpinnerAdapter = new ArrayAdapter<>(this, R.layout.item_spinner_control_audio_rate, mRateList);
         mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(mSpinnerAdapter);
@@ -262,24 +262,25 @@ public class DoQuestionReadyActivity extends BaseActivity implements View.OnClic
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (isFirstSelect) {
+            mSpinner.setSelection(2);
             isFirstSelect = false;
             return;
         }
         switch (position) {
             case 0:
-                changeSpeed(1.0f);
+                changeSpeed(0.8f);
                 break;
             case 1:
-                changeSpeed(1.1f);
+                changeSpeed(0.9f);
                 break;
             case 2:
-                changeSpeed(1.2f);
+                changeSpeed(1.0f);
                 break;
             case 3:
-                changeSpeed(1.3f);
+                changeSpeed(1.1f);
                 break;
             case 4:
-                changeSpeed(1.4f);
+                changeSpeed(1.2f);
                 break;
         }
     }

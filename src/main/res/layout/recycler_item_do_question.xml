@@ -15,6 +15,7 @@
         android:background="@color/Transparent_SixtyFive"
         android:padding="8dp"
         android:text="A:this is a question"
-        android:textColor="@color/TxtWhite" />
+        android:textColor="@color/TxtGrayQuestion"
+        android:textSize="@dimen/txt_size_eighteen" />
 
 </LinearLayout>

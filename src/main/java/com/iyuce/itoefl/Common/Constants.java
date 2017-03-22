@@ -14,7 +14,7 @@ public class Constants {
     //网络
     public static final String CODE_HTTP_SUCCESS = "0";
     public static final String URL_DOWNLOAD_MAIN_DATABASE = "http://tpo.iyuce.com/Content/upload/TPO/tpo.zip";
-    public static final String URL_TPO_MAIN_STATUS = "http://api.iyuce.com/v1/tpo/gettpomainstatus";
+    public static final String URL_TPO_MAIN_STATUS = "http://api.iyuce.com/v1/tpo/gettpomainstatus?updatetime=";
     public static final String URL_WEB_ONE_TO_ONE = "http://www.iyuce.com/m/appjxy.html";
     public static final String URL_TO_SUGGESTION = "http://api.iyuce.com/v1/service/feedback";
     public static final String URL_CHECK_UPDATE = "http://www.iyuce.com/Scripts/andoird.json";

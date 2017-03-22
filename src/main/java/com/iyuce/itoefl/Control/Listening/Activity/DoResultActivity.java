@@ -184,7 +184,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
             result.question_is_select = i == 0;//用户是否在查看该题,默认选中第1题
             mResultTitleList.add(result);
             //传递给Fragment数据,可以增加参数
-            FragmentDoResult mFragmentDoResult = FragmentDoResult.newInstance(result.question_name,
+            FragmentDoResult mFragmentDoResult = FragmentDoResult.newInstance(local_path, local_paper_code, mQuestionIdList.get(i), result.question_name,
                     mQuestionIdList.size() + "", mQuestionContent, mOptionContentList, mOptionCodeList, mQuestionType,
                     mDetail, mSelectedAnswerList.get(i), mAnswerList.get(i), mTimeCountList.get(i));
             mResultContentList.add(mFragmentDoResult);

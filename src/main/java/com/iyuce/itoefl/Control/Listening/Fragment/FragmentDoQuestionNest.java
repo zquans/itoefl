@@ -1,5 +1,6 @@
 package com.iyuce.itoefl.Control.Listening.Fragment;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -15,8 +16,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.Common.Constants;
+import com.iyuce.itoefl.Control.Listening.Adapter.QuestionNestAdapter;
+import com.iyuce.itoefl.Model.Exercise.QuestionNest;
 import com.iyuce.itoefl.R;
-import com.iyuce.itoefl.Control.Listening.Adapter.QuestionJudgeAdapter;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.TimeUtil;
@@ -25,7 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class FragmentDoQuestionNest extends FragmentDoQuestionDefault implements QuestionJudgeAdapter.OnQuestionItemClickListener,
+public class FragmentDoQuestionNest extends FragmentDoQuestionDefault implements QuestionNestAdapter.OnQuestionItemClickListener,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
     //题目序号、内容
@@ -37,9 +39,9 @@ public class FragmentDoQuestionNest extends FragmentDoQuestionDefault implements
 
     //答题选项
     private RecyclerView mRecyclerView;
-    private ArrayList<String> mNestContentList = new ArrayList<>();
+    private ArrayList<QuestionNest> mNestContentList = new ArrayList<>();
     private ArrayList<String> mNestAnswerList = new ArrayList<>();
-    private QuestionJudgeAdapter mAdapter;
+    private QuestionNestAdapter mAdapter;
 
     private MediaPlayer mMediaPlayer;
 
@@ -130,11 +132,30 @@ public class FragmentDoQuestionNest extends FragmentDoQuestionDefault implements
     private void initView(View view) {
         //数据源
         SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
-        //查表Child
-        mNestContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION_CHILD, Constants.Content, Constants.MasterId + " =? ", current_question_id);
-        mNestAnswerList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION_CHILD, Constants.Answer, Constants.MasterId + " =? ", current_question_id);
+        //查表Child和Option
+        Cursor cursor = mDatabase.query(Constants.TABLE_QUESTION_CHILD, null, Constants.MasterId + " =? ", new String[]{current_question_id}, null, null, null);
+        //开启事务批量操作
+        mDatabase.beginTransaction();
+        if (cursor != null) {
+            QuestionNest questionNest;
+            while (cursor.moveToNext()) {
+                questionNest = new QuestionNest();
+                //内容
+                questionNest.content = cursor.getString(cursor.getColumnIndex(Constants.Content));
+                //子选项
+                String id_for_options = cursor.getString(cursor.getColumnIndex(Constants.ID));
+                questionNest.options = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_OPTION, Constants.Content, Constants.QuestionId + " =? ", id_for_options);
+                //正确答案
+                String answer = DbUtil.queryToString(mDatabase, Constants.TABLE_QUESTION_CHILD, Constants.Answer, Constants.ID, id_for_options);
+                mNestAnswerList.add(answer);
+                mNestContentList.add(questionNest);
+            }
+            cursor.close();
+        }
+        //批量操作成功,关闭事务
+        mDatabase.setTransactionSuccessful();
+        mDatabase.endTransaction();
         mDatabase.close();
-        LogUtil.i(mNestContentList.toString() + mNestAnswerList.toString());
 
         mTxtCurrentQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
         mTxtTotalQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
@@ -158,7 +179,7 @@ public class FragmentDoQuestionNest extends FragmentDoQuestionDefault implements
         mTxtCurrentQuestion.setText(current_question);
         mTxtTotalQuestion.setText(total_question);
         mTxtQuestionContent.setText(question_content);
-        mTxtQuestionType.setText("本题是判断题");
+        mTxtQuestionType.setText("本题是复合判断题");
         mTxtQuestionType.setVisibility(View.VISIBLE);
 
         //MediaPlayer
@@ -204,7 +225,7 @@ public class FragmentDoQuestionNest extends FragmentDoQuestionDefault implements
             return;
         }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new QuestionJudgeAdapter(getActivity(), mNestContentList);
+        mAdapter = new QuestionNestAdapter(getActivity(), mNestContentList);
         mAdapter.setOnQuestionItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         isFinish = true;

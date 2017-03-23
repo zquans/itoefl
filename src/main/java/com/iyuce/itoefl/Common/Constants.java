@@ -8,21 +8,30 @@ public class Constants {
     //权限
     public static final int CODE_WRITE_EXTERNAL_STORAGE = 0x0002;
 
-    //Share Preference 字段
-    public static final String REQUEST_TIME_MAIN_DATABASE = "main_database_request_date";
-
     //网络
     public static final String CODE_HTTP_SUCCESS = "0";
+
     public static final String URL_DOWNLOAD_MAIN_DATABASE = "http://tpo.iyuce.com/Content/upload/TPO/tpo.zip";
     public static final String URL_TPO_MAIN_STATUS = "http://api.iyuce.com/v1/tpo/gettpomainstatus?updatetime=";
     public static final String URL_WEB_ONE_TO_ONE = "http://www.iyuce.com/m/appjxy.html";
     public static final String URL_TO_SUGGESTION = "http://api.iyuce.com/v1/service/feedback";
     public static final String URL_CHECK_UPDATE = "http://www.iyuce.com/Scripts/andoird.json";
 
+    //Share Preference 字段
+    public static final String REQUEST_TIME_MAIN_DATABASE = "main_database_request_date";
+
     //APP包名
     public static final String AppPackageName = "com.woyuce.activity";
     public static final String AppName = "ITOEFL";
 
+    //音频handlerDelay时间
+    public static final int HandlerDelay = 200;
+
+    //音频状态
+    public static final int FLAG_AUDIO_PLAY = 0;
+    public static final int FLAG_AUDIO_PAUSE = 1;
+
+    //常用判断常量
     public static final String NONE = "none";
     public static final String TRUE = "true";
     public static final String FALSE = "false";
@@ -34,10 +43,6 @@ public class Constants {
     public static final String QUESTION_TYPE_JUDGE = "JUDGE";
     public static final String QUESTION_TYPE_SORT = "SORT";
     public static final String QUESTION_TYPE_NEST = "NEST";
-
-    //音频状态
-    public static final int FLAG_AUDIO_PLAY = 0;
-    public static final int FLAG_AUDIO_PAUSE = 1;
 
     //文件夹路径相关
     public static final String FILE_PATH_ITOEFL = "/ITOEFL";        //根路径下一级路径
@@ -86,6 +91,7 @@ public class Constants {
     public static final String Code = "Code";
 
     //自建的表中的column字段
+    public static final String UserId = "UserId";
     public static final String SECTION = "Section";
     public static final String MODULE = "Module";
     public static final String DOWNLOAD = "Download";

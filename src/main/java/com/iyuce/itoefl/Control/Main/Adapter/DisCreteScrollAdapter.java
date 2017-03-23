@@ -1,4 +1,4 @@
-package com.iyuce.itoefl.Control.Main;
+package com.iyuce.itoefl.Control.Main.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;

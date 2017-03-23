@@ -64,8 +64,8 @@ public class StringUtil {
                 .replace("true", "A")
                 .replace("null", "B")
                 .replace("false", "C");
+    }
 
-  
     public static String changeSpecial(String orginal) {
         return orginal.replace("\"", "“")
                 .replace("\'", "‘");

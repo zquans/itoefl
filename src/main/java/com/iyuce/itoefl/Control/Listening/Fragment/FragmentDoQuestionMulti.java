@@ -63,7 +63,7 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
             super.handleMessage(msg);
             Message message = Message.obtain();
             message.what = Constants.FLAG_AUDIO_PLAY;
-            mMediaProgressHandler.sendMessageDelayed(message, 1000);
+            mMediaProgressHandler.sendMessageDelayed(message, Constants.HandlerDelay);
             getCurrent();
         }
     };

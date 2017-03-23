@@ -275,6 +275,7 @@ public class DoQuestionActivity extends BaseActivity implements
                 SQLiteDatabase mDatabase = DbUtil.getHelper(this, downloaded_sql_path).getWritableDatabase();
                 String create = "create table if not exists " + Constants.TABLE_ALREADY_PRACTICED + "("
                         + Constants.QuestionId + " integer primary key,"
+                        + Constants.UserId + " text,"
                         + Constants.PaperCode + " text,"
                         + Constants.RuleName + " text,"
                         + Constants.QuestionType + " text,"
@@ -290,6 +291,7 @@ public class DoQuestionActivity extends BaseActivity implements
                     //判断是否存在，不存在则插入，存在则更新
                     String sql_replace = "replace into " + Constants.TABLE_ALREADY_PRACTICED + " ("
                             + Constants.QuestionId + ","
+                            + Constants.UserId + " ,"
                             + Constants.PaperCode + ","
                             + Constants.RuleName + ","
                             + Constants.QuestionType + ","
@@ -300,6 +302,7 @@ public class DoQuestionActivity extends BaseActivity implements
                             + Constants.Bingo + ","
                             + Constants.TimeCount + ")values(\""
                             + mQuestionIdList.get(i) + "\",\""
+                            + "user_default" + "\",\""
                             + local_paper_code + "\",\""
                             + local_paper_code + "\",\""
                             + mQuestionTypeList.get(i) + "\",\""

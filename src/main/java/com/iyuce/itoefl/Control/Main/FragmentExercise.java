@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.Control.Listening.Activity.TopListeneringActivity;
+import com.iyuce.itoefl.Control.Main.Adapter.DisCreteScrollAdapter;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.SDCardUtil;

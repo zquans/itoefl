@@ -15,8 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.Common.Constants;
-import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Control.Listening.Adapter.QuestionJudgeAdapter;
+import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.TimeUtil;
@@ -60,7 +60,7 @@ public class FragmentDoQuestionJudge extends FragmentDoQuestionDefault implement
             super.handleMessage(msg);
             Message message = Message.obtain();
             message.what = Constants.FLAG_AUDIO_PLAY;
-            mMediaProgressHandler.sendMessageDelayed(message, 1000);
+            mMediaProgressHandler.sendMessageDelayed(message, Constants.HandlerDelay);
             getCurrent();
         }
     };

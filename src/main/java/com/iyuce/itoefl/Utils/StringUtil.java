@@ -48,24 +48,6 @@ public class StringUtil {
                 .replace(" ", "");
     }
 
-    public static String transferBooleanToAlpha(String orginal) {
-        return orginal.replace(" ", "")
-                .replace("FALSE", "B")
-                .replace("TRUE", "A")
-                .replace("false", "B")
-                .replace("true", "A");
-    }
-
-    public static String transferBooleanToNest(String orginal) {
-        return orginal.replace(" ", "")
-                .replace("TRUE", "A")
-                .replace("NULL", "B")
-                .replace("FALSE", "C")
-                .replace("true", "A")
-                .replace("null", "B")
-                .replace("false", "C");
-    }
-
     public static String changeSpecial(String orginal) {
         return orginal.replace("\"", "“")
                 .replace("\'", "‘");

@@ -9,8 +9,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.Common.EnumNest;
 import com.iyuce.itoefl.Model.Exercise.QuestionNest;
 import com.iyuce.itoefl.R;
+import com.iyuce.itoefl.Utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -22,7 +24,7 @@ public class QuestionNestAdapter extends RecyclerView.Adapter<QuestionNestAdapte
     private Context mContext;
     private ArrayList<QuestionNest> mDataList;
 
-    private ArrayList<Boolean> mIsSelectedList;
+    private ArrayList<EnumNest.NestSelect> mIsSelectedList;
 
     private OnQuestionItemClickListener mListener;
 
@@ -35,8 +37,9 @@ public class QuestionNestAdapter extends RecyclerView.Adapter<QuestionNestAdapte
         this.mDataList = mDataList;
         mIsSelectedList = new ArrayList<>();
         for (int i = 0; i < mDataList.size(); i++) {
-            mIsSelectedList.add(null);
+            mIsSelectedList.add(EnumNest.NestSelect.None);
         }
+        LogUtil.i(mIsSelectedList.toString());
     }
 
     @Override
@@ -51,39 +54,39 @@ public class QuestionNestAdapter extends RecyclerView.Adapter<QuestionNestAdapte
 
         int length_option = mDataList.get(position).options.size();
         if (length_option == 3) {
-            holder.mRadiobtnYes.setText(mDataList.get(position).options.get(0));
-            holder.mRadiobtnNull.setText(mDataList.get(position).options.get(1));
-            holder.mRadiobtnNo.setText(mDataList.get(position).options.get(2));
+            holder.mRadiobtnA.setText(mDataList.get(position).options.get(0));
+            holder.mRadiobtnB.setText(mDataList.get(position).options.get(1));
+            holder.mRadiobtnC.setText(mDataList.get(position).options.get(2));
             holder.mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    if (checkedId == R.id.radio_item_fragment_do_question_yes) {
-                        mIsSelectedList.set(position, true);
+                    if (checkedId == R.id.radio_item_fragment_do_question_a) {
+                        mIsSelectedList.set(position, EnumNest.NestSelect.A);
 //                    int radioButtonId = group.getCheckedRadioButtonId();
 //                    RadioButton radiobtn = (RadioButton) holder.itemView.findViewById(checkedId);
 //                    String radioButtonLabel = radiobtn.getText().toString();
 //                    LogUtil.i("yes = " + radioButtonLabel);
 //                    radiobtn.setText(mDataList.get(position).content);
-                    } else if (checkedId == R.id.radio_item_fragment_do_question_no) {
-                        mIsSelectedList.set(position, false);
+                    } else if (checkedId == R.id.radio_item_fragment_do_question_b) {
+                        mIsSelectedList.set(position, EnumNest.NestSelect.B);
                     } else {
-                        mIsSelectedList.set(position, null);
+                        mIsSelectedList.set(position, EnumNest.NestSelect.C);
                     }
                     //传递数据,所需的数据，仅仅是position而已，若只涉及到自身view,不要把表现交给外面,自己控制
                     mListener.onQuestionClick(position);
                 }
             });
         } else {
-            holder.mRadiobtnNull.setVisibility(View.GONE);
-            holder.mRadiobtnYes.setText(mDataList.get(position).options.get(0));
-            holder.mRadiobtnNo.setText(mDataList.get(position).options.get(1));
+            holder.mRadiobtnC.setVisibility(View.GONE);
+            holder.mRadiobtnA.setText(mDataList.get(position).options.get(0));
+            holder.mRadiobtnB.setText(mDataList.get(position).options.get(1));
             holder.mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    if (checkedId == R.id.radio_item_fragment_do_question_yes) {
-                        mIsSelectedList.set(position, true);
-                    } else if (checkedId == R.id.radio_item_fragment_do_question_no) {
-                        mIsSelectedList.set(position, false);
+                    if (checkedId == R.id.radio_item_fragment_do_question_a) {
+                        mIsSelectedList.set(position, EnumNest.NestSelect.A);
+                    } else if (checkedId == R.id.radio_item_fragment_do_question_b) {
+                        mIsSelectedList.set(position, EnumNest.NestSelect.B);
                     }
                     //传递数据,所需的数据，仅仅是position而已，若只涉及到自身view,不要把表现交给外面,自己控制
                     mListener.onQuestionClick(position);
@@ -100,16 +103,16 @@ public class QuestionNestAdapter extends RecyclerView.Adapter<QuestionNestAdapte
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         RadioGroup mRadioGroup;
-        RadioButton mRadiobtnYes, mRadiobtnNo, mRadiobtnNull;
+        RadioButton mRadiobtnA, mRadiobtnB, mRadiobtnC;
         TextView mTxtQuestion;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             mTxtQuestion = (TextView) itemView.findViewById(R.id.txt_item_fragment_do_question);
             mRadioGroup = (RadioGroup) itemView.findViewById(R.id.radio_group_item_fragment_do_question);
-            mRadiobtnYes = (RadioButton) itemView.findViewById(R.id.radio_item_fragment_do_question_yes);
-            mRadiobtnNo = (RadioButton) itemView.findViewById(R.id.radio_item_fragment_do_question_no);
-            mRadiobtnNull = (RadioButton) itemView.findViewById(R.id.radio_item_fragment_do_question_middle);
+            mRadiobtnA = (RadioButton) itemView.findViewById(R.id.radio_item_fragment_do_question_a);
+            mRadiobtnB = (RadioButton) itemView.findViewById(R.id.radio_item_fragment_do_question_b);
+            mRadiobtnC = (RadioButton) itemView.findViewById(R.id.radio_item_fragment_do_question_c);
         }
     }
 

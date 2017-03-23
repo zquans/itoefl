@@ -18,9 +18,9 @@ import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
+import com.iyuce.itoefl.Control.Listening.Adapter.TopListeneringPageAdapter;
 import com.iyuce.itoefl.Model.UserOprate;
 import com.iyuce.itoefl.R;
-import com.iyuce.itoefl.Control.Listening.Adapter.TopListeneringPageAdapter;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.HttpUtil;
 import com.iyuce.itoefl.Utils.Interface.HttpInterface;
@@ -129,7 +129,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
         mUrlList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.DownUrl, Constants.PaperCode + " =? ", local_section);
         mMusicQuestionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.MusicQuestion, Constants.PaperCode + " =? ", local_section);
         mDatabase.close();
-        LogUtil.i("mMusicQuestionList = " + mMusicQuestionList.toString());
+        LogUtil.e("mDownTimeList = " + mDownTimeList);
         LogUtil.e("mUrlList = " + mUrlList);
 
         //初始化用户操作数据库(打开或创建)
@@ -158,6 +158,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
         SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path).getWritableDatabase();
         String create = "create table if not exists " + Constants.TABLE_ALREADY_DOWNLOAD + "("
                 + Constants.ID + " integer primary key autoincrement,"
+                + Constants.UserId + " text,"
                 + Constants.SECTION + " text,"
                 + Constants.MODULE + " text,"
                 + Constants.LOADING + " text,"
@@ -211,9 +212,14 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
             public void doSuccess(File file, Call call, Response response) {
                 mUserOprateList.get(pos).loading = Constants.FALSE;
                 mUserOprateList.get(pos).download = Constants.TRUE;
-
                 SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path).getWritableDatabase();
+                //先删除，再添加，避免重复
+                String sql_delete = "DELETE FROM " + Constants.TABLE_ALREADY_DOWNLOAD + " WHERE " + Constants.SECTION
+                        + " = \"" + local_section + "\" AND " + Constants.MODULE + " = \"" + mModuleList.get(pos) + "\";";
+                LogUtil.e("sql_delete = " + sql_delete);
+                mDatabase.execSQL(sql_delete);
                 ContentValues mValues = new ContentValues();
+                mValues.put(Constants.UserId, "user_default");
                 mValues.put(Constants.SECTION, local_section);
                 mValues.put(Constants.MODULE, mModuleList.get(pos));
                 mValues.put(Constants.DOWNLOAD, Constants.TRUE);
@@ -264,19 +270,19 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
         mDatabase.close();
         LogUtil.i(local_section + "_" + mModuleList.get(pos) + " isExist = " + isExist);
         if (isExist.equals(Constants.NONE)) {
-//            String url = Constants.URL_PATH + local_section + "_" + mModuleList.get(pos) + ".zip";
             doDownLoad(pos, mUrlList.get(pos), local_path);
             return;
         }
 
         //TODO 如果新表修改了，则提示用户是否下载新表
         String path = SDCardUtil.getExercisePath();
-        String filePath = path + File.separator + Constants.SQLITE_TPO;
+        String filePath = path + File.separator + Constants.SQLITE_DOWNLOAD;
         SQLiteDatabase database = DbUtil.getHelper(TopListeneringPageActivity.this, filePath).getWritableDatabase();
-        String sql_down_time_last = "select " + Constants.DownTime + " from " + Constants.TABLE_PAPER_RULE
-                + " where " + Constants.PaperCode + " = ? and " + Constants.RuleName + " = ? ";
+        String sql_down_time_last = "select " + Constants.DownTime + " from " + Constants.TABLE_ALREADY_DOWNLOAD
+                + " where " + Constants.SECTION + " = ? and " + Constants.MODULE + " = ? ";
         String down_time_last = DbUtil.cursorToString(database.rawQuery(sql_down_time_last, new String[]{local_section, mModuleList.get(pos)}));
         database.close();
+        LogUtil.e("down_time_last = " + down_time_last);
         if (!down_time_last.equals(mDownTimeList.get(pos))) {
             new AlertDialog.Builder(this).setMessage("有更新的题库，建议下载新题库")
                     .setPositiveButton("使用原题库", new DialogInterface.OnClickListener() {
@@ -330,7 +336,6 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
                         continue;
                     }
                     path = SDCardUtil.getExercisePath() + File.separator + local_section + File.separator + mModuleList.get(i);
-//                    url = Constants.URL_PATH + local_section + "_" + mModuleList.get(i) + ".zip";
                     doDownLoad(i, mUrlList.get(i), path);
                 }
                 break;

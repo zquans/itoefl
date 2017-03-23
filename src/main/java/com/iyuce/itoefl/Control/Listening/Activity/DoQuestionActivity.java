@@ -203,10 +203,17 @@ public class DoQuestionActivity extends BaseActivity implements
                     ToastUtil.showMessage(this, "本题未答完");
                     return;
                 }
-                //TODO 提示多选题该选几题
+                //TODO MULTI提示该选几题
                 if (mQuestionTypeList.get(mCurrentQuestion - 1).equals(Constants.QUESTION_TYPE_MULTI)
                         && mFrgment.realAnswer().replace(",", "").length() != mFrgment.answerDefault.replace(",", "").length()) {
                     ToastUtil.showMessage(this, "本题答案是" + mFrgment.realAnswer().replace(",", "").length() + "个选项");
+                    return;
+                }
+
+                //TODO Nest提示未做完
+                if (mQuestionTypeList.get(mCurrentQuestion - 1).equals(Constants.QUESTION_TYPE_NEST)
+                        && mFrgment.answerDefault.contains("None")) {
+                    ToastUtil.showMessage(this, "您有遗漏题目哦");
                     return;
                 }
 
@@ -254,8 +261,7 @@ public class DoQuestionActivity extends BaseActivity implements
                             }
                             break;
                         case Constants.QUESTION_TYPE_NEST:
-                            if (StringUtil.transferBooleanToAlpha(mAnswerList.get(i))
-                                    .equals(StringUtil.transferBooleanToAlpha(mSelectedAnswerList.get(i)))) {
+                            if (mAnswerList.get(i).equals(mSelectedAnswerList.get(i))) {
                                 mBingoList.add(Constants.TRUE);
                             } else {
                                 mBingoList.add(Constants.FALSE);

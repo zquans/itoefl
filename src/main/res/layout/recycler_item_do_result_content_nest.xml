@@ -27,7 +27,7 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin">
 
             <ImageView
-                android:id="@+id/img_item_fragment_do_result_judge_yes"
+                android:id="@+id/img_item_fragment_do_result_judge_a"
                 android:layout_width="24dp"
                 android:layout_height="24dp" />
 
@@ -35,41 +35,15 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:gravity="center"
+                android:text="A"
                 android:textColor="@color/TxtWhite" />
 
             <TextView
-                android:id="@+id/txt_item_fragment_do_result_judge_yes"
+                android:id="@+id/txt_item_fragment_do_result_judge_a"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="28dp"
-                android:text="YES"
-                android:textColor="@color/TxtWhite" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rlayout_item_fragment_do_result_judge_null"
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="4dp">
-
-            <ImageView
-                android:id="@+id/img_item_fragment_do_result_judge_null"
-                android:layout_width="24dp"
-                android:layout_height="24dp" />
-
-            <TextView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:gravity="center"
-                android:textColor="@color/TxtWhite" />
-
-            <TextView
-                android:id="@+id/txt_item_fragment_do_result_judge_null"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="28dp"
-                android:text="YES"
+                android:gravity="center_vertical"
                 android:textColor="@color/TxtWhite" />
         </RelativeLayout>
 
@@ -80,7 +54,7 @@
             android:layout_marginTop="4dp">
 
             <ImageView
-                android:id="@+id/img_item_fragment_do_result_judge_no"
+                android:id="@+id/img_item_fragment_do_result_judge_b"
                 android:layout_width="24dp"
                 android:layout_height="24dp" />
 
@@ -88,13 +62,44 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:gravity="center"
+                android:text="B"
                 android:textColor="@color/TxtWhite" />
 
             <TextView
-                android:id="@+id/txt_item_fragment_do_result_judge_no"
+                android:id="@+id/txt_item_fragment_do_result_judge_b"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="28dp"
+                android:gravity="center_vertical"
+                android:text="YES"
+                android:textColor="@color/TxtWhite" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlayout_item_fragment_do_result_judge_c"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="4dp">
+
+            <ImageView
+                android:id="@+id/img_item_fragment_do_result_judge_c"
+                android:layout_width="24dp"
+                android:layout_height="24dp" />
+
+            <TextView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:gravity="center"
+                android:text="C"
+                android:textColor="@color/TxtWhite" />
+
+            <TextView
+                android:id="@+id/txt_item_fragment_do_result_judge_c"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="28dp"
+                android:gravity="center_vertical"
                 android:text="YES"
                 android:textColor="@color/TxtWhite" />
         </RelativeLayout>

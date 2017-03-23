@@ -151,23 +151,23 @@ public class FragmentDoResult extends Fragment {
                     //三选一题
                     //0,1,2分别表示第一个，第二个，第三个
                     if (mNestContentList.get(i).options.size() == 3) {
-                        if (nestSelectList[i].trim().equals("true")) {
+                        if (nestSelectList[i].trim().equals("A")) {
                             mNestContentList.get(i).select = 0;
-                        } else if (nestSelectList[i].trim().equals("null")) {
+                        } else if (nestSelectList[i].trim().equals("B")) {
                             mNestContentList.get(i).select = 1;
-                        } else {
+                        } else if (nestSelectList[i].trim().equals("C")) {
                             mNestContentList.get(i).select = 2;
                         }
                         if (nestAnswerList[i].trim().equals("A")) {
                             mNestContentList.get(i).answer = 0;
                         } else if (nestAnswerList[i].trim().equals("B")) {
                             mNestContentList.get(i).answer = 1;
-                        } else {
+                        } else if (nestAnswerList[i].trim().equals("C")) {
                             mNestContentList.get(i).answer = 2;
                         }
                     } else {
                         //其他题
-                        if (nestSelectList[i].trim().equals("true")) {
+                        if (nestSelectList[i].trim().equals("A")) {
                             mNestContentList.get(i).select = 0;
                         } else {
                             mNestContentList.get(i).select = 1;

@@ -95,8 +95,8 @@ public class DoQuestionActivity extends BaseActivity implements
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         mTimer.cancel();
     }
 
@@ -351,6 +351,7 @@ public class DoQuestionActivity extends BaseActivity implements
                 intent.putStringArrayListExtra("mQuestionTypeList", mQuestionTypeList);
                 intent.putStringArrayListExtra("mQuestionContentList", mQuestionContentList);
                 startActivity(intent);
+                finish();
                 break;
         }
     }

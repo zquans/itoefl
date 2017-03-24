@@ -1,6 +1,7 @@
 package com.iyuce.itoefl.Control.Main;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -27,7 +28,7 @@ import com.iyuce.itoefl.View.NoScrollViewPager;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.request.BaseRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,6 +53,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private boolean isFirst = true;
     private long lastTime;
     private String check_download_time;
+
+    private ProgressDialog mProgressdialog;
 
     @Override
     public void onBackPressed() {
@@ -182,6 +185,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private void doDownLoad(final String path) {
         OkGo.get(mDecidedDownload.data)
                 .execute(new FileCallback(path, "") {
+                    @Override
+                    public void onBefore(BaseRequest request) {
+                        super.onBefore(request);
+                        mProgressdialog = new ProgressDialog(MainActivity.this);
+                        mProgressdialog.setTitle("更新题库数据，请稍候");
+                        mProgressdialog.setMessage("Loading...");
+                        mProgressdialog.setCanceledOnTouchOutside(false);
+                        mProgressdialog.show();
+                    }
+
+                    @Override
+                    public void onAfter(File file, Exception e) {
+                        super.onAfter(file, e);
+                        if (mProgressdialog != null) {
+                            mProgressdialog.cancel();
+                        }
+                    }
+
                     @Override
                     public void downloadProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
                         super.downloadProgress(currentSize, totalSize, progress, networkSpeed);

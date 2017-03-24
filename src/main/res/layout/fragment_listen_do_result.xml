@@ -63,6 +63,7 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:text="what is the class on "
             android:textColor="@color/TxtWhite"
+            android:textSize="@dimen/txt_size_eighteen"
             android:textStyle="bold" />
 
         <android.support.v7.widget.RecyclerView

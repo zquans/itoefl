@@ -12,7 +12,7 @@
         android:padding="8dp"
         android:text="this ons is a true"
         android:textColor="@color/TxtWhite"
-        android:textSize="18sp" />
+        android:textSize="@dimen/txt_size_eighteen" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,17 +23,17 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_height="32dp"
             android:layout_marginLeft="@dimen/activity_horizontal_margin">
 
             <ImageView
                 android:id="@+id/img_item_fragment_do_result_judge_a"
-                android:layout_width="24dp"
-                android:layout_height="24dp" />
+                android:layout_width="32dp"
+                android:layout_height="32dp" />
 
             <TextView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:gravity="center"
                 android:text="A"
                 android:textColor="@color/TxtWhite" />
@@ -42,25 +42,26 @@
                 android:id="@+id/txt_item_fragment_do_result_judge_a"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="28dp"
+                android:layout_marginLeft="36dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/TxtWhite" />
+                android:textColor="@color/TxtWhite"
+                android:textSize="16sp" />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_height="32dp"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginTop="4dp">
 
             <ImageView
                 android:id="@+id/img_item_fragment_do_result_judge_b"
-                android:layout_width="24dp"
-                android:layout_height="24dp" />
+                android:layout_width="32dp"
+                android:layout_height="32dp" />
 
             <TextView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:gravity="center"
                 android:text="B"
                 android:textColor="@color/TxtWhite" />
@@ -69,27 +70,28 @@
                 android:id="@+id/txt_item_fragment_do_result_judge_b"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="28dp"
+                android:layout_marginLeft="36dp"
                 android:gravity="center_vertical"
                 android:text="YES"
-                android:textColor="@color/TxtWhite" />
+                android:textColor="@color/TxtWhite"
+                android:textSize="16sp" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rlayout_item_fragment_do_result_judge_c"
             android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_height="32dp"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginTop="4dp">
 
             <ImageView
                 android:id="@+id/img_item_fragment_do_result_judge_c"
-                android:layout_width="24dp"
-                android:layout_height="24dp" />
+                android:layout_width="32dp"
+                android:layout_height="32dp" />
 
             <TextView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:gravity="center"
                 android:text="C"
                 android:textColor="@color/TxtWhite" />
@@ -98,10 +100,11 @@
                 android:id="@+id/txt_item_fragment_do_result_judge_c"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="28dp"
+                android:layout_marginLeft="36dp"
                 android:gravity="center_vertical"
                 android:text="YES"
-                android:textColor="@color/TxtWhite" />
+                android:textColor="@color/TxtWhite"
+                android:textSize="16sp" />
         </RelativeLayout>
 
     </LinearLayout>

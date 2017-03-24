@@ -110,10 +110,6 @@ public class FragmentDoResult extends Fragment {
 
     private void initData() {
         LogUtil.i("question_type = " + question_type + ", answer_select = " + answer_select + ",answer_real = " + answer_real);
-//        if (TextUtils.isEmpty(answer_select) || TextUtils.isEmpty(answer_real)) {
-//            answer_real = "[2,1,0,3]";
-////            return;
-//        }
         ListenResultContent result;
         switch (question_type) {
             case Constants.QUESTION_TYPE_NEST:
@@ -269,5 +265,4 @@ public class FragmentDoResult extends Fragment {
         mAdapter = new ResultContentAdapter(getActivity(), mResultList, question_type);
         mRecyclerView.setAdapter(mAdapter);
     }
-
 }

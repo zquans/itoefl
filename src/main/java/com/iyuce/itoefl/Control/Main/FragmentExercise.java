@@ -43,9 +43,9 @@ public class FragmentExercise extends Fragment implements DisCreteScrollAdapter.
 
     private void initView(View view) {
         mDisScrollview = (DiscreteScrollView) view.findViewById(R.id.discrete_scroll_fragment_exercise);
-        mImgList.add(R.mipmap.img_bg_golden_gate_bridge);
-        mImgList.add(R.mipmap.img_bg_sea_stone);
-        mImgList.add(R.mipmap.img_background_fog_city);
+        mImgList.add(R.mipmap.img_book_reading);
+        mImgList.add(R.mipmap.img_book_listening);
+        mImgList.add(R.mipmap.img_book_speaking);
         mAdapter = new DisCreteScrollAdapter(mImgList, getActivity());
         mAdapter.setOnScrollSelectListener(this);
         mDisScrollview.setAdapter(mAdapter);
@@ -75,9 +75,13 @@ public class FragmentExercise extends Fragment implements DisCreteScrollAdapter.
 
     @Override
     public void onSelect(int pos) {
-        if (decidedEnter())
-            getActivity().startActivity(new Intent(getActivity(), TopListeneringActivity.class));
-        else
-            ToastUtil.showMessage(getActivity(), "努力加载数据中,请稍候");
+        if (pos == 1) {
+            if (decidedEnter())
+                getActivity().startActivity(new Intent(getActivity(), TopListeneringActivity.class));
+            else
+                ToastUtil.showMessage(getActivity(), "努力加载数据中,请稍候");
+        } else {
+            ToastUtil.showMessage(getActivity(), "暂未开放该部分功能");
+        }
     }
 }

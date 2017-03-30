@@ -1,7 +1,6 @@
 package com.iyuce.itoefl.Control.Listening.Fragment;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,7 +30,7 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
 
     //题目序号、内容
     private TextView mTxtCurrentQuestion, mTxtTotalQuestion, mTxtQuestionContent;
-    private TextView mTxtProgressCurrent, mTxtProgressTotal,mTxtListenAgainHint;
+    private TextView mTxtProgressCurrent, mTxtProgressTotal, mTxtListenAgainHint;
     private ProgressBar mProgressBar;
     //可选视图
     private RelativeLayout mRelativeLayout;
@@ -40,6 +39,7 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
     private RecyclerView mRecyclerView;
     private ArrayList<String> mOptionContentList = new ArrayList<>();
     private ArrayList<String> mOptionCodeList = new ArrayList<>();
+    private ArrayList<Boolean> mOptionSelectedList = new ArrayList<>();
     private QuestionSingleAdapter mAdapter;
 
     private MediaPlayer mMediaPlayer;
@@ -211,7 +211,11 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
             return;
         }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new QuestionSingleAdapter(getActivity(), mOptionContentList);
+        //预先存一个数组，判断选项是否被选中
+        for (int i = 0; i < mOptionContentList.size(); i++) {
+            mOptionSelectedList.add(false);
+        }
+        mAdapter = new QuestionSingleAdapter(getActivity(), mOptionContentList, mOptionSelectedList);
         mAdapter.setOnQuestionItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         isFinish = true;
@@ -254,27 +258,16 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
     //Adapter提供给Fragment的方法
     @Override
     public void onQuestionClick(int pos) {
-        //单选
+        //单选答案
         answerDefault = mOptionCodeList.get(pos);
-        resetItemSelectStyle(pos);
-        LogUtil.i("Single mAnswer = " + mAnswer + " ,and you choose " + answerDefault);
-    }
-
-    /**
-     * 单选题时重设选中的Item及全部的Item
-     */
-    private void resetItemSelectStyle(int pos) {
-        TextView textView;
-        for (int i = 0; i < mOptionContentList.size(); i++) {
-            if (pos == i) {
-                textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_item_fragment_do_question);
-                textView.setTextColor(Color.parseColor("#FFFFFF"));
-                textView.setBackgroundResource(R.drawable.view_bound_pink_stroke_five);
-                continue;
-            }
-            textView = (TextView) mRecyclerView.getChildAt(i).findViewById(R.id.txt_item_fragment_do_question);
-            textView.setTextColor(Color.parseColor("#BBBBBB"));
-            textView.setBackgroundResource(R.color.Transparent_SixtyFive);
+        //样式
+        for (int i = 0; i < mOptionSelectedList.size(); i++) {
+            if (pos == i)
+                mOptionSelectedList.set(i, true);
+            else
+                mOptionSelectedList.set(i, false);
         }
+        mAdapter.notifyDataSetChanged();
+        LogUtil.i("Single mAnswer = " + mAnswer + " ,and you choose " + answerDefault);
     }
 }

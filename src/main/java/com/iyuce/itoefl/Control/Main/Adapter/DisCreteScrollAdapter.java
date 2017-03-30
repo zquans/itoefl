@@ -1,12 +1,13 @@
 package com.iyuce.itoefl.Control.Main.Adapter;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.iyuce.itoefl.R;
@@ -41,6 +42,17 @@ public class DisCreteScrollAdapter extends RecyclerView.Adapter<DisCreteScrollAd
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
+        switch (position) {
+            case 0:
+                holder.mTxt.setText("点击进入阅读");
+                break;
+            case 1:
+                holder.mTxt.setText("点击进入听力");
+                break;
+            case 2:
+                holder.mTxt.setText("点击进入口语");
+                break;
+        }
         Glide.with(mContext).load(mDataList.get(position)).into(holder.mImg);
         holder.mCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,13 +73,15 @@ public class DisCreteScrollAdapter extends RecyclerView.Adapter<DisCreteScrollAd
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        TextView mTxt;
         ImageView mImg;
-        CardView mCard;
+        FrameLayout mCard;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            mTxt = (TextView) itemView.findViewById(R.id.txt_fragment_show_flip);
             mImg = (ImageView) itemView.findViewById(R.id.img_fragment_show_flip);
-            mCard = (CardView) itemView.findViewById(R.id.card_fragment_show_flip);
+            mCard = (FrameLayout) itemView.findViewById(R.id.card_fragment_show_flip);
         }
     }
 

@@ -105,8 +105,8 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
         mAdapter.setOnPageItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
-        mTxtFinish.setText("已练习 ：" + local_practiced_count + " 篇");
-        mTxtTotal.setText("总共 :  " + mModuleList.size() + " 篇");
+        mTxtFinish.setText(getString(R.string.page_practiced, local_practiced_count));
+        mTxtTotal.setText(getString(R.string.page_total, mModuleList.size()));
 
         //网络已连接
         if (NetUtil.isConnected(this)) {
@@ -274,7 +274,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
             return;
         }
 
-        //TODO 如果新表修改了，则提示用户是否下载新表
+        //如果新表修改了，则提示用户是否下载新表
         String path = SDCardUtil.getExercisePath();
         String filePath = path + File.separator + Constants.SQLITE_DOWNLOAD;
         SQLiteDatabase database = DbUtil.getHelper(TopListeneringPageActivity.this, filePath).getWritableDatabase();
@@ -300,7 +300,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
                     .setNegativeButton("下载新题库", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            //TODO 下载新题，会出问题
+                            //下载新题
                             doDownLoad(pos, mUrlList.get(pos), local_path);
                         }
                     }).show();
@@ -316,7 +316,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar, menu);
+        getMenuInflater().inflate(R.menu.listtening_toolbar, menu);
         return true;
     }
 
@@ -328,7 +328,6 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
                 break;
             case R.id.download:
                 ToastUtil.showMessage(this, "begin download all");
-                String url;
                 String path;
                 for (int i = 0; i < mModuleList.size(); i++) {
                     //查对象属性,loading或者downloaded，则不下载

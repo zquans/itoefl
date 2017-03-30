@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:padding="8dp"
-            android:text="Listen again to part of the lecture. Then answer the question"
+            android:text="@string/listen_again_to_part_of"
             android:textColor="@color/TxtWhite"
             android:textStyle="bold" />
 

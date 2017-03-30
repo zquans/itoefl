@@ -136,14 +136,14 @@ public class DoQuestionActivity extends BaseActivity implements
         //数据源 //TODO 这些其实也可以封装在DbUtil中返回一个对象
         SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
         //传递给Fragment的参数
-        mQuestionIdList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.ID);
-        mMasterIdList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.MasterId);
-        mQuestionTypeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.QuestionType);
-        mQuestionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.Content);
-        mSortList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.Sort);
-        mMusicQuestionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.MusicQuestion);
+        mQuestionIdList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, Constants.Sort + " ASC", Constants.ID);
+        mMasterIdList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION,  Constants.Sort + " ASC", Constants.MasterId);
+        mQuestionTypeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION,  Constants.Sort + " ASC", Constants.QuestionType);
+        mQuestionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION,  Constants.Sort + " ASC", Constants.Content);
+        mSortList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION,  Constants.Sort + " ASC", Constants.Sort);
+        mMusicQuestionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION,  Constants.Sort + " ASC", Constants.MusicQuestion);
         //这个直接传给DoResult就好
-        mMusicAnswerList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, null, Constants.MusicAnswer);
+        mMusicAnswerList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION,  Constants.Sort + " ASC", Constants.MusicAnswer);
         mDatabase.close();
 
         TOTAL_QUESTION_COUNT = String.valueOf(mSortList.size());

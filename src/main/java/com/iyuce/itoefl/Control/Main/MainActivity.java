@@ -103,7 +103,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mViewPager.setAdapter(mMyTabAdapter);
         mViewPager.setOffscreenPageLimit(mFragmentList.size() - 1);
 
-        //TODO 通过Http 决定是否 下载,1.是则下载，2.否，则判断是否有文件，无则下载
+        // 通过Http 决定是否 下载,1.是则下载，2.否，则判断是否有文件，无则下载
         check_download_time = PreferenceUtil.getSharePre(this).getString(Constants.REQUEST_TIME_MAIN_DATABASE, "");
         requestIfDown(check_download_time);
     }
@@ -289,8 +289,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
 
         @Override
-
-
         public Fragment getItem(int position) {
             return mFragmentList.get(position);
         }

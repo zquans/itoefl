@@ -30,7 +30,7 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
 
     //题目序号、内容
     private TextView mTxtCurrentQuestion, mTxtTotalQuestion, mTxtQuestionContent, mTxtQuestionType;
-    private TextView mTxtProgressCurrent, mTxtProgressTotal;
+    private TextView mTxtProgressCurrent, mTxtProgressTotal, mTxtListenAgainHint;
     private ProgressBar mProgressBar;
     //可选视图
     private RelativeLayout mRelativeLayout;
@@ -143,6 +143,7 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
 
         mTxtCurrentQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
         mTxtTotalQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
+        mTxtListenAgainHint = (TextView) view.findViewById(R.id.txt_fragment_do_question_listen_again);
         mTxtQuestionContent = (TextView) view.findViewById(R.id.txt_fragment_do_result_title);
         mTxtQuestionType = (TextView) view.findViewById(R.id.txt_fragment_do_result_question_type);
         mTxtProgressCurrent = (TextView) view.findViewById(R.id.txt_fragment_do_question_current);
@@ -156,6 +157,8 @@ public class FragmentDoQuestionMulti extends FragmentDoQuestionDefault implement
         if (current_music.contains(",")) {
             isOnlyAudio = false;
             mAudioList = current_music.split(",");
+            String type = local_paper_code.contains("L") ? "Lecture" : "Conversation";
+            mTxtListenAgainHint.setText(getString(R.string.listen_again_to_part_of, type));
         } else {
             mRelativeLayout.setVisibility(View.GONE);
         }

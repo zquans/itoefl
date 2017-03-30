@@ -17,8 +17,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.Common.Constants;
-import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Control.Listening.Adapter.QuestionSortAdapter;
+import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.TimeUtil;
@@ -33,7 +33,7 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
 
     //题目序号、内容
     private TextView mTxtCurrentQuestion, mTxtTotalQuestion, mTxtQuestionContent, mTxtQuestionType;
-    private TextView mTxtProgressCurrent, mTxtProgressTotal;
+    private TextView mTxtProgressCurrent, mTxtProgressTotal, mTxtListenAgainHint;
     private ProgressBar mProgressBar;
     //可选视图
     private RelativeLayout mRelativeLayout;
@@ -151,6 +151,7 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
 
         mTxtCurrentQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
         mTxtTotalQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
+        mTxtListenAgainHint = (TextView) view.findViewById(R.id.txt_fragment_do_question_listen_again);
         mTxtQuestionContent = (TextView) view.findViewById(R.id.txt_fragment_do_result_title);
         mTxtQuestionType = (TextView) view.findViewById(R.id.txt_fragment_do_result_question_type);
         mTxtProgressCurrent = (TextView) view.findViewById(R.id.txt_fragment_do_question_current);
@@ -163,6 +164,8 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
         if (current_music.contains(",")) {
             isOnlyAudio = false;
             mAudioList = current_music.split(",");
+            String type = local_paper_code.contains("L") ? "Lecture" : "Conversation";
+            mTxtListenAgainHint.setText(getString(R.string.listen_again_to_part_of, type));
         } else {
             mRelativeLayout.setVisibility(View.GONE);
         }
@@ -171,7 +174,7 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
         mTxtCurrentQuestion.setText(current_question);
         mTxtTotalQuestion.setText(total_question);
         mTxtQuestionContent.setText(question_content);
-        mTxtQuestionType.setText("本题是排序题,长按高亮后拖动选项排序");
+        mTxtQuestionType.setText(R.string.question_hint_sort);
         mTxtQuestionType.setVisibility(View.VISIBLE);
 
         //MediaPlayer

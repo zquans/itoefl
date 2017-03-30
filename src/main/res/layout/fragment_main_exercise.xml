@@ -1,70 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:gravity="center">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar"
+    <ImageView
+        android:id="@+id/img_fragment_exercise_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:layout_height="200dp"
+        android:background="@mipmap/img_bg_header_sea_side"
+        android:fitsSystemWindows="true"
+        android:scaleType="fitStart"
+        app:layout_collapseMode="parallax" />
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:title="我预测托福">
-
-            <ImageView
-                android:id="@+id/img_fragment_exercise_header"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@mipmap/img_bg_header_sea_side"
-                android:fitsSystemWindows="true"
-                android:scaleType="fitStart"
-                app:layout_collapseMode="parallax" />
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin" />
-
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <com.yarolegovich.discretescrollview.DiscreteScrollView
-            android:id="@+id/discrete_scroll_fragment_exercise"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="@dimen/activity_horizontal_double_padding"
-            android:paddingRight="@dimen/activity_horizontal_double_padding"
-            android:paddingTop="88dp"
-            app:dsv_orientation="horizontal" />
-
-    </android.support.v4.widget.NestedScrollView>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_fragment_exercise"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:src="@mipmap/icon_data_static"
-        app:backgroundTint="@color/Pink"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|end"
-        app:rippleColor="@color/Ripple" />
+        android:layout_alignBottom="@+id/img_fragment_exercise_header"
+        android:layout_marginBottom="@dimen/all_margin_double"
+        android:layout_marginLeft="@dimen/all_margin_double"
+        android:text="我预测托福"
+        android:textColor="@color/TxtWhite"
+        android:textSize="38sp" />
 
-</android.support.design.widget.CoordinatorLayout>
+    <com.yarolegovich.discretescrollview.DiscreteScrollView
+        android:id="@+id/discrete_scroll_fragment_exercise"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/img_fragment_exercise_header"
+        android:paddingLeft="@dimen/activity_horizontal_double_padding"
+        android:paddingRight="@dimen/activity_horizontal_double_padding"
+        android:paddingTop="88dp"
+        app:dsv_orientation="horizontal" />
+
+</RelativeLayout>

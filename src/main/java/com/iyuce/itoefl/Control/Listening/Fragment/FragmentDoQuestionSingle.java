@@ -31,7 +31,7 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
 
     //题目序号、内容
     private TextView mTxtCurrentQuestion, mTxtTotalQuestion, mTxtQuestionContent;
-    private TextView mTxtProgressCurrent, mTxtProgressTotal;
+    private TextView mTxtProgressCurrent, mTxtProgressTotal,mTxtListenAgainHint;
     private ProgressBar mProgressBar;
     //可选视图
     private RelativeLayout mRelativeLayout;
@@ -144,6 +144,7 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
 
         mTxtCurrentQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_middle);
         mTxtTotalQuestion = (TextView) view.findViewById(R.id.txt_fragment_do_result_page_right);
+        mTxtListenAgainHint = (TextView) view.findViewById(R.id.txt_fragment_do_question_listen_again);
         mTxtQuestionContent = (TextView) view.findViewById(R.id.txt_fragment_do_result_title);
         mTxtProgressCurrent = (TextView) view.findViewById(R.id.txt_fragment_do_question_current);
         mTxtProgressTotal = (TextView) view.findViewById(R.id.txt_fragment_do_question_total);
@@ -155,7 +156,8 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
         if (current_music.contains(",")) {
             isOnlyAudio = false;
             mAudioList = current_music.split(",");
-            LogUtil.e("mAudioList = " + mAudioList.length);
+            String type = local_paper_code.contains("L") ? "Lecture" : "Conversation";
+            mTxtListenAgainHint.setText(getString(R.string.listen_again_to_part_of, type));
         } else {
             mRelativeLayout.setVisibility(View.GONE);
         }

@@ -2,11 +2,8 @@ package com.iyuce.itoefl.Control.Main;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -30,11 +27,7 @@ import java.util.ArrayList;
 /**
  * Created by LeBang on 2017/1/22
  */
-public class FragmentExercise extends Fragment
-        implements View.OnClickListener, DisCreteScrollAdapter.OnScrollSelectListener {
-
-    private CollapsingToolbarLayout mCollapLayout;
-    private FloatingActionButton mFloatBtn;
+public class FragmentExercise extends Fragment implements DisCreteScrollAdapter.OnScrollSelectListener {
 
     private DiscreteScrollView mDisScrollview;
     private DisCreteScrollAdapter mAdapter;
@@ -49,16 +42,7 @@ public class FragmentExercise extends Fragment
     }
 
     private void initView(View view) {
-        mCollapLayout = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar_layout);
-        //改变字体颜色
-        mCollapLayout.setExpandedTitleColor(Color.parseColor("#FCFCFC"));
-        mCollapLayout.setCollapsedTitleTextColor(Color.parseColor("#FF3370"));
-
-        mFloatBtn = (FloatingActionButton) view.findViewById(R.id.fab_fragment_exercise);
-        mFloatBtn.setOnClickListener(this);
-
         mDisScrollview = (DiscreteScrollView) view.findViewById(R.id.discrete_scroll_fragment_exercise);
-
         mImgList.add(R.mipmap.img_bg_golden_gate_bridge);
         mImgList.add(R.mipmap.img_bg_sea_stone);
         mImgList.add(R.mipmap.img_background_fog_city);
@@ -87,14 +71,6 @@ public class FragmentExercise extends Fragment
             return false;
         }
         return true;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (decidedEnter())
-            getActivity().startActivity(new Intent(getActivity(), TopListeneringActivity.class));
-        else
-            ToastUtil.showMessage(getActivity(), "努力加载数据中,请稍候");
     }
 
     @Override

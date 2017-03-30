@@ -66,7 +66,7 @@ public class FragmentOrder extends BaseFragment {
         String tpo_path = path + File.separator + Constants.SQLITE_TPO;
 
         SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), tpo_path).getWritableDatabase();
-        ArrayList<String> nameList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER, null, Constants.PaperName);
+        ArrayList<String> nameList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER, Constants.PaperCode + " ASC", Constants.PaperName);
         mDatabase.close();
 
         //提供module 和 progress

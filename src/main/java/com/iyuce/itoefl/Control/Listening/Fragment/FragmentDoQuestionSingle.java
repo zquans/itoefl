@@ -31,7 +31,7 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
 
     //题目序号、内容
     private TextView mTxtCurrentQuestion, mTxtTotalQuestion, mTxtQuestionContent;
-    private TextView mTxtProgressCurrent, mTxtProgressTotal,mTxtListenAgainHint;
+    private TextView mTxtProgressCurrent, mTxtProgressTotal, mTxtListenAgainHint;
     private ProgressBar mProgressBar;
     //可选视图
     private RelativeLayout mRelativeLayout;

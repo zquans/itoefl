@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseActivity;
+import com.iyuce.itoefl.Control.Listening.Fragment.FragmentClassify;
 import com.iyuce.itoefl.Control.Listening.Fragment.FragmentOrder;
 import com.iyuce.itoefl.R;
 
@@ -64,15 +65,15 @@ public class TopListeneringActivity extends BaseActivity {
         });
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager_activity_top_listenering);
-//        mTab = (TabLayout) findViewById(R.id.tab_activity_top_listenering);
-//        mTabList.add("顺序");
-//        mTabList.add("分类");
+        mTab = (TabLayout) findViewById(R.id.tab_activity_top_listenering);
+        mTabList.add("顺序");
+        mTabList.add("分类");
         mFragmentList.add(new FragmentOrder());
-//        mFragmentList.add(new FragmentClassify());
+        mFragmentList.add(new FragmentClassify());
         mAdapter = new TabTopListeneringAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
-//        mTab.setTabMode(TabLayout.MODE_FIXED);
-//        mTab.setupWithViewPager(mViewPager);
+        mTab.setTabMode(TabLayout.MODE_FIXED);
+        mTab.setupWithViewPager(mViewPager);
     }
 
     private class TabTopListeneringAdapter extends FragmentPagerAdapter {
@@ -80,10 +81,10 @@ public class TopListeneringActivity extends BaseActivity {
             super(fm);
         }
 
-//        @Override
-//        public CharSequence getPageTitle(int position) {
-//            return mTabList.get(position);
-//        }
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mTabList.get(position);
+        }
 
         @Override
         public Fragment getItem(int position) {

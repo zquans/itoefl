@@ -1,6 +1,5 @@
 package com.iyuce.itoefl.Utils;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -35,13 +34,12 @@ import okhttp3.Call;
 import okhttp3.Response;
 
 /**
- * @author LeBang
- * @Description:APP检测自动升级
- * @date 2016-9-30
+ * LeBang
+ * 2016-9-30
  */
 public class UpdateManager {
 
-    private ProgressBar pb;
+    private ProgressBar mProgressBar;
     private Dialog mDownLoadDialog;
 
     private static final int DOWNLOADING = 1;
@@ -60,12 +58,11 @@ public class UpdateManager {
         mContext = context;
     }
 
-    @SuppressLint("HandlerLeak")
     private Handler mUpdateProgressHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case DOWNLOADING:
-                    pb.setProgress(mProgress);
+                    mProgressBar.setProgress(mProgress);
                     break;
                 case DOWNLOAD_FINISH:
                     mDownLoadDialog.dismiss();
@@ -88,18 +85,16 @@ public class UpdateManager {
     private void doCheckSuccess(String s) {
         try {
 //            String parseString = new String(jsonString.getBytes("ISO-8859-1"), "utf-8");
-            JSONObject jsonObject;
-            jsonObject = new JSONObject(s);
-            int result = jsonObject.getInt("code");
-            if (result == 0) {
-                JSONArray data = jsonObject.getJSONArray("data");
-                jsonObject = data.getJSONObject(0);
-                mVersion = jsonObject.getString("version");
-                mVersionURL = jsonObject.getString("apkurl");
-                mMessage = jsonObject.getString("detail");
-//					Log.e("mVersionURL", "VersionURL = " + mVersionURL);
+            JSONObject obj;
+            obj = new JSONObject(s);
+            if (obj.getString(Constants.CODE_HTTP).equals(Constants.CODE_HTTP_SUCCESS)) {
+                JSONArray data = obj.getJSONArray(Constants.DATA_HTTP);
+                obj = data.getJSONObject(0);
+                mVersion = obj.getString("version");
+                mVersionURL = obj.getString("apkurl");
+                mMessage = obj.getString("detail");
+//                LogUtil.e("URL = " + mVersionURL + ",mVersion =" + mVersion + ",mMessage = " + mMessage);
             }
-//				Log.e("version", "远程version = " + mVersion);
             if (isUpdate()) {
                 showNoticeDialog();
             } else {
@@ -110,27 +105,23 @@ public class UpdateManager {
         }
     }
 
-    //boolean比较本地版本是否需要更新
+    //比较本地版本是否需要更新
     public boolean isUpdate() {
         float serverVersion = Float.parseFloat(mVersion);
-        //将该数据保存如sharepreference，留用
-        PreferenceUtil.save(mContext, "serverVersion", String.valueOf(serverVersion));
+        PreferenceUtil.save(mContext, Constants.Preference_Version_Service, String.valueOf(serverVersion));
         String localVersion = null;
 
         try {
-            //获取versionName作比较
+            //调用系统方法获取versionName作比较
             localVersion = mContext.getPackageManager().getPackageInfo(Constants.AppPackageName, 0).versionName;
-            //将该数据保存如sharepreference，留用
-            PreferenceUtil.save(mContext, "localVersion", localVersion);
-//			Log.e("localVersion", "localVersion = " + localVersion);
+            PreferenceUtil.save(mContext, Constants.Preference_Version_Local, localVersion);
+            LogUtil.e("localVersion = " + localVersion + ",serverVersion = " + serverVersion);
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
         return serverVersion > Float.parseFloat(localVersion);
     }
 
-    @SuppressLint("InlinedApi")
-    @SuppressWarnings("deprecation")
     protected void showNoticeDialog() {     //show 弹窗供选择是否更新
         Builder builder = new Builder(mContext, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
         builder.setTitle("发现新版本");
@@ -151,14 +142,12 @@ public class UpdateManager {
         builder.create().show();
     }
 
-    @SuppressWarnings("deprecation")
-    @SuppressLint({"InflateParams", "InlinedApi"})
     protected void showDownloadDialog() {     //显示下载进度
         Builder builder = new Builder(mContext, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
         builder.setTitle("下载中");
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.style_dialog_progress, null);
-        pb = (ProgressBar) view.findViewById(R.id.update_progress);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.update_progress);
         builder.setView(view);
         builder.setNegativeButton("取消下载", new OnClickListener() {
             @Override
@@ -228,11 +217,11 @@ public class UpdateManager {
         if (!apkFile.exists()) {
             return;
         }
-        Intent it = new Intent(Intent.ACTION_VIEW);
-        it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Uri uri = Uri.parse("file://" + apkFile.toString());
-        it.setDataAndType(uri, "application/vnd.android.package-archive");
-        mContext.startActivity(it);
+        intent.setDataAndType(uri, "application/vnd.android.package-archive");
+        mContext.startActivity(intent);
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 }

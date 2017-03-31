@@ -8,20 +8,27 @@ public class Constants {
     //权限
     public static final int CODE_WRITE_EXTERNAL_STORAGE = 0x0002;
 
-    //网络
+    //JSON模式
     public static final String CODE_HTTP_SUCCESS = "0";
+    public static final String CODE_HTTP = "code";
+    public static final String DATA_HTTP = "data";
+    public static final String MESSAGE_HTTP = "message";
+
+    //Preference
+    public static final String Preference_Version_Service = "serverVersion";
+    public static final String Preference_Version_Local = "localVersion";
 
     public static final String URL_DOWNLOAD_MAIN_DATABASE = "http://tpo.iyuce.com/Content/upload/TPO/tpo.zip";
     public static final String URL_TPO_MAIN_STATUS = "http://api.iyuce.com/v1/tpo/gettpomainstatus?updatetime=";
     public static final String URL_WEB_ONE_TO_ONE = "http://www.iyuce.com/m/appjxy.html";
     public static final String URL_TO_SUGGESTION = "http://api.iyuce.com/v1/service/feedback";
-    public static final String URL_CHECK_UPDATE = "http://www.iyuce.com/Scripts/andoird.json";
+    public static final String URL_CHECK_UPDATE = "http://www.iyuce.com/Scripts/andoird_toefl.json";
 
     //Share Preference 字段
     public static final String REQUEST_TIME_MAIN_DATABASE = "main_database_request_date";
 
     //APP包名
-    public static final String AppPackageName = "com.woyuce.activity";
+    public static final String AppPackageName = "com.iyuce.itoefl";
     public static final String AppName = "ITOEFL";
 
     //音频handlerDelay时间

@@ -10,10 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Control.Mine.AboutUsActivity;
 import com.iyuce.itoefl.Control.Mine.ManageDownLoadActivity;
 import com.iyuce.itoefl.Control.Mine.SuggestionActivity;
+import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.UpdateManager;
 
 /**

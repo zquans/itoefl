@@ -18,8 +18,7 @@ import android.widget.ProgressBar;
 
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.R;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
+import com.iyuce.itoefl.Utils.Interface.Http.RequestInterface;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -73,13 +72,12 @@ public class UpdateManager {
     };
 
     public void checkUpdate() {
-        OkGo.get(Constants.URL_CHECK_UPDATE)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        doCheckSuccess(s);
-                    }
-                });
+        HttpUtil.get(Constants.URL_CHECK_UPDATE, new RequestInterface() {
+            @Override
+            public void doSuccess(String result, Call call, Response response) {
+                doCheckSuccess(result);
+            }
+        });
     }
 
     private void doCheckSuccess(String s) {

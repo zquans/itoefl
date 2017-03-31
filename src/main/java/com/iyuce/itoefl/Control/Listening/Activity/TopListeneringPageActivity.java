@@ -23,7 +23,7 @@ import com.iyuce.itoefl.Model.UserOprate;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.HttpUtil;
-import com.iyuce.itoefl.Utils.Interface.HttpInterface;
+import com.iyuce.itoefl.Utils.Interface.Http.DownLoadInterface;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.NetUtil;
 import com.iyuce.itoefl.Utils.SDCardUtil;
@@ -184,7 +184,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
      * 给定几个参数，position,Url,path
      */
     private void doDownLoad(final int pos, String url, final String path) {
-        HttpUtil.downLoad(url, path, new HttpInterface() {
+        HttpUtil.downLoad(url, path, new DownLoadInterface() {
             @Override
             public void onBefore() {
                 mUserOprateList.get(pos).loading = Constants.TRUE;

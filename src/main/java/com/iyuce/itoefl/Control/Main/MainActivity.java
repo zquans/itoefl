@@ -19,16 +19,15 @@ import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.Model.DecidedDownload;
 import com.iyuce.itoefl.R;
+import com.iyuce.itoefl.Utils.HttpUtil;
+import com.iyuce.itoefl.Utils.Interface.Http.DownLoadInterface;
+import com.iyuce.itoefl.Utils.Interface.Http.RequestInterface;
 import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.PreferenceUtil;
 import com.iyuce.itoefl.Utils.SDCardUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 import com.iyuce.itoefl.Utils.ZipUtil;
 import com.iyuce.itoefl.View.NoScrollViewPager;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.FileCallback;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.request.BaseRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -110,30 +109,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private void requestIfDown(String check_download_time) {
         LogUtil.w("check_download_time = " + check_download_time);
-        OkGo.post(Constants.URL_TPO_MAIN_STATUS + check_download_time)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        try {
-                            JSONObject obj;
-                            obj = new JSONObject(s);
-                            mDecidedDownload.code = obj.getString("code");
-                            mDecidedDownload.data = obj.getString("data");
-                            mDecidedDownload.message = obj.getString("message");
-                            mDecidedDownload.request_date = obj.getString("request_date");
-                            if (mDecidedDownload.code.equals(Constants.CODE_HTTP_SUCCESS)) {
-                                //需要下载，无论存在文件与否，都去下载
-                                LogUtil.i("接口说要下载");
-                                downloadAlertDialog();
-                            } else {
-                                //不需要下载，依然去判断是否存在文件
-                                decideDownload(false);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+        HttpUtil.post(Constants.URL_TPO_MAIN_STATUS + check_download_time, null, new RequestInterface() {
+            @Override
+            public void doSuccess(String result, Call call, Response response) {
+                try {
+                    JSONObject obj;
+                    obj = new JSONObject(result);
+                    mDecidedDownload.code = obj.getString(Constants.CODE_HTTP);
+                    mDecidedDownload.data = obj.getString(Constants.DATA_HTTP);
+                    mDecidedDownload.message = obj.getString(Constants.MESSAGE_HTTP);
+                    mDecidedDownload.request_date = obj.getString("request_date");
+                    if (mDecidedDownload.code.equals(Constants.CODE_HTTP_SUCCESS)) {
+                        //需要下载，无论存在文件与否，都去下载
+                        LogUtil.i("接口说要下载");
+                        downloadAlertDialog();
+                    } else {
+                        //不需要下载，依然去判断是否存在文件
+                        decideDownload(false);
                     }
-                });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
@@ -183,37 +181,34 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void doDownLoad(final String path) {
-        OkGo.get(mDecidedDownload.data)
-                .execute(new FileCallback(path, "") {
-                    @Override
-                    public void onBefore(BaseRequest request) {
-                        super.onBefore(request);
-                        mProgressdialog = new ProgressDialog(MainActivity.this);
-                        mProgressdialog.setTitle("更新题库数据，请稍候");
-                        mProgressdialog.setMessage("Loading...");
-                        mProgressdialog.setCanceledOnTouchOutside(false);
-                        mProgressdialog.show();
-                    }
+        HttpUtil.downLoad(mDecidedDownload.data, path, new DownLoadInterface() {
+            @Override
+            public void inProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
 
-                    @Override
-                    public void onAfter(File file, Exception e) {
-                        super.onAfter(file, e);
-                        if (mProgressdialog != null) {
-                            mProgressdialog.cancel();
-                        }
-                    }
+            }
 
-                    @Override
-                    public void downloadProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
-                        super.downloadProgress(currentSize, totalSize, progress, networkSpeed);
-                    }
+            @Override
+            public void doSuccess(File file, Call call, Response response) {
+                unZipFile(file, path);
+                PreferenceUtil.save(MainActivity.this, Constants.REQUEST_TIME_MAIN_DATABASE, mDecidedDownload.request_date);
+            }
 
-                    @Override
-                    public void onSuccess(File file, Call call, Response response) {
-                        unZipFile(file, path);
-                        PreferenceUtil.save(MainActivity.this, Constants.REQUEST_TIME_MAIN_DATABASE, mDecidedDownload.request_date);
-                    }
-                });
+            @Override
+            public void onBefore() {
+                mProgressdialog = new ProgressDialog(MainActivity.this);
+                mProgressdialog.setTitle("更新题库数据，请稍候");
+                mProgressdialog.setMessage("Loading...");
+                mProgressdialog.setCanceledOnTouchOutside(false);
+                mProgressdialog.show();
+            }
+
+            @Override
+            public void onAfter() {
+                if (mProgressdialog != null) {
+                    mProgressdialog.cancel();
+                }
+            }
+        });
     }
 
     private void unZipFile(File file, String path) {

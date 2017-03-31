@@ -1,4 +1,4 @@
-package com.iyuce.itoefl.Utils.Interface;
+package com.iyuce.itoefl.Utils.Interface.Http;
 
 import java.io.File;
 
@@ -8,7 +8,7 @@ import okhttp3.Response;
 /**
  * Created by LeBang on 2017/2/16
  */
-public interface HttpInterface {
+public interface DownLoadInterface {
 
     void inProgress(long currentSize, long totalSize, float progress, long networkSpeed);
 

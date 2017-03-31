@@ -7,8 +7,13 @@ import java.io.Serializable;
  */
 public class ListenModule implements Serializable {
 
+    //Module和Classify通用属性
     public String name;
     public String practiced_count;
     public String total_count;
 
+    //Classify 特有属性
+    public String code_name;
+    public String code;
+    public String parent;
 }

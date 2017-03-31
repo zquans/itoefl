@@ -1,16 +1,12 @@
 package com.iyuce.itoefl.Control.Listening.Activity;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +35,7 @@ public class TopListeneringActivity extends BaseActivity {
     private TabTopListeneringAdapter mAdapter;
     private ArrayList<Fragment> mFragmentList = new ArrayList<>();
 
-    private CollapsingToolbarLayout mCollapLayout;
+//    private CollapsingToolbarLayout mCollapLayout;
 
     @Override
     protected void onRestart() {
@@ -54,14 +50,13 @@ public class TopListeneringActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_top_listenering);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.mipmap.icon_back);
-        }
-
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        ActionBar actionBar = getSupportActionBar();
+//        if (actionBar != null) {
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setHomeAsUpIndicator(R.mipmap.icon_back);
+//        }
         initData();
         initView();
     }
@@ -106,22 +101,21 @@ public class TopListeneringActivity extends BaseActivity {
         }
 
         //ViewPage 的Data
-        mTabList.add("顺序");
-        mTabList.add("分类");
-        FragmentOrder mFragment = new FragmentOrder();
         Bundle bundle = new Bundle();
         bundle.putSerializable("mModuleeList", mModuleeList);
-        mFragment.setArguments(bundle);
-        mFragmentList.add(mFragment);
-        mFragmentList.add(new FragmentClassify());
+        FragmentOrder mFragmentOrder = new FragmentOrder();
+        mFragmentOrder.setArguments(bundle);
+        mFragmentList.add(mFragmentOrder);
+        FragmentClassify mFragmentClssify = new FragmentClassify();
+        mFragmentClssify.setArguments(bundle);
+        mFragmentList.add(mFragmentClssify);
     }
 
     private void initView() {
-        mCollapLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
-        //改变字体颜色
-        mCollapLayout.setExpandedTitleColor(Color.parseColor("#FCFCFC"));
-        mCollapLayout.setCollapsedTitleTextColor(Color.parseColor("#FF3370"));
-
+//        //改变字体颜色
+//        mCollapLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
+//        mCollapLayout.setExpandedTitleColor(Color.parseColor("#FCFCFC"));
+//        mCollapLayout.setCollapsedTitleTextColor(Color.parseColor("#FF3370"));
         TextView textView = (TextView) findViewById(R.id.txt_header_title_item);
         textView.setText("TPO \r听力真题");
         findViewById(R.id.txt_header_title_menu).setVisibility(View.GONE);
@@ -134,6 +128,8 @@ public class TopListeneringActivity extends BaseActivity {
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager_activity_top_listenering);
         mTab = (TabLayout) findViewById(R.id.tab_activity_top_listenering);
+        mTabList.add("顺序");
+        mTabList.add("分类");
 
         mAdapter = new TabTopListeneringAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);

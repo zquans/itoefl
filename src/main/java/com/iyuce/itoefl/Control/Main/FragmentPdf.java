@@ -17,12 +17,11 @@ import com.iyuce.itoefl.Utils.PreferenceUtil;
  */
 public class FragmentPdf extends Fragment implements OnPageChangeListener {
 
-    private PDFView mPdfView;
-    private int pdf_book_mark = 1;
+    private int pdf_book_mark = 0;
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onStop() {
+        super.onStop();
         PreferenceUtil.save(getActivity(), "pdf_book_mark", pdf_book_mark);
     }
 
@@ -33,15 +32,13 @@ public class FragmentPdf extends Fragment implements OnPageChangeListener {
     }
 
     private void initView(View view) {
-        mPdfView = (PDFView) view.findViewById(R.id.pdf_fragment);
+        PDFView mPdfView = (PDFView) view.findViewById(R.id.pdf_fragment);
         mPdfView.fromAsset("sample.pdf")
-                .defaultPage(PreferenceUtil.getSharePre(getActivity()).getInt("pdf_book_mark", 1))
+                .defaultPage(PreferenceUtil.getSharePre(getActivity()).getInt("pdf_book_mark", 0))
+                .enableSwipe(true)
+                .swipeHorizontal(false)
+                .enableDoubletap(true)
                 .onPageChange(this)
-//                .swipeVertical(true)
-//                .showMinimap(false)
-                .enableAnnotationRendering(true)
-//                .onRender(this)
-//                .onLoad(this)
                 .load();
     }
 

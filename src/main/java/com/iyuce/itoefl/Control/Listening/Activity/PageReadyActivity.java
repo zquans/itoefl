@@ -58,7 +58,7 @@ public class PageReadyActivity extends BaseActivity {
     private void initView() {
         local_path = getIntent().getStringExtra("local_path");
         //不从表中查，直接拼装上一级的section和module
-        String local_section = getIntent().getStringExtra("local_section");
+        String local_section = getIntent().getStringExtra("local_code");
         String local_module = getIntent().getStringExtra("local_module");
         local_paper_code = local_section + "_" + local_module;
         local_music_question = getIntent().getStringExtra("local_music_question"); //主音频名称

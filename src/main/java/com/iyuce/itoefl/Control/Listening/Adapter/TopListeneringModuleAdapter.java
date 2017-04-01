@@ -38,7 +38,7 @@ public class TopListeneringModuleAdapter extends RecyclerView.Adapter<TopListene
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, final int position) {
-        holder.mItemTxtTitle.setText(mList.get(position).name.replace("TPO", ""));
+        holder.mItemTxtTitle.setText(mList.get(position).name);
         if (!TextUtils.isEmpty(mList.get(position).practiced_count)
                 && !TextUtils.isEmpty(mList.get(position).total_count)
                 && Integer.parseInt(mList.get(position).practiced_count) > 0) {

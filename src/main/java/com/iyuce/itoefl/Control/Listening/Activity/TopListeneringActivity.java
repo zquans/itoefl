@@ -115,6 +115,7 @@ public class TopListeneringActivity extends BaseActivity {
                 mDatabaseDownload.close();
             }
 
+            //TODO classify的进度
 //            SQLiteDatabase mDatabaseTpo = DbUtil.getHelper(this, tpo_path).getWritableDatabase();
 ////            String isNone_Tpo = DbUtil.queryToString(mDatabaseTpo, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER_RULE);
 ////            if (!TextUtils.equals(isNone_Tpo, Constants.NONE)) {

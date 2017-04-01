@@ -47,7 +47,7 @@ public class TopListeneringPageAdapter extends RecyclerView.Adapter<TopListeneri
         } else {
             replace_string = mDataList.get(position).module.replace("L", "Lecture ");
         }
-        holder.mTxtContent.setText(replace_string);
+        holder.mTxtContent.setText(mDataList.get(position).section + "\r" + replace_string);
         holder.mTxtContentState.setVisibility(View.VISIBLE);
         if (mDataList.get(position).download.equals(Constants.TRUE) && mDataList.get(position).practiced.equals(Constants.TRUE)) {
             holder.mImgDownloadReady.setVisibility(View.INVISIBLE);

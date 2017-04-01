@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseFragment;
 import com.iyuce.itoefl.Control.Listening.Adapter.TopListeneringModuleAdapter;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
  */
 public class FragmentOrder extends BaseFragment {
 
-    private ArrayList<ListenModule> mModuleeList;
+    private ArrayList<ListenModule> mModuleList;
     private TopListeneringModuleAdapter mAdapter;
 
     @Nullable
@@ -40,10 +41,13 @@ public class FragmentOrder extends BaseFragment {
 
     private void initView(View view) {
         //数据
-        mModuleeList = (ArrayList<ListenModule>) getArguments().get("mModuleeList");
+        mModuleList = (ArrayList<ListenModule>) getArguments().get("mModuleList");
         //视图
+        TextView mTxtTitle = (TextView) view.findViewById(R.id.txt_fragment_top_listenering_order);
+        mTxtTitle.setVisibility(View.VISIBLE);
+        mTxtTitle.setText(getString(R.string.count_tpo, mModuleList.get(mModuleList.size() - 1).name));
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_top_listenering_order);
-        mAdapter = new TopListeneringModuleAdapter(getActivity(), mModuleeList);
+        mAdapter = new TopListeneringModuleAdapter(getActivity(), mModuleList);
         GridLayoutManager mGridLayoutManager = new GridLayoutManager(getActivity(), 4);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecyclerView.setHasFixedSize(true);

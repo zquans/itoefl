@@ -65,6 +65,7 @@ public class Constants {
     //Exercise 相关的表
     public static final String TABLE_SQLITE_MASTER = "sqlite_master";   //sql系统表
     public static final String TABLE_PAPER = "Iup_TpoPaper";
+    public static final String TABLE_CLASS = "Iup_TpoClass";
     public static final String TABLE_PAPER_RULE = "Iup_TpoPaperRule";
     public static final String TABLE_QUESTION = "Iup_TpoQuestion";
     public static final String TABLE_OPTION = "Iup_TpoOption";
@@ -76,6 +77,7 @@ public class Constants {
     public static final String ID = "Id";
     public static final String PaperName = "PaperName";
     public static final String PaperId = "PaperId";
+    public static final String Parent = "Parent";
     public static final String PaperCode = "PaperCode";
     public static final String DownUrl = "DownUrl";
     public static final String DownTime = "DownTime";
@@ -96,11 +98,14 @@ public class Constants {
     public static final String Answer = "Answer";
     public static final String Detail = "Detail";
     public static final String Code = "Code";
+    public static final String CodeName = "CodeName";
+    public static final String ClassCode = "ClassCode";
 
     //自建的表中的column字段
     public static final String UserId = "UserId";
     public static final String SECTION = "Section";
     public static final String MODULE = "Module";
+    public static final String Classify = "Classify";
     public static final String DOWNLOAD = "Download";
     public static final String LOADING = "Loading";
     public static final String Practiced = "Practiced";

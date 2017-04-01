@@ -10,9 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.iyuce.itoefl.Common.Constants;
+import com.iyuce.itoefl.Control.Listening.Activity.TopListeneringPageActivity;
 import com.iyuce.itoefl.Model.Exercise.ListenModule;
 import com.iyuce.itoefl.R;
-import com.iyuce.itoefl.Control.Listening.Activity.TopListeneringPageActivity;
 
 import java.util.ArrayList;
 
@@ -23,23 +24,21 @@ public class TopListeneringModuleAdapter extends RecyclerView.Adapter<TopListene
 
     private Context mContext;
     private ArrayList<ListenModule> mList;
-    private LayoutInflater mLayoutInflater;
 
     public TopListeneringModuleAdapter(Context context, ArrayList<ListenModule> list) {
         mContext = context;
-        mLayoutInflater = LayoutInflater.from(context);
         mList = list;
     }
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ItemViewHolder(mLayoutInflater
+        return new ItemViewHolder(LayoutInflater.from(mContext)
                 .inflate(R.layout.recycler_item_top_listenering_module, parent, false));
     }
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, final int position) {
-        holder.mItemTxtTitle.setText(mList.get(position).name);
+        holder.mItemTxtTitle.setText(mList.get(position).name.replace("TPO", ""));
         if (!TextUtils.isEmpty(mList.get(position).practiced_count)
                 && !TextUtils.isEmpty(mList.get(position).total_count)
                 && Integer.parseInt(mList.get(position).practiced_count) > 0) {
@@ -54,7 +53,13 @@ public class TopListeneringModuleAdapter extends RecyclerView.Adapter<TopListene
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, TopListeneringPageActivity.class);
-                intent.putExtra("local_section", mList.get(position).name);
+                if (TextUtils.isEmpty(mList.get(position).code)) {
+                    intent.putExtra("local_code", mList.get(position).name);
+                    intent.putExtra("from_where", Constants.MODULE);
+                } else {
+                    intent.putExtra("local_code", mList.get(position).code);
+                    intent.putExtra("from_where", Constants.Classify);
+                }
                 mContext.startActivity(intent);
             }
         });

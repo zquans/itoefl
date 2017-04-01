@@ -21,10 +21,10 @@ import java.util.ArrayList;
  */
 public class FragmentClassify extends Fragment {
 
-    private RecyclerView mRecyclerView;
-    private ArrayList<String> mCategoryList = new ArrayList<>();
+    private ArrayList<String> mClassifyNameList = new ArrayList<>();
+    private ArrayList<String> mClassifyCodeList = new ArrayList<>();
+    private ArrayList<ListenModule> mClassifyList = new ArrayList<>();
     private TopListeneringClassifyAdapter mAdapter;
-    private ArrayList<ListenModule> mModuleList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -34,15 +34,18 @@ public class FragmentClassify extends Fragment {
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAdapter.notifyDataSetChanged();
+    }
+
     private void initView(View view) {
-        mModuleList = (ArrayList<ListenModule>) getArguments().get("mModuleeList");
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_top_listenering_order);
-        mCategoryList.add("课程作业");
-        mCategoryList.add("研究项目");
-        mCategoryList.add("住宿与餐饮");
-        mCategoryList.add("人类学");
-        mCategoryList.add("哲学");
-        mAdapter = new TopListeneringClassifyAdapter(getActivity(), mCategoryList, mModuleList);
+        mClassifyNameList = (ArrayList<String>) getArguments().get("mClassifyNameList");
+        mClassifyCodeList = (ArrayList<String>) getArguments().get("mClassifyCodeList");
+        mClassifyList = (ArrayList<ListenModule>) getArguments().get("mClassifyList");
+        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_top_listenering_order);
+        mAdapter = new TopListeneringClassifyAdapter(getActivity(), mClassifyNameList, mClassifyCodeList, mClassifyList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);
     }

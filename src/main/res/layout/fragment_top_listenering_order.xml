@@ -4,6 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/txt_fragment_top_listenering_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/count_tpo"
+        android:textColor="@color/TxtPink"
+        android:textSize="@dimen/txt_size_eighteen"
+        android:visibility="gone" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_fragment_top_listenering_order"
         android:layout_width="match_parent"

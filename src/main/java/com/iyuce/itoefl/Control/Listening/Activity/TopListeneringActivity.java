@@ -1,5 +1,6 @@
 package com.iyuce.itoefl.Control.Listening.Activity;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -19,6 +20,7 @@ import com.iyuce.itoefl.Control.Listening.Fragment.FragmentOrder;
 import com.iyuce.itoefl.Model.Exercise.ListenModule;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.DbUtil;
+import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.SDCardUtil;
 
 import java.io.File;
@@ -29,7 +31,7 @@ public class TopListeneringActivity extends BaseActivity {
     //导航指示器
     private TabLayout mTab;
     private ArrayList<String> mTabList = new ArrayList<>();
-    private ArrayList<ListenModule> mModuleeList = new ArrayList<>();
+    private ArrayList<ListenModule> mModuleList = new ArrayList<>();
 
     private ViewPager mViewPager;
     private TabTopListeneringAdapter mAdapter;
@@ -40,7 +42,7 @@ public class TopListeneringActivity extends BaseActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        mModuleeList.clear();
+        mModuleList.clear();
         mFragmentList.clear();
         initData();
         mAdapter.notifyDataSetChanged();
@@ -67,25 +69,51 @@ public class TopListeneringActivity extends BaseActivity {
         String tpo_path = path + File.separator + Constants.SQLITE_TPO;
         //先拿出所有的Module名
         SQLiteDatabase mDatabase = DbUtil.getHelper(this, tpo_path).getWritableDatabase();
-        ArrayList<String> nameList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER, Constants.PaperCode + " ASC", Constants.PaperName);
+        /**Classify部分*/
+        String sql_query = "SELECT " + Constants.CodeName + " FROM " + Constants.TABLE_CLASS + " WHERE " + Constants.Parent + " = ? ";
+        ArrayList<String> mClassifyNameList = DbUtil.cursorToArrayList(mDatabase.rawQuery(sql_query, new String[]{"0"}));
+        sql_query = "SELECT " + Constants.Code + " FROM " + Constants.TABLE_CLASS + " WHERE " + Constants.Parent + " = ? ";
+        ArrayList<String> mClassifyCodeList = DbUtil.cursorToArrayList(mDatabase.rawQuery(sql_query, new String[]{"0"}));
+        LogUtil.e("mClassifyNameList = " + mClassifyNameList);
+
+        //拿出数组实体属性
+        ArrayList<ListenModule> mClassifyList = new ArrayList<>();
+        ListenModule mClassifyModule;
+        String sql_query_all = "SELECT * FROM " + Constants.TABLE_CLASS;
+        Cursor cursor = mDatabase.rawQuery(sql_query_all, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                mClassifyModule = new ListenModule();
+                mClassifyModule.code = cursor.getString(cursor.getColumnIndex(Constants.Code));
+                mClassifyModule.name = cursor.getString(cursor.getColumnIndex(Constants.CodeName));
+                mClassifyModule.parent = cursor.getString(cursor.getColumnIndex(Constants.Parent));
+                mClassifyList.add(mClassifyModule);
+            }
+            cursor.close();
+        }
+
+        /**Module部分*/
+        ArrayList<String> mModuleNameList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER, Constants.PaperCode + " ASC", Constants.PaperName);
         mDatabase.close();
+
+        String practiced_path = path + File.separator + Constants.SQLITE_DOWNLOAD;
+        SQLiteDatabase databaseDownload = DbUtil.getHelper(this, practiced_path).getWritableDatabase();
+        String isNone_Download = DbUtil.queryToString(databaseDownload, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_ALREADY_DOWNLOAD);
+        databaseDownload.close();
 
         //提供module 和 progress
         ListenModule mListenModule;
-        String practiced_path;
-        for (int i = 0; i < nameList.size(); i++) {
+        for (int i = 0; i < mModuleNameList.size(); i++) {
             mListenModule = new ListenModule();
-            mListenModule.name = nameList.get(i);
+            mListenModule.name = mModuleNameList.get(i);
 
-            practiced_path = path + File.separator + Constants.SQLITE_DOWNLOAD;
-            SQLiteDatabase mDatabaseDownload = DbUtil.getHelper(this, practiced_path).getWritableDatabase();
-            String isNone_Download = DbUtil.queryToString(mDatabaseDownload, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_ALREADY_DOWNLOAD);
             if (!TextUtils.equals(isNone_Download, Constants.NONE)) {
+                SQLiteDatabase mDatabaseDownload = DbUtil.getHelper(this, practiced_path).getWritableDatabase();
                 String practiced_count_sql = "SELECT COUNT(*) FROM " + Constants.TABLE_ALREADY_DOWNLOAD + " WHERE " + Constants.SECTION + " =? and " + Constants.Practiced + " =?";
-                String practiced_count = DbUtil.cursorToString(mDatabaseDownload.rawQuery(practiced_count_sql, new String[]{nameList.get(i), "true"}));
+                String practiced_count = DbUtil.cursorToString(mDatabaseDownload.rawQuery(practiced_count_sql, new String[]{mModuleNameList.get(i), "true"}));
                 mListenModule.practiced_count = practiced_count;//拿练习过的数据数量
+                mDatabaseDownload.close();
             }
-            mDatabaseDownload.close();
 
 //            SQLiteDatabase mDatabaseTpo = DbUtil.getHelper(this, tpo_path).getWritableDatabase();
 ////            String isNone_Tpo = DbUtil.queryToString(mDatabaseTpo, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER_RULE);
@@ -97,17 +125,21 @@ public class TopListeneringActivity extends BaseActivity {
 ////            }
 //            mDatabaseTpo.close();
             mListenModule.total_count = "6";////分母,总的数量
-            mModuleeList.add(mListenModule);
+            mModuleList.add(mListenModule);
         }
 
         //ViewPage 的Data
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("mModuleeList", mModuleeList);
         FragmentOrder mFragmentOrder = new FragmentOrder();
-        mFragmentOrder.setArguments(bundle);
+        Bundle bundle_Module = new Bundle();
+        bundle_Module.putSerializable("mModuleList", mModuleList);
+        mFragmentOrder.setArguments(bundle_Module);
         mFragmentList.add(mFragmentOrder);
         FragmentClassify mFragmentClssify = new FragmentClassify();
-        mFragmentClssify.setArguments(bundle);
+        Bundle bundle_Classify = new Bundle();
+        bundle_Classify.putSerializable("mClassifyNameList", mClassifyNameList);
+        bundle_Classify.putSerializable("mClassifyCodeList", mClassifyCodeList);
+        bundle_Classify.putSerializable("mClassifyList", mClassifyList);
+        mFragmentClssify.setArguments(bundle_Classify);
         mFragmentList.add(mFragmentClssify);
     }
 

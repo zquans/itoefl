@@ -10,6 +10,7 @@
     <string name="question_hint_nest">Click in the correct boxes</string>
     <string name="page_total">总共 : %s 篇</string>
     <string name="page_practiced">已练习 ：%s 篇</string>
+    <string name="count_tpo">TPO1 - %s</string>
     <string name="version_code">版本号： v1.0.0</string>
     <string name="version_right">爱优普 | 版权所有</string>
 </resources>

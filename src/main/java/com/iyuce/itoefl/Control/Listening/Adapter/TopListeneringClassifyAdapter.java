@@ -19,13 +19,15 @@ import java.util.ArrayList;
 public class TopListeneringClassifyAdapter extends RecyclerView.Adapter<TopListeneringClassifyAdapter.MyViewHolder> {
 
     private Context mContext;
-    private ArrayList<String> mCategoryList = new ArrayList<>();
-    private ArrayList<ListenModule> mModuleList = new ArrayList<>();
+    private ArrayList<String> mClassifyNameList = new ArrayList<>();
+    private ArrayList<String> mClassifyCodeList = new ArrayList<>();
+    private ArrayList<ListenModule> mClassifyList = new ArrayList<>();
 
-    public TopListeneringClassifyAdapter(Context context, ArrayList<String> list, ArrayList<ListenModule> moduleList) {
+    public TopListeneringClassifyAdapter(Context context, ArrayList<String> namelist, ArrayList<String> codelist, ArrayList<ListenModule> classifyList) {
         this.mContext = context;
-        this.mCategoryList = list;
-        this.mModuleList = moduleList;
+        this.mClassifyNameList = namelist;
+        this.mClassifyCodeList = codelist;
+        this.mClassifyList = classifyList;
     }
 
     @Override
@@ -36,12 +38,19 @@ public class TopListeneringClassifyAdapter extends RecyclerView.Adapter<TopListe
 
     @Override
     public int getItemCount() {
-        return mCategoryList.size();
+        return mClassifyNameList.size();
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.mItemTxtTitle.setText(mCategoryList.get(position));
+        holder.mItemTxtTitle.setText(mClassifyNameList.get(position));
+        //过滤出对应的Module
+        ArrayList<ListenModule> mModuleList = new ArrayList<>();
+        for (int i = 0; i < mClassifyList.size(); i++) {
+            if (mClassifyList.get(i).parent.equals(mClassifyCodeList.get(position))) {
+                mModuleList.add(mClassifyList.get(i));
+            }
+        }
         holder.mItemRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
         holder.mItemRecyclerView.setAdapter(new TopListeneringModuleAdapter(mContext, mModuleList));
     }

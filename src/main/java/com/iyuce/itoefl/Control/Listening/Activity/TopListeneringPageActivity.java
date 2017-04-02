@@ -191,12 +191,13 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
         String query;
         for (int i = 0; i < mModuleList.size(); i++) {
             query = "select " + Constants.DOWNLOAD + " from " + Constants.TABLE_ALREADY_DOWNLOAD + " where " + Constants.SECTION + " = ? and " + Constants.MODULE + " = ?";
-            mDownloadList.add(DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{local_code, mModuleList.get(i)})));
+            mDownloadList.add(DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{mPaperCodeList.get(i), mModuleList.get(i)})));
             query = "select " + Constants.LOADING + " from " + Constants.TABLE_ALREADY_DOWNLOAD + " where " + Constants.SECTION + " = ? and " + Constants.MODULE + " = ?";
-            mLoadingList.add(DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{local_code, mModuleList.get(i)})));
+            mLoadingList.add(DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{mPaperCodeList.get(i), mModuleList.get(i)})));
             query = "select " + Constants.Practiced + " from " + Constants.TABLE_ALREADY_DOWNLOAD + " where " + Constants.SECTION + " = ? and " + Constants.MODULE + " = ?";
-            mPracticedList.add(DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{local_code, mModuleList.get(i)})));
+            mPracticedList.add(DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{mPaperCodeList.get(i), mModuleList.get(i)})));
         }
+        //TODO 这里的查询好像有问题
         String sql_practiced_count = "SELECT COUNT(*) FROM " + Constants.TABLE_ALREADY_DOWNLOAD + " WHERE " + Constants.SECTION + " =? and " + Constants.Practiced + " =?";
         local_practiced_count = DbUtil.cursorToString(mDatabase.rawQuery(sql_practiced_count, new String[]{local_code, Constants.TRUE}));
         mDatabase.close();
@@ -237,7 +238,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
                 SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path).getWritableDatabase();
                 //先删除，再添加，避免重复
                 String sql_delete = "DELETE FROM " + Constants.TABLE_ALREADY_DOWNLOAD + " WHERE " + Constants.SECTION
-                        + " = \"" + local_code + "\" AND " + Constants.MODULE + " = \"" + mModuleList.get(pos) + "\";";
+                        + " = \"" + mPaperCodeList.get(pos) + "\" AND " + Constants.MODULE + " = \"" + mModuleList.get(pos) + "\";";
                 LogUtil.e("sql_delete = " + sql_delete);
                 mDatabase.execSQL(sql_delete);
                 ContentValues mValues = new ContentValues();

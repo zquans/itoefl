@@ -19,6 +19,7 @@
         android:gravity="center"
         android:text="进入听力练习"
         android:textColor="@color/White"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:visibility="gone" />
 
 </FrameLayout>

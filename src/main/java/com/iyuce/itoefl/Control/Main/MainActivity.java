@@ -28,6 +28,7 @@ import com.iyuce.itoefl.Utils.SDCardUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 import com.iyuce.itoefl.Utils.ZipUtil;
 import com.iyuce.itoefl.View.NoScrollViewPager;
+import com.lzy.okgo.model.HttpHeaders;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -108,8 +109,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void requestIfDown(String check_download_time) {
+        LogUtil.e("user-Agent = " + System.getProperty("http.agent"));
         LogUtil.w("check_download_time = " + check_download_time);
-        HttpUtil.post(Constants.URL_TPO_MAIN_STATUS + check_download_time, null, new RequestInterface() {
+        String localVersion = PreferenceUtil.getSharePre(this).getString(Constants.Preference_Version_Local, "1.0");
+        HttpHeaders headers = new HttpHeaders();
+        headers.put(HttpHeaders.HEAD_KEY_USER_AGENT, System.getProperty("http.agent") + "; toefl/" + localVersion);
+        HttpUtil.post(Constants.URL_TPO_MAIN_STATUS + check_download_time, headers, null, new RequestInterface() {
             @Override
             public void doSuccess(String result, Call call, Response response) {
                 try {

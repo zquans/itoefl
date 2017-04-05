@@ -31,7 +31,7 @@
         android:layout_below="@+id/img_fragment_exercise_header"
         android:paddingLeft="@dimen/activity_horizontal_double_padding"
         android:paddingRight="@dimen/activity_horizontal_double_padding"
-        android:paddingTop="88dp"
+        android:paddingTop="48dp"
         app:dsv_orientation="horizontal" />
 
 </RelativeLayout>

@@ -7,6 +7,7 @@ import com.iyuce.itoefl.Utils.Interface.Http.RequestInterface;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.HttpHeaders;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.request.BaseRequest;
 
@@ -38,11 +39,11 @@ public class HttpUtil {
     /**
      * Post请求
      */
-    public static void post(String url, HttpParams params, final RequestInterface requestInterface) {
+    public static void post(String url, HttpHeaders headers, HttpParams params, final RequestInterface requestInterface) {
         if (TextUtils.isEmpty(url)) {
             return;
         }
-        OkGo.post(url).params(params)
+        OkGo.post(url).headers(headers).params(params)
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {

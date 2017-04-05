@@ -37,8 +37,6 @@ public class TopListeneringActivity extends BaseActivity {
     private TabTopListeneringAdapter mAdapter;
     private ArrayList<Fragment> mFragmentList = new ArrayList<>();
 
-//    private CollapsingToolbarLayout mCollapLayout;
-
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -52,13 +50,6 @@ public class TopListeneringActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_top_listenering);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        ActionBar actionBar = getSupportActionBar();
-//        if (actionBar != null) {
-//            actionBar.setDisplayHomeAsUpEnabled(true);
-//            actionBar.setHomeAsUpIndicator(R.mipmap.icon_back);
-//        }
         initData();
         initView();
     }

@@ -55,9 +55,11 @@ public class TopListeneringModuleAdapter extends RecyclerView.Adapter<TopListene
                 Intent intent = new Intent(mContext, TopListeneringPageActivity.class);
                 if (TextUtils.isEmpty(mList.get(position).code)) {
                     intent.putExtra("local_code", mList.get(position).name);
+                    intent.putExtra("local_title", mList.get(position).name);
                     intent.putExtra("from_where", Constants.MODULE);
                 } else {
                     intent.putExtra("local_code", mList.get(position).code);
+                    intent.putExtra("local_title", mList.get(position).name);
                     intent.putExtra("from_where", Constants.Classify);
                 }
                 mContext.startActivity(intent);

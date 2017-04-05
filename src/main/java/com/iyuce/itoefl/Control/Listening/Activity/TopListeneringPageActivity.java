@@ -40,7 +40,6 @@ import okhttp3.Response;
 
 public class TopListeneringPageActivity extends BaseActivity implements TopListeneringPageAdapter.OnPageItemClickListener {
 
-    //TODO local_code 换成mPaperCodeList.get(pos)
     private RecyclerView mRecyclerView;
     private TopListeneringPageAdapter mAdapter;
     //列表对象，包含两个库中查询的数据
@@ -57,7 +56,7 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
     private TextView mTxtFinish, mTxtTotal;
 
     //传递来的参数
-    private String local_code, from_where, local_practiced_count;
+    private String local_code, local_title, from_where, local_practiced_count;
 
     //保存根数据库的路径
     private String root_path, local_path;
@@ -71,7 +70,12 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
         mUserOprateList.clear();
         mLoadingList.clear();
         mDownloadList.clear();
+        mDownTimeList.clear();
         mPracticedList.clear();
+        mModuleList.clear();
+        mPaperCodeList.clear();
+        mMusicQuestionList.clear();
+        mUrlList.clear();
         initData();
         mAdapter.notifyDataSetChanged();
     }
@@ -93,9 +97,10 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
 
     private void initView() {
         local_code = getIntent().getStringExtra("local_code");
+        local_title = getIntent().getStringExtra("local_title");
         from_where = getIntent().getStringExtra("from_where");
         TextView textView = (TextView) findViewById(R.id.txt_activity_top_listenering_title);
-        textView.setText(local_code + "\r听力真题");
+        textView.setText(local_title);
 
         mTxtFinish = (TextView) findViewById(R.id.txt_activity_top_listenering_finish);
         mTxtTotal = (TextView) findViewById(R.id.txt_activity_top_listenering_total);

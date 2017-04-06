@@ -28,7 +28,7 @@ public class HttpUtil {
         if (TextUtils.isEmpty(url)) {
             return;
         }
-        OkGo.post(url).execute(new StringCallback() {
+        OkGo.get(url).execute(new StringCallback() {
             @Override
             public void onSuccess(String s, Call call, Response response) {
                 requestInterface.doSuccess(s, call, response);
@@ -53,13 +53,46 @@ public class HttpUtil {
     }
 
     /**
-     * Get请求,返回文件
+     * Get请求下载,返回文件
      */
     public static void downLoad(String url, final String path, final DownLoadInterface downLoadInterface) {
         if (TextUtils.isEmpty(url)) {
             return;
         }
         OkGo.get(url).execute(new FileCallback(path, "") {
+            @Override
+            public void downloadProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
+                super.downloadProgress(currentSize, totalSize, progress, networkSpeed);
+                downLoadInterface.inProgress(currentSize, totalSize, progress, networkSpeed);
+            }
+
+            @Override
+            public void onSuccess(File file, Call call, Response response) {
+                downLoadInterface.doSuccess(file, call, response);
+            }
+
+            @Override
+            public void onBefore(BaseRequest request) {
+                super.onBefore(request);
+                downLoadInterface.onBefore();
+            }
+
+            @Override
+            public void onAfter(File file, Exception e) {
+                super.onAfter(file, e);
+                downLoadInterface.onAfter();
+            }
+        });
+    }
+
+    /**
+     * Get请求下载,返回文件
+     */
+    public static void downLoad(String url, String path, String name, final DownLoadInterface downLoadInterface) {
+        if (TextUtils.isEmpty(url)) {
+            return;
+        }
+        OkGo.get(url).execute(new FileCallback(path, name) {
             @Override
             public void downloadProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
                 super.downloadProgress(currentSize, totalSize, progress, networkSpeed);

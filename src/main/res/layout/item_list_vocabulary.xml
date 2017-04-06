@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/txt_audio_item_spinner"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:background="@color/Transparent"
+    android:gravity="center"
+    android:singleLine="true"
+    android:textColor="@color/TxtPink"
+    android:textSize="16sp" />

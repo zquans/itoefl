@@ -59,6 +59,15 @@ public class SDCardUtil {
     }
 
     /**
+     * 获取存放Vocabulary的路径
+     *
+     * @return
+     */
+    public static String getVocabularyPath() {
+        return Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH_ITOEFL_VOCABULARY;
+    }
+
+    /**
      * 获取SD卡的剩余容量 单位byte
      *
      * @return

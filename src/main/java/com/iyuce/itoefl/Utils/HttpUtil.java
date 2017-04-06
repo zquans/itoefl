@@ -28,7 +28,7 @@ public class HttpUtil {
         if (TextUtils.isEmpty(url)) {
             return;
         }
-        OkGo.post(url).execute(new StringCallback() {
+        OkGo.get(url).execute(new StringCallback() {
             @Override
             public void onSuccess(String s, Call call, Response response) {
                 requestInterface.doSuccess(s, call, response);

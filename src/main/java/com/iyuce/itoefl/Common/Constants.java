@@ -23,6 +23,7 @@ public class Constants {
     public static final String URL_WEB_ONE_TO_ONE = "http://www.iyuce.com/m/appjxy.html";
     public static final String URL_TO_SUGGESTION = "http://api.iyuce.com/v1/service/feedback";
     public static final String URL_CHECK_UPDATE = "http://www.iyuce.com/Scripts/andoird_toefl.json";
+    public static final String URL_GET_PDF_BOOK = "http://api.iyuce.com/v1/tpo/getbooks";
 
     //Share Preference 字段
     public static final String REQUEST_TIME_MAIN_DATABASE = "main_database_request_date";

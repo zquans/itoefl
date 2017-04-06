@@ -22,7 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Control.Main.MainActivity"
             android:launchMode="singleTask" />
@@ -45,9 +44,10 @@
         <activity android:name=".Control.Mine.ManageDownLoadActivity" />
         <activity android:name=".Control.Mine.SuggestionActivity" />
 
-        <!--<meta-data-->
-        <!--android:name="UMENG_CHANNEL"-->
-        <!--android:value="${umeng_channel}" />-->
+        <!-- <meta-data -->
+        <!-- android:name="UMENG_CHANNEL" -->
+        <!-- android:value="${umeng_channel}" /> -->
+        <activity android:name=".Control.Vocabulary.VocabularyActivity"></activity>
     </application>
 
 </manifest>

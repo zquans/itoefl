@@ -97,7 +97,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mViewPager = (NoScrollViewPager) findViewById(R.id.viewpager_activity_main);
         mViewPager.setOnPageChangeListener(this);
         mFragmentList.add(new FragmentExercise());
-        mFragmentList.add(new FragmentLecture());
+        mFragmentList.add(new FragmentVocabulary());
         mFragmentList.add(new FragmentMine());
         mMyTabAdapter = new MyMainTabAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mMyTabAdapter);
@@ -109,7 +109,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void requestIfDown(String check_download_time) {
-        LogUtil.e("user-Agent = " + System.getProperty("http.agent"));
+//        LogUtil.e("user-Agent = " + System.getProperty("http.agent"));
         LogUtil.w("check_download_time = " + check_download_time);
         String localVersion = PreferenceUtil.getSharePre(this).getString(Constants.Preference_Version_Local, "1.0");
         HttpHeaders headers = new HttpHeaders();

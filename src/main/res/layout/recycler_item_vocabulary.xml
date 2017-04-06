@@ -38,10 +38,11 @@
             android:layout_below="@+id/txt_item_vocabulary_title"
             android:layout_marginLeft="@dimen/activity_horizontal_padding"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:layout_toLeftOf="@+id/txt_item_vocabulary_download"
             android:layout_toRightOf="@+id/img_item_vocabulary"
             android:ellipsize="end"
+            android:maxLines="2"
             android:text="content" />
 
         <TextView
@@ -51,7 +52,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="@dimen/activity_horizontal_padding"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:layout_toLeftOf="@+id/txt_item_vocabulary_download"
             android:layout_toRightOf="@+id/img_item_vocabulary"
             android:text="下载"
@@ -63,7 +64,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:gravity="center_vertical"
-            android:text="loading"
+            android:text="等待下载"
             android:textColor="@color/TxtPink" />
 
     </RelativeLayout>

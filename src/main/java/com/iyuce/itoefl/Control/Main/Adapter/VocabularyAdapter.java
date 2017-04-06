@@ -12,7 +12,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.iyuce.itoefl.Model.Vocabulary;
 import com.iyuce.itoefl.R;
+import com.iyuce.itoefl.Utils.SDCardUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -47,14 +49,12 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.My
 //        holder.mTxtSize.setText(FileUtil.dealLength(Long.parseLong(mDataList.get(position).size)));
         holder.mTxtSize.setText(mDataList.get(position).size);
         Glide.with(mContext).load(mDataList.get(position).img).into(holder.mImgBook);
-        holder.mTxtDownLoad.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mVocabularyListener != null) {
-                    mVocabularyListener.OnDownloadClick(position);
-                }
-            }
-        });
+
+        File file = new File(SDCardUtil.getVocabularyPath() + File.separator + mDataList.get(position).title + ".pdf");
+        if (file.exists())
+            holder.mTxtDownLoad.setVisibility(View.GONE);
+        else
+            holder.mTxtDownLoad.setVisibility(View.VISIBLE);
         holder.mCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,7 +89,5 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.My
 
     public interface VocabularyListener {
         void OnItemClick(int pos);
-
-        void OnDownloadClick(int pos);
     }
 }

@@ -55,6 +55,7 @@ public class Constants {
     //文件夹路径相关
     public static final String FILE_PATH_ITOEFL = "/ITOEFL";        //根路径下一级路径
     public static final String FILE_PATH_ITOEFL_EXERCISE = "/ITOEFL/EXERCISE";  //根路径下二级路径
+    public static final String FILE_PATH_ITOEFL_VOCABULARY = "/ITOEFL/VOCABULARY";  //根路径下二级路径
 
     //数据库相关
     public static final int DATABASE_VERSION = 1;                   //默认版本号

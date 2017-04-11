@@ -137,13 +137,13 @@ public class DoQuestionActivity extends BaseActivity implements
         SQLiteDatabase mDatabase = DbUtil.getHelper(this, local_path + "/" + local_paper_code + ".sqlite").getWritableDatabase();
         //传递给Fragment的参数
         mQuestionIdList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, Constants.Sort + " ASC", Constants.ID);
-        mMasterIdList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION,  Constants.Sort + " ASC", Constants.MasterId);
-        mQuestionTypeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION,  Constants.Sort + " ASC", Constants.QuestionType);
-        mQuestionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION,  Constants.Sort + " ASC", Constants.Content);
-        mSortList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION,  Constants.Sort + " ASC", Constants.Sort);
-        mMusicQuestionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION,  Constants.Sort + " ASC", Constants.MusicQuestion);
+        mMasterIdList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, Constants.Sort + " ASC", Constants.MasterId);
+        mQuestionTypeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, Constants.Sort + " ASC", Constants.QuestionType);
+        mQuestionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, Constants.Sort + " ASC", Constants.Content);
+        mSortList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, Constants.Sort + " ASC", Constants.Sort);
+        mMusicQuestionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, Constants.Sort + " ASC", Constants.MusicQuestion);
         //这个直接传给DoResult就好
-        mMusicAnswerList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION,  Constants.Sort + " ASC", Constants.MusicAnswer);
+        mMusicAnswerList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, Constants.Sort + " ASC", Constants.MusicAnswer);
         mDatabase.close();
 
         TOTAL_QUESTION_COUNT = String.valueOf(mSortList.size());
@@ -203,14 +203,14 @@ public class DoQuestionActivity extends BaseActivity implements
                     ToastUtil.showMessage(this, "本题未答完");
                     return;
                 }
-                //TODO MULTI提示该选几题
+                //MULTI提示该选几题
                 if (mQuestionTypeList.get(mCurrentQuestion - 1).equals(Constants.QUESTION_TYPE_MULTI)
                         && mFrgment.realAnswer().replace(",", "").length() != mFrgment.answerDefault.replace(",", "").length()) {
                     ToastUtil.showMessage(this, "本题答案是" + mFrgment.realAnswer().replace(",", "").length() + "个选项");
                     return;
                 }
 
-                //TODO Nest提示未做完
+                //Nest提示未做完
                 if (mQuestionTypeList.get(mCurrentQuestion - 1).equals(Constants.QUESTION_TYPE_NEST)
                         && mFrgment.answerDefault.contains("None")) {
                     ToastUtil.showMessage(this, "您有遗漏题目哦");
@@ -323,7 +323,7 @@ public class DoQuestionActivity extends BaseActivity implements
                 mDatabase.setTransactionSuccessful();
                 mDatabase.endTransaction();
 
-                //TODO 往下载表中存入字段,标明已经练习过
+                // 往下载表中存入字段,标明已经练习过
                 ContentValues mValues = new ContentValues();
                 mValues.put(Constants.Practiced, Constants.TRUE);
                 mDatabase.update(Constants.TABLE_ALREADY_DOWNLOAD, mValues, Constants.SECTION + " =? and " + Constants.MODULE + " =? ",

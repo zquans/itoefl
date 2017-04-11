@@ -42,15 +42,6 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
 
     private RecyclerView mRecyclerView;
     private TopListeneringPageAdapter mAdapter;
-    //列表对象，包含两个库中查询的数据
-    private ArrayList<String> mModuleList = new ArrayList<>();
-    private ArrayList<String> mPaperCodeList = new ArrayList<>();
-    private ArrayList<String> mDownTimeList = new ArrayList<>();
-    private ArrayList<String> mUrlList = new ArrayList<>();
-    private ArrayList<String> mMusicQuestionList = new ArrayList<>();
-    private ArrayList<String> mLoadingList = new ArrayList<>();
-    private ArrayList<String> mDownloadList = new ArrayList<>();
-    private ArrayList<String> mPracticedList = new ArrayList<>();
     private ArrayList<UserOprate> mUserOprateList = new ArrayList<>();
 
     private TextView mTxtFinish, mTxtTotal;
@@ -68,14 +59,6 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
     protected void onRestart() {
         super.onRestart();
         mUserOprateList.clear();
-        mLoadingList.clear();
-        mDownloadList.clear();
-        mDownTimeList.clear();
-        mPracticedList.clear();
-        mModuleList.clear();
-        mPaperCodeList.clear();
-        mMusicQuestionList.clear();
-        mUrlList.clear();
         initData();
         mAdapter.notifyDataSetChanged();
     }
@@ -96,6 +79,16 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
     }
 
     private void initView() {
+        //网络已连接
+        if (NetUtil.isConnected(this)) {
+            //但不是WIFI
+            if (!NetUtil.isWifi(this)) {
+                ToastUtil.showMessage(this, "当前不在WIFI环境，下载将消耗较多流量");
+            }
+        } else {
+            ToastUtil.showMessage(this, "未连接网络");
+        }
+
         local_code = getIntent().getStringExtra("local_code");
         local_title = getIntent().getStringExtra("local_title");
         from_where = getIntent().getStringExtra("from_where");
@@ -107,7 +100,11 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
 
         //初始化数据列表
         initData();
+        //将数据填充到对应视图
+        initUI();
+    }
 
+    private void initUI() {
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_activity_top_listenering_page);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
@@ -116,63 +113,49 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
         mRecyclerView.setAdapter(mAdapter);
 
         mTxtFinish.setText(getString(R.string.page_practiced, local_practiced_count));
-        mTxtTotal.setText(getString(R.string.page_total, mModuleList.size()));
-
-        //网络已连接
-        if (NetUtil.isConnected(this)) {
-            //但不是WIFI
-            if (!NetUtil.isWifi(this)) {
-                ToastUtil.showMessage(this, "当前不在WIFI环境，下载将消耗较多流量");
-            }
-        } else {
-            ToastUtil.showMessage(this, "未连接网络");
-        }
+        mTxtTotal.setText(getString(R.string.page_total, mUserOprateList.size()));
     }
 
     private void initData() {
         //初始化列表数据,从主表中获取到的local_code读取PAPER_RULE表中的RuleName字段
         root_path = SDCardUtil.getExercisePath() + File.separator + Constants.SQLITE_TPO;
         SQLiteDatabase mDatabase = DbUtil.getHelper(this, root_path).getWritableDatabase();
-        //TODO 其实可以封装成一个对象数组返回
         if (TextUtils.equals(from_where, Constants.MODULE)) {
-            mPaperCodeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.PaperCode, Constants.PaperCode + " =? ", local_code);
-            mModuleList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.RuleName, Constants.PaperCode + " =? ", local_code);
-            mDownTimeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.DownTime, Constants.PaperCode + " =? ", local_code);
-            mUrlList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.DownUrl, Constants.PaperCode + " =? ", local_code);
-            mMusicQuestionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_PAPER_RULE, Constants.MusicQuestion, Constants.PaperCode + " =? ", local_code);
+            Cursor cursor = mDatabase.query(Constants.TABLE_PAPER_RULE, null, Constants.PaperCode + " =? ", new String[]{local_code}, null, null, Constants.PaperCode + "," + Constants.Sort + " ASC");
+            if (cursor != null) {
+                UserOprate mUserOprate;
+                while (cursor.moveToNext()) {
+                    mUserOprate = new UserOprate();
+                    mUserOprate.section = cursor.getString(cursor.getColumnIndex(Constants.PaperCode));
+                    mUserOprate.module = cursor.getString(cursor.getColumnIndex(Constants.RuleName));
+                    mUserOprate.downTime = cursor.getString(cursor.getColumnIndex(Constants.DownTime));
+                    mUserOprate.downUrl = cursor.getString(cursor.getColumnIndex(Constants.DownUrl));
+                    mUserOprate.musicQuestion = cursor.getString(cursor.getColumnIndex(Constants.MusicQuestion));
+                    mUserOprateList.add(mUserOprate);
+                }
+                cursor.close();
+            }
         } else {
             Cursor cursor = mDatabase.query(Constants.TABLE_PAPER_RULE, null, Constants.ClassCode + " =? ", new String[]{local_code}, null, null, Constants.PaperCode + "," + Constants.Sort + " ASC");
-            //开启事务批量操作
             if (cursor != null) {
+                UserOprate mUserOprate;
                 while (cursor.moveToNext()) {
-                    mPaperCodeList.add(cursor.getString(cursor.getColumnIndex(Constants.PaperCode)));
-                    mModuleList.add(cursor.getString(cursor.getColumnIndex(Constants.RuleName)));
-                    mDownTimeList.add(cursor.getString(cursor.getColumnIndex(Constants.DownTime)));
-                    mUrlList.add(cursor.getString(cursor.getColumnIndex(Constants.DownUrl)));
-                    mMusicQuestionList.add(cursor.getString(cursor.getColumnIndex(Constants.MusicQuestion)));
+                    mUserOprate = new UserOprate();
+                    mUserOprate.section = cursor.getString(cursor.getColumnIndex(Constants.PaperCode));
+                    mUserOprate.module = cursor.getString(cursor.getColumnIndex(Constants.RuleName));
+                    mUserOprate.downTime = cursor.getString(cursor.getColumnIndex(Constants.DownTime));
+                    mUserOprate.downUrl = cursor.getString(cursor.getColumnIndex(Constants.DownUrl));
+                    mUserOprate.musicQuestion = cursor.getString(cursor.getColumnIndex(Constants.MusicQuestion));
+                    mUserOprateList.add(mUserOprate);
                 }
                 cursor.close();
             }
         }
         mDatabase.close();
-        LogUtil.e("mDownTimeList = " + mDownTimeList);
-        LogUtil.e("mUrlList = " + mUrlList);
+        LogUtil.e("mUserOprateList.get(0) = " + mUserOprateList.get(0).downTime + mUserOprateList.get(0).downUrl);
 
         //初始化用户操作数据库(打开或创建)
         CreateOrOpenDbTable();
-
-        //从两个数据库中查询完成数据拼装，Adapter装载数据
-        UserOprate mUserOprate;
-        for (int i = 0; i < mModuleList.size(); i++) {
-            mUserOprate = new UserOprate();
-            mUserOprate.section = mPaperCodeList.get(i);
-            mUserOprate.module = mModuleList.get(i);
-            mUserOprate.download = mDownloadList.get(i);
-            mUserOprate.loading = mLoadingList.get(i);
-            mUserOprate.practiced = mPracticedList.get(i);
-            mUserOprateList.add(mUserOprate);
-        }
-        LogUtil.i(mUserOprateList.toString());
         mTxtFinish.setText("已练习 ：" + local_practiced_count + " 篇");
     }
 
@@ -194,15 +177,15 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
                 + Constants.Practiced + " text)";
         mDatabase.execSQL(create);
         String query;
-        for (int i = 0; i < mModuleList.size(); i++) {
+        for (int i = 0; i < mUserOprateList.size(); i++) {
             query = "select " + Constants.DOWNLOAD + " from " + Constants.TABLE_ALREADY_DOWNLOAD + " where " + Constants.SECTION + " = ? and " + Constants.MODULE + " = ?";
-            mDownloadList.add(DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{mPaperCodeList.get(i), mModuleList.get(i)})));
+            mUserOprateList.get(i).download = DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{mUserOprateList.get(i).section, mUserOprateList.get(i).module}));
             query = "select " + Constants.LOADING + " from " + Constants.TABLE_ALREADY_DOWNLOAD + " where " + Constants.SECTION + " = ? and " + Constants.MODULE + " = ?";
-            mLoadingList.add(DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{mPaperCodeList.get(i), mModuleList.get(i)})));
+            mUserOprateList.get(i).loading = DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{mUserOprateList.get(i).section, mUserOprateList.get(i).module}));
             query = "select " + Constants.Practiced + " from " + Constants.TABLE_ALREADY_DOWNLOAD + " where " + Constants.SECTION + " = ? and " + Constants.MODULE + " = ?";
-            mPracticedList.add(DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{mPaperCodeList.get(i), mModuleList.get(i)})));
+            mUserOprateList.get(i).practiced = DbUtil.cursorToNotNullString(mDatabase.rawQuery(query, new String[]{mUserOprateList.get(i).section, mUserOprateList.get(i).module}));
         }
-        //TODO 这里的查询好像有问题
+        //TODO 这里的查询好像有问题,因为local_code参数并无法查出分类时的情况
         String sql_practiced_count = "SELECT COUNT(*) FROM " + Constants.TABLE_ALREADY_DOWNLOAD + " WHERE " + Constants.SECTION + " =? and " + Constants.Practiced + " =?";
         local_practiced_count = DbUtil.cursorToString(mDatabase.rawQuery(sql_practiced_count, new String[]{local_code, Constants.TRUE}));
         mDatabase.close();
@@ -243,16 +226,16 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
                 SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path).getWritableDatabase();
                 //先删除，再添加，避免重复
                 String sql_delete = "DELETE FROM " + Constants.TABLE_ALREADY_DOWNLOAD + " WHERE " + Constants.SECTION
-                        + " = \"" + mPaperCodeList.get(pos) + "\" AND " + Constants.MODULE + " = \"" + mModuleList.get(pos) + "\";";
+                        + " = \"" + mUserOprateList.get(pos).section + "\" AND " + Constants.MODULE + " = \"" + mUserOprateList.get(pos).module + "\";";
                 LogUtil.e("sql_delete = " + sql_delete);
                 mDatabase.execSQL(sql_delete);
                 ContentValues mValues = new ContentValues();
                 mValues.put(Constants.UserId, "user_default");
-                mValues.put(Constants.SECTION, mPaperCodeList.get(pos));
-                mValues.put(Constants.MODULE, mModuleList.get(pos));
+                mValues.put(Constants.SECTION, mUserOprateList.get(pos).section);
+                mValues.put(Constants.MODULE, mUserOprateList.get(pos).module);
                 mValues.put(Constants.DOWNLOAD, Constants.TRUE);
                 mValues.put(Constants.LOADING, Constants.FALSE);
-                mValues.put(Constants.DownTime, mDownTimeList.get(pos));
+                mValues.put(Constants.DownTime, mUserOprateList.get(pos).downTime);
                 DbUtil.insert(mDatabase, Constants.TABLE_ALREADY_DOWNLOAD, mValues);
                 mDatabase.close();
 
@@ -288,17 +271,17 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
     @Override
     public void OnPageItemClick(final int pos) {
         //这个路径用来存放下载的文件，或者传递给下一级
-        local_path = SDCardUtil.getExercisePath() + File.separator + mPaperCodeList.get(pos) + File.separator + mModuleList.get(pos);
+        local_path = SDCardUtil.getExercisePath() + File.separator + mUserOprateList.get(pos).section + File.separator + mUserOprateList.get(pos).module;
 
         //查询download库中的下载表,判断是否下载到本地了，是则进入，否则下载
         SQLiteDatabase mDatabase = DbUtil.getHelper(TopListeneringPageActivity.this, downloaded_sql_path).getWritableDatabase();
         String sql_query = "select " + Constants.ID + " from " + Constants.TABLE_ALREADY_DOWNLOAD
                 + " where " + Constants.SECTION + " = ? and " + Constants.MODULE + " = ? ";
-        String isExist = DbUtil.cursorToString(mDatabase.rawQuery(sql_query, new String[]{mPaperCodeList.get(pos), mModuleList.get(pos)}));
+        String isExist = DbUtil.cursorToString(mDatabase.rawQuery(sql_query, new String[]{mUserOprateList.get(pos).section, mUserOprateList.get(pos).module}));
         mDatabase.close();
-        LogUtil.i(mPaperCodeList.get(pos) + "_" + mModuleList.get(pos) + " isExist = " + isExist);
+        LogUtil.i(mUserOprateList.get(pos).section + "_" + mUserOprateList.get(pos).module + " isExist = " + isExist);
         if (isExist.equals(Constants.NONE)) {
-            doDownLoad(pos, mUrlList.get(pos), local_path);
+            doDownLoad(pos, mUserOprateList.get(pos).downUrl, local_path);
             return;
         }
 
@@ -308,10 +291,10 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
         SQLiteDatabase database = DbUtil.getHelper(TopListeneringPageActivity.this, filePath).getWritableDatabase();
         String sql_down_time_last = "select " + Constants.DownTime + " from " + Constants.TABLE_ALREADY_DOWNLOAD
                 + " where " + Constants.SECTION + " = ? and " + Constants.MODULE + " = ? ";
-        String down_time_last = DbUtil.cursorToString(database.rawQuery(sql_down_time_last, new String[]{mPaperCodeList.get(pos), mModuleList.get(pos)}));
+        String down_time_last = DbUtil.cursorToString(database.rawQuery(sql_down_time_last, new String[]{mUserOprateList.get(pos).section, mUserOprateList.get(pos).module}));
         database.close();
         LogUtil.e("down_time_last = " + down_time_last);
-        if (!down_time_last.equals(mDownTimeList.get(pos))) {
+        if (!down_time_last.equals(mUserOprateList.get(pos).downTime)) {
             new AlertDialog.Builder(this).setMessage("有更新的题库，建议下载新题库")
                     .setPositiveButton("使用原题库", new DialogInterface.OnClickListener() {
                         @Override
@@ -319,9 +302,9 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
                             Intent intent = new Intent(TopListeneringPageActivity.this, PageReadyActivity.class);
                             intent.putExtra("local_path", local_path);
                             //留给子数据库拼装末位路径
-                            intent.putExtra("local_code", mPaperCodeList.get(pos));
-                            intent.putExtra("local_module", mModuleList.get(pos));
-                            intent.putExtra("local_music_question", mMusicQuestionList.get(pos));
+                            intent.putExtra("local_code", mUserOprateList.get(pos).section);
+                            intent.putExtra("local_module", mUserOprateList.get(pos).module);
+                            intent.putExtra("local_music_question", mUserOprateList.get(pos).musicQuestion);
                             startActivity(intent);
                         }
                     })
@@ -329,16 +312,16 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             //下载新题
-                            doDownLoad(pos, mUrlList.get(pos), local_path);
+                            doDownLoad(pos, mUserOprateList.get(pos).downUrl, local_path);
                         }
                     }).show();
         } else {
             Intent intent = new Intent(TopListeneringPageActivity.this, PageReadyActivity.class);
             intent.putExtra("local_path", local_path);
             //留给子数据库拼装末位路径
-            intent.putExtra("local_code", mPaperCodeList.get(pos));
-            intent.putExtra("local_module", mModuleList.get(pos));
-            intent.putExtra("local_music_question", mMusicQuestionList.get(pos));
+            intent.putExtra("local_code", mUserOprateList.get(pos).section);
+            intent.putExtra("local_module", mUserOprateList.get(pos).module);
+            intent.putExtra("local_music_question", mUserOprateList.get(pos).musicQuestion);
             startActivity(intent);
         }
     }
@@ -357,13 +340,13 @@ public class TopListeneringPageActivity extends BaseActivity implements TopListe
             case R.id.download:
                 ToastUtil.showMessage(this, "begin download all");
                 String path;
-                for (int i = 0; i < mModuleList.size(); i++) {
+                for (int i = 0; i < mUserOprateList.size(); i++) {
                     //查对象属性,loading或者downloaded，则不下载
                     if (mUserOprateList.get(i).loading.equals(Constants.TRUE) || mUserOprateList.get(i).download.equals(Constants.TRUE)) {
                         continue;
                     }
-                    path = SDCardUtil.getExercisePath() + File.separator + mPaperCodeList.get(i) + File.separator + mModuleList.get(i);
-                    doDownLoad(i, mUrlList.get(i), path);
+                    path = SDCardUtil.getExercisePath() + File.separator + mUserOprateList.get(i).section + File.separator + mUserOprateList.get(i).module;
+                    doDownLoad(i, mUserOprateList.get(i).downUrl, path);
                 }
                 break;
             default:

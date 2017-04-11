@@ -52,7 +52,8 @@
             android:layout_below="@+id/txt_activity_page_ready_title_chinese"
             android:layout_marginTop="12dp"
             android:text="分类:暂无分类"
-            android:textColor="@color/Gray" />
+            android:textColor="@color/Gray"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

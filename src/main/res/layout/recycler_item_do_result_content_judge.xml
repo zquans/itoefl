@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:text="this ons is a true"
-        android:textColor="@color/TxtWhite"
+        android:textColor="@color/TxtBlack"
         android:textSize="18sp" />
 
     <LinearLayout
@@ -37,7 +37,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="A"
-                android:textColor="@color/TxtWhite" />
+                android:textColor="@color/TxtBlack" />
 
         </FrameLayout>
 
@@ -47,7 +47,7 @@
             android:layout_marginLeft="4dp"
             android:gravity="center"
             android:text="YES"
-            android:textColor="@color/TxtWhite" />
+            android:textColor="@color/TxtBlack" />
 
         <FrameLayout
             android:layout_width="24dp"
@@ -65,7 +65,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="B"
-                android:textColor="@color/TxtWhite" />
+                android:textColor="@color/TxtBlack" />
 
         </FrameLayout>
 
@@ -75,7 +75,7 @@
             android:layout_marginLeft="4dp"
             android:gravity="center"
             android:text="NO"
-            android:textColor="@color/TxtWhite" />
+            android:textColor="@color/TxtBlack" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -44,11 +44,11 @@ public class QuestionSingleAdapter extends RecyclerView.Adapter<QuestionSingleAd
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         holder.mTxtQuestion.setText(mDataList.get(position));
         if (mSelectedList.get(position)) {
-            holder.mTxtQuestion.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.mTxtQuestion.setTextColor(Color.parseColor("#000000"));
             holder.mTxtQuestion.setBackgroundResource(R.drawable.view_bound_pink_stroke_five);
         } else {
-            holder.mTxtQuestion.setTextColor(Color.parseColor("#BBBBBB"));
-            holder.mTxtQuestion.setBackgroundResource(R.color.Transparent_SixtyFive);
+            holder.mTxtQuestion.setTextColor(Color.parseColor("#888888"));
+            holder.mTxtQuestion.setBackgroundResource(R.color.White);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

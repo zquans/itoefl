@@ -30,7 +30,7 @@ public class ParseJsonUtil {
                     mVocabulary.img = obj.getString("img");
                     mVocabulary.modify_at = obj.getString("modify_at");
                     mVocabulary.path = obj.getString("path");
-                    mVocabulary.size = obj.getString("size");
+                    mVocabulary.size = obj.getLong("size");
                     mList.add(mVocabulary);
                 }
             }

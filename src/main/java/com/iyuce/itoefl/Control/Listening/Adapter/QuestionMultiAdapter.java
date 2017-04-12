@@ -51,11 +51,11 @@ public class QuestionMultiAdapter extends RecyclerView.Adapter<QuestionMultiAdap
             @Override
             public void onClick(View v) {
                 if (mIsSelectedList.get(position)) {
-                    holder.mTxtQuestion.setBackgroundResource(R.color.Transparent_SixtyFive);
-                    holder.mTxtQuestion.setTextColor(Color.parseColor("#BBBBBB"));
+                    holder.mTxtQuestion.setBackgroundResource(R.color.White);
+                    holder.mTxtQuestion.setTextColor(Color.parseColor("#888888"));
                 } else {
                     holder.mTxtQuestion.setBackgroundResource(R.drawable.view_bound_pink_stroke_five);
-                    holder.mTxtQuestion.setTextColor(Color.parseColor("#FFFFFF"));
+                    holder.mTxtQuestion.setTextColor(Color.parseColor("#000000"));
                 }
                 //反转boolean状态
                 mIsSelectedList.set(position, !mIsSelectedList.get(position));

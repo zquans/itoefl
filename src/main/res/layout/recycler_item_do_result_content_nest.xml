@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:text="this ons is a true"
-        android:textColor="@color/TxtWhite"
+        android:textColor="@color/TxtBlack"
         android:textSize="@dimen/txt_size_eighteen" />
 
     <LinearLayout
@@ -36,7 +36,7 @@
                 android:layout_height="32dp"
                 android:gravity="center"
                 android:text="A"
-                android:textColor="@color/TxtWhite" />
+                android:textColor="@color/TxtBlack" />
 
             <TextView
                 android:id="@+id/txt_item_fragment_do_result_judge_a"
@@ -44,7 +44,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="36dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/TxtWhite"
+                android:textColor="@color/TxtBlack"
                 android:textSize="16sp" />
         </RelativeLayout>
 
@@ -64,7 +64,7 @@
                 android:layout_height="32dp"
                 android:gravity="center"
                 android:text="B"
-                android:textColor="@color/TxtWhite" />
+                android:textColor="@color/TxtBlack" />
 
             <TextView
                 android:id="@+id/txt_item_fragment_do_result_judge_b"
@@ -73,7 +73,7 @@
                 android:layout_marginLeft="36dp"
                 android:gravity="center_vertical"
                 android:text="YES"
-                android:textColor="@color/TxtWhite"
+                android:textColor="@color/TxtBlack"
                 android:textSize="16sp" />
         </RelativeLayout>
 
@@ -94,7 +94,7 @@
                 android:layout_height="32dp"
                 android:gravity="center"
                 android:text="C"
-                android:textColor="@color/TxtWhite" />
+                android:textColor="@color/TxtBlack" />
 
             <TextView
                 android:id="@+id/txt_item_fragment_do_result_judge_c"
@@ -103,7 +103,7 @@
                 android:layout_marginLeft="36dp"
                 android:gravity="center_vertical"
                 android:text="YES"
-                android:textColor="@color/TxtWhite"
+                android:textColor="@color/TxtBlack"
                 android:textSize="16sp" />
         </RelativeLayout>
 

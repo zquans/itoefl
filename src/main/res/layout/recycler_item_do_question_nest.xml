@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:text="this ons is a true"
-        android:textColor="@color/TxtWhite"
+        android:textColor="@color/TxtBlack"
         android:textSize="@dimen/txt_size_eighteen" />
 
     <RadioGroup
@@ -26,10 +26,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:background="@color/Transparent"
+            android:background="@color/White"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:textColor="@color/TxtWhite" />
+            android:textColor="@color/TxtBlack" />
 
         <RadioButton
             android:id="@+id/radio_item_fragment_do_question_b"
@@ -37,10 +37,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginTop="4dp"
-            android:background="@color/Transparent"
+            android:background="@color/White"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:textColor="@color/TxtWhite" />
+            android:textColor="@color/TxtBlack" />
 
         <RadioButton
             android:id="@+id/radio_item_fragment_do_question_c"
@@ -48,10 +48,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginTop="4dp"
-            android:background="@color/Transparent"
+            android:background="@color/White"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:textColor="@color/TxtWhite" />
+            android:textColor="@color/TxtBlack" />
     </RadioGroup>
 
     <View

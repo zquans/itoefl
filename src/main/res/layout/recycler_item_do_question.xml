@@ -12,10 +12,10 @@
         android:id="@+id/txt_item_fragment_do_question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Transparent_SixtyFive"
+        android:background="@color/White"
         android:padding="8dp"
         android:text="A:this is a question"
-        android:textColor="@color/TxtGrayQuestion"
+        android:textColor="@color/TxtDeepGray"
         android:textSize="@dimen/txt_size_eighteen" />
 
 </LinearLayout>

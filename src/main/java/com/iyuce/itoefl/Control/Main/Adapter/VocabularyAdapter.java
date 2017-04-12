@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.iyuce.itoefl.Model.Vocabulary;
 import com.iyuce.itoefl.R;
+import com.iyuce.itoefl.Utils.FileUtil;
 import com.iyuce.itoefl.Utils.SDCardUtil;
 
 import java.io.File;
@@ -46,8 +47,8 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.My
     public void onBindViewHolder(VocabularyAdapter.MyViewHolder holder, final int position) {
         holder.mTxtTitle.setText(mDataList.get(position).title);
         holder.mTxtContent.setText(mDataList.get(position).description);
-//        holder.mTxtSize.setText(FileUtil.dealLength(Long.parseLong(mDataList.get(position).size)));
-        holder.mTxtSize.setText(mDataList.get(position).size);
+        holder.mTxtSize.setText(FileUtil.dealPdfLength(mDataList.get(position).size));
+//        holder.mTxtSize.setText(mDataList.get(position).size);
         Glide.with(mContext).load(mDataList.get(position).img).into(holder.mImgBook);
 
         File file = new File(SDCardUtil.getVocabularyPath() + File.separator + mDataList.get(position).title + ".pdf");

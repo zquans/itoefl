@@ -11,7 +11,7 @@
         android:layout_toRightOf="@+id/txt_item_fragment_do_result_number"
         android:padding="@dimen/all_padding"
         android:text="How could not you never know may be you belong with me"
-        android:textColor="@color/TxtWhite"
+        android:textColor="@color/TxtBlack"
         android:textSize="@dimen/txt_size_eighteen" />
 
     <TextView
@@ -21,5 +21,5 @@
         android:layout_alignBaseline="@+id/txt_item_fragment_do_result_answer"
         android:gravity="center"
         android:padding="4dp"
-        android:textColor="@color/TxtWhite" />
+        android:textColor="@color/TxtBlack" />
 </RelativeLayout>

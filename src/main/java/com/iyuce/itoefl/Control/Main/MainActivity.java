@@ -127,7 +127,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     if (mDecidedDownload.code.equals(Constants.CODE_HTTP_SUCCESS)) {
                         //需要下载，无论存在文件与否，都去下载
                         LogUtil.i("接口说要下载");
-                        downloadAlertDialog();
+                        if (PreferenceUtil.getSharePre(MainActivity.this).getString(Constants.Preference_MAIN_DB_DOWNLOAD, "")
+                                .equals(Constants.Preference_MAIN_DB_DOWNLOAD)) {
+                            //TODO 不是第一次，提示是否更新
+                            downloadAlertDialog();
+                        } else {
+                            //TODO 如果第一次，自动下载
+                            downDatabase(true);
+                        }
                     } else {
                         //不需要下载，依然去判断是否存在文件
                         decideDownload(false);
@@ -195,7 +202,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void doSuccess(File file, Call call, Response response) {
                 unZipFile(file, path);
+                //保留本次请求时间到下一次请求的参数中使用
                 PreferenceUtil.save(MainActivity.this, Constants.REQUEST_TIME_MAIN_DATABASE, mDecidedDownload.request_date);
+                //标记第一次下载完成,从此以后都是询问是否更新
+                PreferenceUtil.save(MainActivity.this, Constants.Preference_MAIN_DB_DOWNLOAD, Constants.Preference_MAIN_DB_DOWNLOAD);
             }
 
             @Override
@@ -264,20 +274,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mImgPractice.setBackgroundResource(R.mipmap.icon_exercise_normal);
         mImgLecture.setBackgroundResource(R.mipmap.icon_lesson_normal);
         mImgMine.setBackgroundResource(R.mipmap.icon_mine_normal);
-        mTxtPractice.setTextColor(Color.parseColor("#FCFCFC"));
-        mTxtLecture.setTextColor(Color.parseColor("#FCFCFC"));
-        mTxtMine.setTextColor(Color.parseColor("#FCFCFC"));
+        mTxtPractice.setTextColor(Color.parseColor("#5f738f"));
+        mTxtLecture.setTextColor(Color.parseColor("#5f738f"));
+        mTxtMine.setTextColor(Color.parseColor("#5f738f"));
         switch (pos) {
             case 0:
-                mTxtPractice.setTextColor(Color.parseColor("#FF3370"));
+                mTxtPractice.setTextColor(Color.parseColor("#46AAFF"));
                 mImgPractice.setBackgroundResource(R.mipmap.icon_exercise_select);
                 break;
             case 1:
-                mTxtLecture.setTextColor(Color.parseColor("#FF3370"));
+                mTxtLecture.setTextColor(Color.parseColor("#46AAFF"));
                 mImgLecture.setBackgroundResource(R.mipmap.icon_lesson_select);
                 break;
             case 2:
-                mTxtMine.setTextColor(Color.parseColor("#FF3370"));
+                mTxtMine.setTextColor(Color.parseColor("#46AAFF"));
                 mImgMine.setBackgroundResource(R.mipmap.icon_mine_select);
                 break;
         }

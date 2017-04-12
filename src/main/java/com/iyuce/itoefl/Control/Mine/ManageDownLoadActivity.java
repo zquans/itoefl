@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import com.iyuce.itoefl.BaseActivity;
 import com.iyuce.itoefl.Common.Constants;
+import com.iyuce.itoefl.Control.Mine.Adapter.ManageDownloadAdapter;
 import com.iyuce.itoefl.Model.ManageDownload;
 import com.iyuce.itoefl.R;
-import com.iyuce.itoefl.Control.Mine.Adapter.ManageDownloadAdapter;
 import com.iyuce.itoefl.Utils.DbUtil;
 import com.iyuce.itoefl.Utils.FileUtil;
 import com.iyuce.itoefl.Utils.LogUtil;
@@ -70,6 +70,8 @@ public class ManageDownLoadActivity extends BaseActivity
     public void countListSize(File dir) {
         ManageDownload fileDownload;
         File[] files = dir.listFiles();
+        if (files == null)
+            return;
         for (File file : files) {
             if (file.isDirectory()) {
                 LogUtil.e("===" + file.getName() + "|||file.length = " + FileUtil.dealLength(FileUtil.getFileSize(file)));

@@ -17,6 +17,7 @@ public class Constants {
     //Preference
     public static final String Preference_Version_Service = "serverVersion";
     public static final String Preference_Version_Local = "localVersion";
+    public static final String Preference_MAIN_DB_DOWNLOAD = "main_database_download";
 
     public static final String URL_DOWNLOAD_MAIN_DATABASE = "http://tpo.iyuce.com/Content/upload/TPO/tpo.zip";
     public static final String URL_TPO_MAIN_STATUS = "http://api.iyuce.com/v1/tpo/gettpomainstatus?updatetime=";

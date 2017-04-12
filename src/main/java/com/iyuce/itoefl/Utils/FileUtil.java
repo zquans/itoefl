@@ -35,4 +35,15 @@ public class FileUtil {
         return size;
     }
 
+    public static String dealPdfLength(long length) {
+        String size;
+        if (length > 1048576) {
+            size = length / 1048576 + "GB";
+        } else if (length > 1024) {
+            size = length / 1024 + "MB";
+        } else {
+            size = length + "B";
+        }
+        return size;
+    }
 }

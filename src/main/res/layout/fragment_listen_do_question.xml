@@ -12,7 +12,7 @@
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:gravity="center"
         android:text="Question"
-        android:textColor="@color/TxtWhite" />
+        android:textColor="@color/TxtBlack" />
 
     <TextView
         android:id="@+id/txt_fragment_do_result_page_middle"
@@ -35,7 +35,7 @@
         android:layout_toRightOf="@+id/txt_fragment_do_result_page_middle"
         android:gravity="center"
         android:text="of"
-        android:textColor="@color/TxtWhite" />
+        android:textColor="@color/TxtBlack" />
 
     <TextView
         android:id="@+id/txt_fragment_do_result_page_right"
@@ -49,7 +49,7 @@
         android:gravity="center"
         android:paddingLeft="4dp"
         android:text="x"
-        android:textColor="@color/TxtWhite" />
+        android:textColor="@color/TxtBlack" />
 
     <RelativeLayout
         android:id="@+id/relative_fragment_do_result_page"
@@ -66,7 +66,7 @@
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:padding="8dp"
             android:text="@string/listen_again_to_part_of"
-            android:textColor="@color/TxtWhite"
+            android:textColor="@color/TxtBlack"
             android:textStyle="bold" />
 
         <TextView
@@ -89,7 +89,7 @@
             android:layout_centerVertical="true"
             android:paddingRight="@dimen/activity_horizontal_padding"
             android:text="00:00"
-            android:textColor="@color/TxtWhite" />
+            android:textColor="@color/TxtBlack" />
 
         <ProgressBar
             android:id="@+id/bar_fragment_do_question_progress"
@@ -116,7 +116,7 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_padding"
         android:text="Why does the professor interrupt the student is the class on "
-        android:textColor="@color/TxtWhite"
+        android:textColor="@color/TxtBlack"
         android:textSize="@dimen/txt_size_eighteen"
         android:textStyle="bold" />
 
@@ -139,6 +139,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_fragment_do_result_question_type"
         android:layout_margin="@dimen/all_padding"
-        android:background="@drawable/view_background_transparent_thirty" />
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin" />
 
 </RelativeLayout>

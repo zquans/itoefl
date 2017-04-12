@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/img_bg_sea_stone">
+    android:background="@color/BackColor">
 
     <include layout="@layout/header_title_bar" />
 
@@ -21,7 +21,7 @@
             android:layout_marginTop="8dp"
             android:layout_toLeftOf="@+id/img_activity_page_ready_title_level"
             android:text="\nPage ready title"
-            android:textColor="@color/TxtWhite"
+            android:textColor="@color/TxtBlack"
             android:textSize="18sp" />
 
         <ImageView
@@ -39,10 +39,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_activity_page_ready_title_english"
+            android:layout_marginBottom="12dp"
             android:layout_marginTop="8dp"
             android:layout_toLeftOf="@+id/img_activity_page_ready_title_level"
             android:text="听力准备页面"
-            android:textColor="@color/TxtWhite"
+            android:textColor="@color/TxtBlack"
             android:textSize="18sp" />
 
         <TextView
@@ -50,7 +51,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_activity_page_ready_title_chinese"
-            android:layout_marginTop="12dp"
             android:text="分类:暂无分类"
             android:textColor="@color/Gray"
             android:visibility="gone" />
@@ -74,7 +74,7 @@
         android:drawablePadding="@dimen/activity_horizontal_padding"
         android:gravity="center_vertical"
         android:padding="@dimen/all_padding"
-        android:textColor="@color/TxtPink"
+        android:textColor="@color/TxtBlue"
         android:textStyle="bold" />
 
     <TextView
@@ -91,7 +91,7 @@
         android:onClick="showResult"
         android:padding="@dimen/all_padding"
         android:text="查看详情"
-        android:textColor="@color/TxtPink"
+        android:textColor="@color/TxtBlue"
         android:textStyle="bold" />
 
     <View
@@ -137,7 +137,7 @@
             android:gravity="center"
             android:onClick="beginPractice"
             android:text="题目练习"
-            android:textColor="@color/TxtPink"
+            android:textColor="@color/TxtBlue"
             android:textSize="@dimen/txt_size_eighteen" />
     </LinearLayout>
 

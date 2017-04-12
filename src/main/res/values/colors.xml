@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#32324C</color>
+    <color name="colorPrimary">#46AAFF</color>
     <color name="colorPrimaryDark">#32324C</color>
-    <color name="colorAccent">#FF3370</color>
+    <color name="colorAccent">#F7941D</color>
 
     <color name="GrayThin">#FAFAFA</color>
     <color name="Gray">#BBBBBB</color>
@@ -10,7 +10,7 @@
     <color name="Black">#000000</color>
     <color name="DeepGreen">#3DACB7</color>
     <color name="Red">#F2523E</color>
-    <color name="Blue">#059CD4</color>
+    <color name="Blue">#46AAFF</color>
     <color name="Pink">#FF3370</color>
     <color name="Orange">#F7941D</color>
     <color name="Ripple">#FF8DFF</color>
@@ -24,8 +24,11 @@
     <color name="TxtBlack">#1B1D1F</color>
     <color name="TxtWhite">#FCFCFC</color>
     <color name="TxtGray">#AAAAAA</color>
+    <color name="TxtDeepGray">#888888</color>
     <color name="TxtGrayQuestion">#BBBBBB</color>
-    <color name="TxtPink">#FF3370</color>
+    <color name="TxtPink">#F7941D</color>
+    <color name="TxtBlue">#46AAFF</color>
 
-
+    <color name="BackColor">#F9F9F9</color>
+    <color name="BackGray">#EDF1F5</color>
 </resources>

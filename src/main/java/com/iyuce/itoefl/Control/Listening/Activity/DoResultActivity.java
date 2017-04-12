@@ -2,7 +2,6 @@ package com.iyuce.itoefl.Control.Listening.Activity;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -262,10 +261,10 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
         //执行动画
         for (int i = 0; i < mResultTitleList.size(); i++) {
             View itemChangeImg = mRecyclerView.getChildAt(position).findViewById(R.id.img_item_do_result);
-            TextView itemChangeTxt = (TextView) mRecyclerView.getChildAt(position).findViewById(R.id.txt_item_do_result);
+//            TextView itemChangeTxt = (TextView) mRecyclerView.getChildAt(position).findViewById(R.id.txt_item_do_result);
             if (!mResultTitleList.get(position).question_is_select) {
                 //未选中的
-                itemChangeTxt.setTextColor(Color.parseColor("#000000"));
+//                itemChangeTxt.setTextColor(Color.parseColor("#000000"));
                 if (mResultTitleList.get(position).question_state) {
                     //正确的
                     itemChangeImg.setBackgroundResource(R.mipmap.icon_answer_cycle_right_stroke);
@@ -275,7 +274,7 @@ public class DoResultActivity extends BaseActivity implements View.OnClickListen
                 }
             } else {
                 //选中的
-                itemChangeTxt.setTextColor(Color.parseColor("#ffffff"));
+//                itemChangeTxt.setTextColor(Color.parseColor("#ffffff"));
                 if (mResultTitleList.get(position).question_state) {
                     //正确的
                     itemChangeImg.setBackgroundResource(R.mipmap.icon_answer_talk_right_full);

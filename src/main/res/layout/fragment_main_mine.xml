@@ -22,7 +22,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@mipmap/img_header">
 
                 <ImageView
                     android:id="@+id/img_tab5_icon"
@@ -161,7 +162,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_margin="8dp"
-                android:background="@color/Gray" />
+                android:background="@color/BackGray" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

@@ -233,6 +233,8 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
             public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
                 if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
                     viewHolder.itemView.setBackgroundResource(R.drawable.view_bound_pink_stroke_five);
+                    TextView txt = (TextView) viewHolder.itemView.findViewById(R.id.txt_item_fragment_do_question);
+                    txt.setTextColor(Color.BLACK);
                 }
                 super.onSelectedChanged(viewHolder, actionState);
             }
@@ -241,6 +243,9 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
             public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                 super.clearView(recyclerView, viewHolder);
                 viewHolder.itemView.setBackgroundColor(Color.TRANSPARENT);
+                TextView txt = (TextView) viewHolder.itemView.findViewById(R.id.txt_item_fragment_do_question);
+                txt.setTextColor(Color.parseColor("#888888"));
+
             }
 
             @Override

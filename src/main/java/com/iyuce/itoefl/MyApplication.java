@@ -3,7 +3,6 @@ package com.iyuce.itoefl;
 import android.app.Application;
 
 import com.lzy.okgo.OkGo;
-import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
 
 import java.util.logging.Level;
@@ -47,7 +46,7 @@ public class MyApplication extends Application {
                     .setCacheMode(CacheMode.NO_CACHE)
 
                     //可以全局统一设置缓存时间,默认永不过期,具体使用方法看 github 介绍
-                    .setCacheTime(CacheEntity.CACHE_NEVER_EXPIRE)
+//                    .setCacheTime(CacheEntity.CACHE_NEVER_EXPIRE)
 
                     //可以全局统一设置超时重连次数,默认为三次,那么最差的情况会请求4次(一次原始请求,三次重连请求),不需要可以设置为0
                     .setRetryCount(3);

@@ -8,8 +8,21 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.Utils.ToastUtil;
+import com.umeng.analytics.MobclickAgent;
 
 public class BaseActivity extends AppCompatActivity {
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

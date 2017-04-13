@@ -12,7 +12,9 @@ public class Vocabulary implements Serializable {
     public String img;
     public String path;
     public String modify_at;
+    public String book_mark;
     public long size;
+    public int key;
     public boolean isDownLoad;
-    public boolean downLoading;
+    public boolean downLoading = false;
 }

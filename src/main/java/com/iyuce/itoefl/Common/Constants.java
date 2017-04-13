@@ -64,6 +64,7 @@ public class Constants {
     public static final String SQLITE_DOWNLOAD = "DOWNLOAD.db";   //用户操作记录库
     public static final String TABLE_ALREADY_DOWNLOAD = "downloaded_table";  //下载记录表
     public static final String TABLE_ALREADY_PRACTICED = "practiced_table";  //练习记录表
+    public static final String TABLE_PDF_DOWNLOAD = "pdf_table";  //下载记录表
 
     //Exercise 相关的表
     public static final String TABLE_SQLITE_MASTER = "sqlite_master";   //sql系统表
@@ -115,4 +116,12 @@ public class Constants {
     public static final String UserSelect = "UserSelect";
     public static final String Bingo = "Bingo";
     public static final String TimeCount = "TimeCount";
+    public static final String Title = "Title";
+    public static final String Description = "Description";
+    public static final String PdfImage = "PdfImage";
+    public static final String ModifyAt = "ModifyAt";
+    public static final String Path = "Path";
+    public static final String Size = "Size";
+    public static final String Key = "Key";
+    public static final String BookMark = "BookMark";
 }

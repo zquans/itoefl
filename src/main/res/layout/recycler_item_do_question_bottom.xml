@@ -10,10 +10,10 @@
         android:id="@+id/txt_item_fragment_do_question_bottom"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="@mipmap/icon_answer_cycle_wrong_stroke"
+        android:background="@drawable/view_bound_pink_stroke_five"
         android:gravity="center"
         android:padding="4dp"
-        android:textColor="@color/TxtWhite"
+        android:textColor="@color/Blue"
         android:textSize="18sp"
         android:textStyle="bold" />
 

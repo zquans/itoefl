@@ -47,7 +47,7 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.My
     public void onBindViewHolder(VocabularyAdapter.MyViewHolder holder, final int position) {
         holder.mTxtTitle.setText(mDataList.get(position).title);
         holder.mTxtContent.setText(mDataList.get(position).description);
-        holder.mTxtSize.setText(FileUtil.dealPdfLength(mDataList.get(position).size));
+        holder.mTxtSize.setText(FileUtil.dealLength(mDataList.get(position).size));
 //        holder.mTxtSize.setText(mDataList.get(position).size);
         Glide.with(mContext).load(mDataList.get(position).img).into(holder.mImgBook);
 
@@ -62,6 +62,15 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.My
                 if (mVocabularyListener != null) {
                     mVocabularyListener.OnItemClick(position);
                 }
+            }
+        });
+        holder.mCard.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mVocabularyListener != null) {
+                    mVocabularyListener.OnItemLongClick(position);
+                }
+                return true;
             }
         });
     }
@@ -90,5 +99,7 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.My
 
     public interface VocabularyListener {
         void OnItemClick(int pos);
+
+        void OnItemLongClick(int pos);
     }
 }

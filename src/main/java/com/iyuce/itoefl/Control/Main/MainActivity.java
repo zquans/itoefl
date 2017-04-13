@@ -231,7 +231,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             //解压后删除该文件压缩包
             ZipUtil.UnZipFolder(file.getAbsolutePath(), path);
             if (file.delete()) {
-                ToastUtil.showMessage(this, "下载更新成功啦");
+                ToastUtil.showMessage(this, "成功更新题库");
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -75,6 +75,7 @@ public class FragmentExercise extends Fragment implements DisCreteScrollAdapter.
 
     @Override
     public void onSelect(int pos) {
+        //TODO  长按删除已经下载的书籍//或者加一个删除的按钮
         if (pos == 1) {
             if (decidedEnter())
                 getActivity().startActivity(new Intent(getActivity(), TopListeneringActivity.class));

@@ -20,7 +20,7 @@ public class ParseJsonUtil {
         try {
             Vocabulary mVocabulary;
             JSONObject obj = new JSONObject(result);
-            if (obj.getString(Constants.CODE_HTTP).equals("1")) {
+            if (obj.getString(Constants.CODE_HTTP).equals(Constants.CODE_HTTP_SUCCESS)) {
                 JSONArray arr = obj.getJSONArray(Constants.DATA_HTTP);
                 for (int i = 0; i < arr.length(); i++) {
                     mVocabulary = new Vocabulary();
@@ -31,8 +31,11 @@ public class ParseJsonUtil {
                     mVocabulary.modify_at = obj.getString("modify_at");
                     mVocabulary.path = obj.getString("path");
                     mVocabulary.size = obj.getLong("size");
+                    mVocabulary.key = obj.getInt("key");
+                    mVocabulary.book_mark = "1";
                     mList.add(mVocabulary);
                 }
+                return mList;
             }
         } catch (JSONException e) {
             e.printStackTrace();

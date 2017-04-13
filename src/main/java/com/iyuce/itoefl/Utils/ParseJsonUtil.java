@@ -32,7 +32,7 @@ public class ParseJsonUtil {
                     mVocabulary.path = obj.getString("path");
                     mVocabulary.size = obj.getLong("size");
                     mVocabulary.key = obj.getInt("key");
-                    mVocabulary.book_mark = "1";
+                    mVocabulary.book_mark = "0";
                     mList.add(mVocabulary);
                 }
                 return mList;

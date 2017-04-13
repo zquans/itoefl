@@ -1,12 +1,12 @@
 package com.iyuce.itoefl.Control.Main.Adapter;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -84,7 +84,7 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.My
 
         TextView mTxtTitle, mTxtContent, mTxtSize, mTxtDownLoad;
         ImageView mImgBook;
-        CardView mCard;
+        RelativeLayout mCard;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -93,7 +93,7 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.My
             mTxtSize = (TextView) itemView.findViewById(R.id.txt_item_vocabulary_size);
             mImgBook = (ImageView) itemView.findViewById(R.id.img_item_vocabulary);
             mTxtDownLoad = (TextView) itemView.findViewById(R.id.txt_item_vocabulary_download);
-            mCard = (CardView) itemView.findViewById(R.id.card_item_vocabulary);
+            mCard = (RelativeLayout) itemView.findViewById(R.id.card_item_vocabulary);
         }
     }
 

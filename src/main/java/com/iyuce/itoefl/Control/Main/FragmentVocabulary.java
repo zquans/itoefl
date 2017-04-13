@@ -216,20 +216,23 @@ public class FragmentVocabulary extends BaseFragment implements VocabularyAdapte
     public void OnItemLongClick(int pos) {
         File file = new File(SDCardUtil.getVocabularyPath() + File.separator + mVocabularyList.get(pos).title + ".pdf");
         if (file.exists()) {
-            deleteAlertDialog(file);
+            deleteAlertDialog(pos, file);
         }
     }
 
-    private void deleteAlertDialog(final File file) {
+    private void deleteAlertDialog(final int pos, final File file) {
         new AlertDialog.Builder(getActivity())
                 .setTitle("删除该书本地缓存")
                 .setMessage("确定要删除吗？")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (file.delete())
+                        if (file.delete()) {
                             ToastUtil.showMessage(getActivity(), "删除本地书籍成功");
-                        else {
+                            TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_item_vocabulary_download);
+                            textView.setText("准备下载");
+                            textView.setVisibility(View.VISIBLE);
+                        } else {
                             ToastUtil.showMessage(getActivity(), "删除本地书籍失败");
                         }
                     }

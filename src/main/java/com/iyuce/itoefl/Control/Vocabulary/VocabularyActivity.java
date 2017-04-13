@@ -41,7 +41,7 @@ public class VocabularyActivity extends AppCompatActivity implements
     //数据库路径
     private String downloaded_sql_path;
     //TODO 用数据库标识书签
-    private int pdf_book_mark = 1;
+    private int pdf_book_mark = 0;
 
     @Override
     public void onStop() {

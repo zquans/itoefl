@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:text="this ii file name"
-        android:textColor="@color/TxtWhite" />
+        android:textColor="@color/TxtBlack" />
 
     <TextView
         android:id="@+id/txt_item_activity_manage_download_size"
@@ -24,7 +24,7 @@
         android:paddingBottom="8dp"
         android:paddingLeft="8dp"
         android:text="50KB"
-        android:textColor="@color/TxtWhite"
+        android:textColor="@color/TxtBlack"
         android:textSize="12sp" />
 
     <ImageView

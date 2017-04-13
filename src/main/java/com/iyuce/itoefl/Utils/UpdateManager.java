@@ -96,7 +96,7 @@ public class UpdateManager {
             if (isUpdate()) {
                 showNoticeDialog();
             } else {
-                ToastUtil.showMessage(mContext, "don't need update");
+                ToastUtil.showMessage(mContext, "已经是最新版本啦");
             }
         } catch (Exception e) {
             e.printStackTrace();

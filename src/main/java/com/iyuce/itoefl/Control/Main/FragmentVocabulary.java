@@ -114,7 +114,7 @@ public class FragmentVocabulary extends BaseFragment implements VocabularyAdapte
     }
 
     private ArrayList<Vocabulary> getDataFromSql() {
-        SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), downloaded_sql_path).getWritableDatabase();
+        SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), downloaded_sql_path).getReadableDatabase();
         String isNone_PDF = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PDF_DOWNLOAD);
         if (TextUtils.equals(isNone_PDF, Constants.NONE)) {
             mDatabase.close();
@@ -143,7 +143,7 @@ public class FragmentVocabulary extends BaseFragment implements VocabularyAdapte
 
     private void saveDataIntoSql(ArrayList<Vocabulary> mVocabularyList) {
         //Replace 插入或替代数据
-        SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), downloaded_sql_path).getWritableDatabase();
+        SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), downloaded_sql_path).getReadableDatabase();
         for (int i = 0; i < mVocabularyList.size(); i++) {
             //判断是否存在，不存在则插入，存在则更新
             String sql_replace = "replace into " + Constants.TABLE_PDF_DOWNLOAD + " ("
@@ -172,7 +172,7 @@ public class FragmentVocabulary extends BaseFragment implements VocabularyAdapte
 
     private void createDatabase() {
         //打开或者创建我的本地数据库
-        SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), downloaded_sql_path).getWritableDatabase();
+        SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), downloaded_sql_path).getReadableDatabase();
         String create = "create table if not exists " + Constants.TABLE_PDF_DOWNLOAD + "("
                 + Constants.ID + " integer primary key,"
                 + Constants.UserId + " text,"

@@ -57,7 +57,7 @@ public class DoQuestionActivity extends BaseActivity implements
     private ArrayList<String> mMasterIdList;
     private ArrayList<String> mQuestionTypeList;
     private ArrayList<String> mQuestionContentList;
-    private ArrayList<String> mSortList;
+    private ArrayList<String> mSortList = new ArrayList<>();
     private ArrayList<String> mMusicQuestionList;
     private ArrayList<String> mMusicAnswerList;
 
@@ -140,7 +140,11 @@ public class DoQuestionActivity extends BaseActivity implements
         mMasterIdList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, Constants.Sort + " ASC", Constants.MasterId);
         mQuestionTypeList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, Constants.Sort + " ASC", Constants.QuestionType);
         mQuestionContentList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, Constants.Sort + " ASC", Constants.Content);
-        mSortList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, Constants.Sort + " ASC", Constants.Sort);
+//        mSortList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, Constants.Sort + " ASC", Constants.Sort);
+        for (int i = 0; i < mQuestionIdList.size(); i++) {
+            mSortList.add(String.valueOf(i + 1));
+        }
+
         mMusicQuestionList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, Constants.Sort + " ASC", Constants.MusicQuestion);
         //这个直接传给DoResult就好
         mMusicAnswerList = DbUtil.queryToArrayList(mDatabase, Constants.TABLE_QUESTION, Constants.Sort + " ASC", Constants.MusicAnswer);

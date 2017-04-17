@@ -62,7 +62,7 @@ public class FragmentExercise extends Fragment implements DisCreteScrollAdapter.
         String path = SDCardUtil.getExercisePath();
         String tpo_path = path + File.separator + Constants.SQLITE_TPO;
 
-        SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), tpo_path).getWritableDatabase();
+        SQLiteDatabase mDatabase = DbUtil.getHelper(getActivity(), tpo_path).getReadableDatabase();
         //从默认主表中查，是否有这张表
         String isNone_Paper = DbUtil.queryToString(mDatabase, Constants.TABLE_SQLITE_MASTER, Constants.NAME, Constants.TABLE_NAME, Constants.TABLE_PAPER);
         mDatabase.close();

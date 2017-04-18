@@ -1,6 +1,5 @@
 package com.iyuce.itoefl.Control.Main;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -133,7 +132,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                             downloadAlertDialog();
                         } else {
                             //TODO 如果第一次，自动下载
-                            downDatabase(true);
+//                            downDatabase(true);
+                            decideDownload(true);
                         }
                     } else {
                         //不需要下载，依然去判断是否存在文件
@@ -156,24 +156,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 .setPositiveButton("立刻更新", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        downDatabase(true);
+//                        downDatabase(true);
+                        decideDownload(true);
                     }
                 }).setNegativeButton("以后再说", null)
                 .show();
     }
 
-    /**
-     * 下载数据库
-     */
-    private void downDatabase(boolean todownload) {
-        //判断是否有权限
-        if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            decideDownload(todownload);
-        } else {
-            //没权限，进行权限请求
-            requestPermission(Constants.CODE_WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-    }
+//    /**
+//     * 下载数据库
+//     */
+//    private void downDatabase(boolean todownload) {
+//        //判断是否有权限
+//        if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//            decideDownload(todownload);
+//        } else {
+//            //没权限，进行权限请求
+//            requestPermission(Constants.CODE_WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//        }
+//    }
 
     private void decideDownload(boolean todownload) {
         //查看根文件路径中是否已存在根sql库,否则下载

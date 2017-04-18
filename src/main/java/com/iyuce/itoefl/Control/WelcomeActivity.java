@@ -1,17 +1,19 @@
 package com.iyuce.itoefl.Control;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.iyuce.itoefl.R;
+import com.iyuce.itoefl.BaseActivity;
+import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.Control.Main.MainActivity;
+import com.iyuce.itoefl.R;
 
-public class WelcomeActivity extends AppCompatActivity {
+public class WelcomeActivity extends BaseActivity {
 
     private Handler mHandler = new Handler();
 
@@ -26,6 +28,27 @@ public class WelcomeActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_welcome);
 
+        judgePermission();
+    }
+
+    private void judgePermission() {
+        //判断是否有权限
+        if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            //有权限，通过handle处理倒计时跳转
+            handleToMain();
+        } else {
+            //没权限，进行权限请求
+            requestPermission(Constants.CODE_WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+    }
+
+    @Override
+    public void doStore() {
+        super.doStore();
+        handleToMain();
+    }
+
+    private void handleToMain() {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {

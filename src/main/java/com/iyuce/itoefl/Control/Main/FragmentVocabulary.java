@@ -17,10 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.iyuce.itoefl.BaseFragment;
 import com.iyuce.itoefl.Common.Constants;
 import com.iyuce.itoefl.Control.Main.Adapter.VocabularyAdapter;
 import com.iyuce.itoefl.Control.Vocabulary.VocabularyActivity;
+import com.iyuce.itoefl.LazyFragment;
 import com.iyuce.itoefl.Model.Vocabulary;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.DbUtil;
@@ -43,7 +43,7 @@ import okhttp3.Response;
 /**
  * Created by LeBang on 2017/1/22
  */
-public class FragmentVocabulary extends BaseFragment implements VocabularyAdapter.VocabularyListener {
+public class FragmentVocabulary extends LazyFragment implements VocabularyAdapter.VocabularyListener {
 
     private RecyclerView mRecyclerView;
     private VocabularyAdapter mAdapter;
@@ -51,20 +51,14 @@ public class FragmentVocabulary extends BaseFragment implements VocabularyAdapte
 
     private String downloaded_sql_path;
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main_vocabulary, container, false);
+    private boolean isPrepared;
 
-        initView(view);
-        return view;
-    }
-
-    private void initView(View view) {
-        //数据库路径
-        downloaded_sql_path = SDCardUtil.getVocabularyPath() + File.separator + Constants.SQLITE_DOWNLOAD;
-
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_vocabulary);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+    @Override
+    protected void lazyLoad() {
+        if (!isPrepared || !isVisible) {
+            return;
+        }
+        /**懒加载*/
         //网络已连接
         if (NetUtil.isConnected(getActivity())) {
             //通过网络初始化数据
@@ -79,14 +73,29 @@ public class FragmentVocabulary extends BaseFragment implements VocabularyAdapte
         }
     }
 
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        LogUtil.e("Vocabulary onCreateView = ");
+        View view = inflater.inflate(R.layout.fragment_main_vocabulary, container, false);
+        initView(view);
+
+        isPrepared = true;
+        lazyLoad();
+        return view;
+    }
+
+    private void initView(View view) {
+        //数据库路径
+        downloaded_sql_path = SDCardUtil.getVocabularyPath() + File.separator + Constants.SQLITE_DOWNLOAD;
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_fragment_vocabulary);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
     private void initHttpData() {
-        LogUtil.e("a");
         HttpUtil.get(Constants.URL_GET_PDF_BOOK, new RequestInterface() {
             @Override
             public void doSuccess(String result, Call call, Response response) {
-                LogUtil.e("b");
                 mVocabularyList = ParseJsonUtil.parseVocabulary(result);
-                LogUtil.e("c" + mVocabularyList);
                 mAdapter = new VocabularyAdapter(getActivity(), mVocabularyList);
                 mAdapter.setOnVocabularyListener(FragmentVocabulary.this);
                 mRecyclerView.setAdapter(mAdapter);
@@ -104,6 +113,7 @@ public class FragmentVocabulary extends BaseFragment implements VocabularyAdapte
         //创建数据库
         createDatabase();
         //读取
+        mVocabularyList.clear();
         mVocabularyList = getDataFromSql();
         if (mVocabularyList == null) {
             ToastUtil.showMessage(getActivity(), "您还没有书籍哦，请链接网络重试");
@@ -249,7 +259,7 @@ public class FragmentVocabulary extends BaseFragment implements VocabularyAdapte
         HttpUtil.downLoad(mVocabularyList.get(pos).path, SDCardUtil.getVocabularyPath(), mVocabularyList.get(pos).title + ".pdf", new DownLoadInterface() {
             @Override
             public void inProgress(long currentSize, long totalSize, float progress, long networkSpeed) {
-                progressdialogcancel();
+//                progressdialogcancel();
                 TextView textView = (TextView) mRecyclerView.getChildAt(pos).findViewById(R.id.txt_item_vocabulary_download);
                 textView.setText(((int) (progress * 100) + "%"));
             }
@@ -262,7 +272,7 @@ public class FragmentVocabulary extends BaseFragment implements VocabularyAdapte
 
             @Override
             public void onBefore() {
-                progressdialogshow(getActivity());
+//                progressdialogshow(getActivity());
                 mVocabularyList.get(pos).downLoading = true;
             }
 

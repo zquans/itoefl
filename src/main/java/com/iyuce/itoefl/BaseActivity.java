@@ -92,7 +92,7 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    //子类重写后实现具体调用相机的业务逻辑
+    //子类重写后实现具体调用读写的业务逻辑
     public void doStore() {
     }
 }

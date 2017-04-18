@@ -15,6 +15,7 @@ import com.iyuce.itoefl.Control.Listening.Activity.TopListeneringActivity;
 import com.iyuce.itoefl.Control.Main.Adapter.DisCreteScrollAdapter;
 import com.iyuce.itoefl.R;
 import com.iyuce.itoefl.Utils.DbUtil;
+import com.iyuce.itoefl.Utils.PreferenceUtil;
 import com.iyuce.itoefl.Utils.SDCardUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
@@ -75,7 +76,12 @@ public class FragmentExercise extends Fragment implements DisCreteScrollAdapter.
 
     @Override
     public void onSelect(int pos) {
-        //TODO  长按删除已经下载的书籍//或者加一个删除的按钮
+        //如果未完成第一次下载
+        if (!TextUtils.equals(Constants.Preference_MAIN_DB_DOWNLOAD,
+                PreferenceUtil.getSharePre(getActivity()).getString(Constants.Preference_MAIN_DB_DOWNLOAD, ""))) {
+            ToastUtil.showMessage(getActivity(), "初始化TPO数据，请稍候");
+            return;
+        }
         if (pos == 1) {
             if (decidedEnter())
                 getActivity().startActivity(new Intent(getActivity(), TopListeneringActivity.class));

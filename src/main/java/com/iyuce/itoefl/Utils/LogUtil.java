@@ -3,7 +3,7 @@ package com.iyuce.itoefl.Utils;
 import android.util.Log;
 
 /**
- * Created by Administrator on 2016/6/24.
+ * Created by Administrator on 2016/6/24
  */
 public class LogUtil {
 

@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.iyuce.itoefl.Common.Constants;
+import com.iyuce.itoefl.Utils.LogUtil;
 import com.iyuce.itoefl.Utils.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
 
@@ -27,6 +28,10 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        //日志输出Activity名称，方便查找
+        LogUtil.i(this.getClass().getSimpleName());
+
 //        //透明状态栏
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 //        //透明导航栏

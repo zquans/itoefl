@@ -116,6 +116,7 @@ public class FragmentDoQuestionSingle extends FragmentDoQuestionDefault implemen
     public void onDestroy() {
         super.onDestroy();
         mMediaPlayer.release();
+        mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
     }
 
     @Override

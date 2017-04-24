@@ -119,6 +119,7 @@ public class FragmentDoQuestionSort extends FragmentDoQuestionDefault implements
     public void onDestroy() {
         super.onDestroy();
         mMediaPlayer.release();
+        mMediaProgressHandler.removeMessages(Constants.FLAG_AUDIO_PLAY);
     }
 
     @Override
